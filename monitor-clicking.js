@@ -83,13 +83,16 @@ document.addEventListener('click', function(e){
             classname = getOwnClassName(previousSibling);
         } else if(e.target.className.contains('x-grid-row-checker')){
             classname = 'x-grid-row-checker';
+        } else if(e.target.closest('.x-datepicker-cell')){
+            ancestor = e.target.closest('.x-datepicker-cell');
+            classname = 'x-datepicker-cell';
         } else if(e.target.closest('.x-message-box')){
-        ancestor = e.target.closest('.x-message-box');
-        classname = '.x-message-box';
-        if(!text){
-            var previousSibling = e.target.previousSibling;
-            text = previousSibling.innerText || previousSibling.textContent;
-        }
+            ancestor = e.target.closest('.x-message-box');
+            classname = 'x-message-box';
+            if(!text){
+                var previousSibling = e.target.previousSibling;
+                text = previousSibling.innerText || previousSibling.textContent;
+            }
 
         } else if(e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT'){
             ancestor = e.target;
