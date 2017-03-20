@@ -1,0 +1,8 @@
+{
+    "deploymentsite": {
+        "versionxx.xx.xx": {
+            "x-btn-send": "mail-compose-send-btn",
+            "x-btn-compose": "mail-compose-btn"
+        }
+    }
+}

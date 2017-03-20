@@ -12,9 +12,11 @@ const WRITE_DELAY_SINCE_UPDATE = 1 * 60 * 1000;
 const MACHINE_IP = os.networkInterfaces().eth1 ? os.networkInterfaces().eth1[0].address : 'UNKNOWN';
 const SERVICE_PORT = 8080;
 const PATH_SEP = path.sep;
+const DETERGENT = JSON.parse(fs.readFileSync('detergent.json', "utf-8"));
 
-console.log("PATH_SEP:", PATH_SEP)
-console.log("CHECK_WRITE_INTERVAL:", CHECK_WRITE_INTERVAL,'ms');
+console.log("FLAVOR loaded.");
+console.log("PATH_SEP:", PATH_SEP);
+console.log("CHECK_WRITE_INTERVAL:", CHECK_WRITE_INTERVAL, 'ms');
 console.log("WRITE_DELAY_SINCE_UPDATE:", WRITE_DELAY_SINCE_UPDATE, 'ms');
 
 
@@ -28,7 +30,7 @@ const server = http.createServer(function (req, res) {
 
 }).listen(SERVICE_PORT);
 
-console.log('Chips server(', MACHINE_IP, ':'+SERVICE_PORT, ') is up...');
+console.log('Chips server(', MACHINE_IP, ':' + SERVICE_PORT, ') is up...');
 
 setInterval(writeWork, CHECK_WRITE_INTERVAL)
 
@@ -47,7 +49,8 @@ function handleChipsRequest(req, res) {
 
     req.on('end', function () {
         try {
-            feedMe(chips);
+
+            feedMe(wash(chips));
             res.writeHead(200, {
                 'Content-Type': 'text/plain; charset=utf-8',
                 'Access-Control-Allow-Origin': getAllowedOrigin(req),
@@ -70,8 +73,7 @@ function getAllowedOrigin(req) {
     return origin;
 }
 
-function feedMe(chips) {
-    const chipJson = JSON.parse(chips);
+function feedMe(chipJson) {
     const len = chipJson.actions.length;
     if (len === 0) return;
 
@@ -96,6 +98,20 @@ function feedMe(chips) {
 
 }
 
+function wash(chips) {
+    const chipJson = JSON.parse(chips);
+    const domain = chipJson.domain;
+    const dtg = DETERGENT[domain];
+    if (dtg && chipJson.actions) {
+        chipJson.actions.forEach(function (item) {
+            const info = item[1];
+            item[1] = (dtg[info.key] ? dtg[info.key] : 'unknown');
+            item.push(info);
+        });
+    }
+    return chipJson;
+}
+
 function writeWork() {
     const now = new Date();
     for (let link in chipStore) {
@@ -107,13 +123,13 @@ function writeWork() {
     }
 }
 
-function appendArray(arr0, arr1) {
-    arr0.push.apply(arr0, arr1);
-}
-
 function write(str) {
-    const file = 'datastore'+PATH_SEP+'data.log';
-    //str example value: {"site":"www2",actions:[[1489569331453,"mail_message_item"], [1489569331453,"mail_compose_tbbtn"], [1489569331453,"compose_editor_input"],[1489569331453,"compose_to_input"], [1489569331454,"compose_send_btn"]]}
+    const file = 'cellar' + PATH_SEP + 'data.log';
+    //str example value: {"domain":"www2",actions:[[1489569331453,"mail_message_item"], [1489569331453,"mail_compose_tbbtn"], [1489569331453,"compose_editor_input"],[1489569331453,"compose_to_input"], [1489569331454,"compose_send_btn"]]}
     fs.appendFileSync(file, str);
     return str.length;
+}
+
+function appendArray(arr0, arr1) {
+    arr0.push.apply(arr0, arr1);
 }
