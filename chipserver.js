@@ -12,7 +12,9 @@ const WRITE_DELAY_SINCE_UPDATE = 1 * 60 * 1000;
 const MACHINE_IP = os.networkInterfaces().eth1 ? os.networkInterfaces().eth1[0].address : 'UNKNOWN';
 const SERVICE_PORT = 8080;
 const PATH_SEP = path.sep;
+
 const DETERGENT = JSON.parse(fs.readFileSync('detergent.json', "utf-8"));
+
 
 console.log("FLAVOR loaded.");
 console.log("PATH_SEP:", PATH_SEP);
@@ -25,18 +27,21 @@ const server = http.createServer(function (req, res) {
     if (req.method == 'POST' && uri === '/chips' && handleChipsRequest(req, res)) {
         return;
     } else {
-        invalidResponse(res);
+        invalidResponse(req, res);
     }
 
 }).listen(SERVICE_PORT);
 
 console.log('Chips server(', MACHINE_IP, ':' + SERVICE_PORT, ') is up...');
 
-setInterval(writeWork, CHECK_WRITE_INTERVAL)
+setInterval(storeWork, CHECK_WRITE_INTERVAL)
 
 
-function invalidResponse(res) {
-    res.writeHead(200);
+function invalidResponse(req, res) {
+    res.writeHead(200, {
+        'Content-Type': 'text/plain; charset=utf-8',
+        'Access-Control-Allow-Origin': getAllowedOrigin(req),
+    });
     res.write('Invalid request!');
     res.end();
 }
@@ -49,8 +54,8 @@ function handleChipsRequest(req, res) {
 
     req.on('end', function () {
         try {
+            receive(sort(chips));
 
-            feedMe(wash(chips));
             res.writeHead(200, {
                 'Content-Type': 'text/plain; charset=utf-8',
                 'Access-Control-Allow-Origin': getAllowedOrigin(req),
@@ -61,7 +66,7 @@ function handleChipsRequest(req, res) {
         } catch (e) {
             console.log(e.stack);
             console.log(chips);
-            invalidResponse(res);
+            invalidResponse(req, res);
         }
     });
 
@@ -70,27 +75,28 @@ function handleChipsRequest(req, res) {
 
 function getAllowedOrigin(req) {
     let origin = req.headers.origin;
+    console.log("getAllowedOrigin", origin)
     return origin;
 }
 
-function feedMe(chipJson) {
-    const len = chipJson.actions.length;
+function receive(chipJson) {
+    const len = chipJson.ingredients.length;
     if (len === 0) return;
 
-    const timestamplink = chipJson.actions[0][0];
+    const timestamplink = chipJson.ingredients[0][0];
     if (chipStore[timestamplink]) {
         const chips = chipStore[timestamplink];
-        const actions = chips.actions;
-        chipJson.actions.shift();
-        appendArray(actions, chipJson.actions);
+        const ingredients = chips.ingredients;
+        chipJson.ingredients.shift();
+        appendArray(ingredients, chipJson.ingredients);
         delete chipStore[timestamplink];
-        const newtimestamplink = actions[actions.length - 1][0];
+        const newtimestamplink = ingredients[ingredients.length - 1][0];
         chipStore[newtimestamplink] = chips;
         chips.updatedAt = new Date().getTime();
         console.log("append chips", timestamplink, newtimestamplink)
     } else {
-        const actions = chipJson.actions;
-        const timestamplink = actions[actions.length - 1][0];
+        const ingredients = chipJson.ingredients;
+        const timestamplink = ingredients[ingredients.length - 1][0];
         chipStore[timestamplink] = chipJson;
         chipJson.updatedAt = new Date().getTime();
         console.log("new chips link", timestamplink)
@@ -98,12 +104,15 @@ function feedMe(chipJson) {
 
 }
 
-function wash(chips) {
+function sort(chips) {
     const chipJson = JSON.parse(chips);
-    const domain = chipJson.domain;
-    const dtg = DETERGENT[domain];
-    if (dtg && chipJson.actions) {
-        chipJson.actions.forEach(function (item) {
+    //chipJson.ingredients = chipJson.actions;
+    //delete chipJson.actions;
+
+    const origin = chipJson.origin;
+    const dtg = DETERGENT[origin];
+    if (dtg && chipJson.ingredients) {
+        chipJson.ingredients.forEach(function (item) {
             const info = item[1];
             item[1] = (dtg[info.key] ? dtg[info.key] : 'unknown');
             item.push(info);
@@ -112,11 +121,11 @@ function wash(chips) {
     return chipJson;
 }
 
-function writeWork() {
+function storeWork() {
     const now = new Date();
     for (let link in chipStore) {
         if (now - chipStore[link].updatedAt > WRITE_DELAY_SINCE_UPDATE) {
-            console.log("write", chipStore[link].updatedAt, chipStore[link].actions.length);
+            console.log("write", chipStore[link].updatedAt, chipStore[link].ingredients.length);
             write('\n' + JSON.stringify(chipStore[link]));
             delete chipStore[link];
         }
