@@ -1,3 +1,4 @@
+// ChipMonitor({version:'2.2.101', sendDelay:10000,chipService:'http://10.37.2.237:8080/chips'});
 function ChipMonitor(options) {
     var SERIAL = parseInt(Math.random()*100000000000000000, 10);
     var ORIGIN = options.origin ? options.origin : window.location.hostname;
@@ -14,7 +15,7 @@ function ChipMonitor(options) {
 
     function clickHandler(e) {
         var info = objectParser(e);
-        actions.push([info, new Date().getTime()]);
+        actions.push([new Date().getTime(), info.classname, info]);
         resetSendDelay();
     };
 
