@@ -1,6 +1,6 @@
 // ChipMonitor({version:'2.2.101', sendDelay:10000,chipService:'http://10.37.2.237:8080/chips'});
 function ChipMonitor(options) {
-    var SERIAL = parseInt(Math.random()*100000000000000000, 10);
+    var SERIAL = parseInt(Math.random() * 100000000000000000, 10);
     var ORIGIN = options.origin ? options.origin : window.location.hostname;
     var BATCH = options.version;
     var SENDDELAY = options.sendDelay ? options.sendDelay : 1 * 60 * 1000;
@@ -65,6 +65,8 @@ function ChipMonitor(options) {
     function defaultObjectParser(e) {
         var classname, ancestor, ancestorText, text, id;
         classname = classnameParser(e.target);
+        if (debugMode) console.log('defaultObjectParser', e.target);
+        if (window.__chipsdebugger) debugger;
         if (classname.length === 0) {
             if (ancestor = e.target.closest('.rui-cal-picker')) {
                 classname = '.rui-cal-picker';
@@ -109,6 +111,8 @@ function ChipMonitor(options) {
             } else {
                 if (debugMode) console.log('target unknown', e.target);
             }
+        } else {
+            if (debugMode) console.log('no classname, target unknown', e.target);
         }
 
         if (!text) {
