@@ -25,8 +25,6 @@ const cookbook = require('./cookbook');
 
 // }
 
-
-
 module.exports = class Chef {
     constructor() {
     }

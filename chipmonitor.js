@@ -15,6 +15,10 @@ function ChipMonitor(options) {
 
     function clickHandler(e) {
         var info = objectParser(e);
+        if (!info.key) {
+            if (debugMode) console.log('no key target', e.target);
+            return;
+        }
         actions.push([new Date().getTime(), info.key, info]);
         resetSendDelay();
     };
@@ -102,9 +106,9 @@ function ChipMonitor(options) {
                 ancestor = e.target;
                 classname = classnameParser(ancestor);
                 name = ancestor.name;
-            } else if (ancestor = e.target.closest('.x-grid-row')){
+            } else if (ancestor = e.target.closest('.x-grid-row')) {
                 classname = 'x-grid-row';
-                if (ancestor.getElementsByClassName('mail-list-icon-column').length>0 || ancestor.getElementsByClassName('rui-mail-headerlist-row').length>0) classname = 'mail-x-grid-row'; 
+                if (ancestor.getElementsByClassName('mail-list-icon-column').length > 0 || ancestor.getElementsByClassName('rui-mail-headerlist-row').length > 0) classname = 'mail-x-grid-row';
             } else if ((ancestor = e.target.closest('.x-btn'))
                 || (ancestor = e.target.closest('.x-menu-item'))
                 || (ancestor = e.target.closest('.x-form-checkbox'))) {
@@ -112,10 +116,7 @@ function ChipMonitor(options) {
             } else {
                 if (debugMode) console.log('target unknown', e.target);
             }
-        } else {
-            if (debugMode) console.log('no classname, target unknown', e.target);
         }
-
 
         if (!text) {
             text = e.target.textContent || e.target.innerText || e.target.outerText;
