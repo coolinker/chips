@@ -26,6 +26,14 @@ const server = http.createServer(function (req, res) {
     var uri = url.parse(req.url).pathname;
     if (req.method == 'POST' && uri === '/chips' && handleChipsRequest(req, res)) {
         return;
+    } else if (uri === '/chipmonitor.js') {
+        res.writeHead(200, {
+            'Content-Type': 'application/javascript;charset=utf-8'
+        });
+
+        let content = fs.readFileSync("chipmonitor.js");
+        res.end(content);
+
     } else {
         invalidResponse(req, res);
     }
