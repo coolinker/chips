@@ -66,12 +66,7 @@ function ChipMonitor(options) {
         var classname, ancestor, ancestorText, text, id;
         classname = classnameParser(e.target);
         if (classname.length === 0) {
-            if ((ancestor = e.target.closest('.x-btn'))
-                || (ancestor = e.target.closest('.x-grid-cell'))
-                || (ancestor = e.target.closest('.x-menu-item'))
-                || (ancestor = e.target.closest('.x-form-checkbox'))) {
-                classname = classnameParser(ancestor);
-            } else if (ancestor = e.target.closest('.rui-cal-picker')) {
+            if (ancestor = e.target.closest('.rui-cal-picker')) {
                 classname = '.rui-cal-picker';
             } else if (ancestor = e.target.closest('.rui-calist-datalist')) {
                 classname = '.rui-calist-datalist';
@@ -106,6 +101,13 @@ function ChipMonitor(options) {
                 ancestor = e.target;
                 classname = classnameParser(ancestor);
                 var name = ancestor.name;
+            } else if ((ancestor = e.target.closest('.x-btn'))
+                || (ancestor = e.target.closest('.x-grid-cell'))
+                || (ancestor = e.target.closest('.x-menu-item'))
+                || (ancestor = e.target.closest('.x-form-checkbox'))) {
+                classname = classnameParser(ancestor);
+            } else {
+                if (debugMode) console.log('target unknown', e.target);
             }
         }
 
