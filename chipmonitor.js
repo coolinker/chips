@@ -1,4 +1,4 @@
-// ChipMonitor({version:'2.2.101', sendDelay:10000,chipService:'http://10.37.2.237:8080/chips'});
+// ChipMonitor({version:'2.2.101', sendDelay:10000,chipService:'http://10.37.2.237:8080/chips',debug:true});
 function ChipMonitor(options) {
     var SERIAL = parseInt(Math.random() * 100000000000000000, 10);
     var ORIGIN = options.origin ? options.origin : window.location.hostname;
@@ -65,8 +65,7 @@ function ChipMonitor(options) {
     function defaultObjectParser(e) {
         var classname, ancestor, ancestorText, text, name;
         classname = classnameParser(e.target);
-        if (debugMode) console.log('defaultObjectParser', e.target);
-
+        //if (debugMode) console.log('defaultObjectParser', e.target);
         if (classname.length === 0) {
             if (ancestor = e.target.closest('.rui-cal-picker')) {
                 classname = '.rui-cal-picker';
@@ -103,8 +102,10 @@ function ChipMonitor(options) {
                 ancestor = e.target;
                 classname = classnameParser(ancestor);
                 name = ancestor.name;
+            } else if (ancestor = e.target.closest('.x-grid-row')){
+                classname = 'x-grid-row';
+                if (ancestor.getElementsByClassName('mail-list-icon-column').length>0 || ancestor.getElementsByClassName('rui-mail-headerlist-row').length>0) classname = 'mail-x-grid-row'; 
             } else if ((ancestor = e.target.closest('.x-btn'))
-                || (ancestor = e.target.closest('.x-grid-cell'))
                 || (ancestor = e.target.closest('.x-menu-item'))
                 || (ancestor = e.target.closest('.x-form-checkbox'))) {
                 classname = classnameParser(ancestor);
@@ -125,9 +126,15 @@ function ChipMonitor(options) {
         }
 
         var key = name ? name : classname.toString();
-        if (key.indexOf('x-menu-item') > -1 || key.indexOf('x-boundlist') > -1 || key.indexOf('x-message-box') > -1) {
+        if (key.indexOf('x-boundlist') > -1) {
             key = key + "-" + getElementIndex(e.target);
+        } else if (key.indexOf('x-menu-item') > -1) {
+            var item = e.target.closest('.x-menu-item');
+            key = key + "-" + getElementIndex(item);
+        } else if (key.indexOf('x-message-box') > -1) {
+            key = key + '-' + text;
         }
+
         var obj = {};
         if (key) obj.key = key;
         if (classname.length > 0) obj.classname = classname.toString();
@@ -176,6 +183,9 @@ function ChipMonitor(options) {
                 ownClassName = classnameParser(children[i]);
             }
         }
+
+        if (!ownClassName) ownClassName.ancestor.classList;
+
         return ownClassName;
     };
 
