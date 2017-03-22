@@ -134,7 +134,7 @@ function storeWork() {
     for (let link in chipStore) {
         if (now - chipStore[link].updatedAt > WRITE_DELAY_SINCE_UPDATE) {
             console.log("write", chipStore[link].updatedAt, chipStore[link].ingredients.length);
-            write('\n' + JSON.stringify(chipStore[link]));
+            write(JSON.stringify(chipStore[link])+'\n');
             delete chipStore[link];
         }
     }
