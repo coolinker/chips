@@ -15,7 +15,7 @@ function ChipMonitor(options) {
 
     function clickHandler(e) {
         var info = objectParser(e);
-        actions.push([new Date().getTime(), info.classname, info]);
+        actions.push([new Date().getTime(), info.key, info]);
         resetSendDelay();
     };
 
@@ -53,8 +53,8 @@ function ChipMonitor(options) {
 
     function resetActions(timestamp) {
         var keep = [];
-        for (var i = actions.length - 1; i < actions.length; i--) {
-            var time = actions[i][1];
+        for (var i = actions.length - 1; i > 0 && i < actions.length; i--) {
+            var time = actions[i][0];
             if (timestamp > time) {
                 actions = actions.slice(i);
                 return;
@@ -63,10 +63,10 @@ function ChipMonitor(options) {
     };
 
     function defaultObjectParser(e) {
-        var classname, ancestor, ancestorText, text, id;
+        var classname, ancestor, ancestorText, text, name;
         classname = classnameParser(e.target);
         if (debugMode) console.log('defaultObjectParser', e.target);
-        if (window.__chipsdebugger) debugger;
+
         if (classname.length === 0) {
             if (ancestor = e.target.closest('.rui-cal-picker')) {
                 classname = '.rui-cal-picker';
@@ -102,7 +102,7 @@ function ChipMonitor(options) {
             } else if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT') {
                 ancestor = e.target;
                 classname = classnameParser(ancestor);
-                var name = ancestor.name;
+                name = ancestor.name;
             } else if ((ancestor = e.target.closest('.x-btn'))
                 || (ancestor = e.target.closest('.x-grid-cell'))
                 || (ancestor = e.target.closest('.x-menu-item'))
@@ -115,16 +115,22 @@ function ChipMonitor(options) {
             if (debugMode) console.log('no classname, target unknown', e.target);
         }
 
+
         if (!text) {
-            text = e.target.innerText || e.target.outerText || e.target.textContent;
+            text = e.target.textContent || e.target.innerText || e.target.outerText;
             if (ancestor) {
                 ancestorText = ancestor.innerText;
                 text = text || ancestorText;
             }
         }
 
+        var key = name ? name : classname.toString();
+        if (key.indexOf('x-menu-item') > -1 || key.indexOf('x-boundlist') > -1 || key.indexOf('x-message-box') > -1) {
+            key = key + "-" + getElementIndex(e.target);
+        }
         var obj = {};
-        if (classname) obj.classname = classname.toString();
+        if (key) obj.key = key;
+        if (classname.length > 0) obj.classname = classname.toString();
         if (text) obj.text = text;
         if (name) obj.name = name;
 
@@ -139,7 +145,7 @@ function ChipMonitor(options) {
         var ancestorClassName = ancestor.classList;
         for (var k = 0; k < ancestorClassName.length; k++) {
             if ((ancestorClassName[k].startsWith('rui') || ancestorClassName[k].startsWith('ow') || ancestorClassName[k].startsWith('cal')
-                || ancestorClassName[k].startsWith('automation')) && ancestorClassName[k] !== 'ow-autoDir') {
+                || ancestorClassName[k].startsWith('automation') || ancestorClassName[k].startsWith('x-menu-item') || ancestorClassName[k].startsWith('x-boundlist')) && ancestorClassName[k] !== 'ow-autoDir') {
                 ownClassName.push(ancestorClassName[k]);
             }
         }
@@ -171,6 +177,13 @@ function ChipMonitor(options) {
             }
         }
         return ownClassName;
+    };
+
+
+    function getElementIndex(node) {
+        var i = 1;
+        while (node = (node.previousElementSibling || node.previousSibling)) { ++i }
+        return i;
     }
 }
 
