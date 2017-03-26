@@ -1,10 +1,6 @@
 'use strict';
-const fs = require('fs');
-const path = require('path');
-const PATH_SEP = path.sep;
-const CELLAR_PATH = '../cellar/data.log'.replace(/\//g, PATH_SEP);
+
 const EOL = (process.platform === 'win32' ? '\r\n' : '\n');
-const cookbook = require('./cookbook');
 
 // const rootTree = {
 //     count: 1,
@@ -29,16 +25,16 @@ module.exports = class Chef {
     constructor() {
     }
 
-    prepareRaw(dish) {
-        const raw = fs.readFileSync(CELLAR_PATH, 'utf-8');
+    prepareRaw(menu, raw) {
         const tree = { count: 1 };
-        const orign = cookbook.dishes[dish].orign;
-        const batch = cookbook.dishes[dish].batch;
-
+        const origin = menu.origin;
+        const batch = menu.batch;
+        const me = this;
         raw.split(EOL).forEach(function (line) {
+            if (!line) return;
             const lineJson = JSON.parse(line);
-            if (lineJson.orign === origin && lineJson.batch === batch) {
-                layoutAsTree(cookbook.dishes[dish].granularity, tree, lineJson.ingredients);
+            if (lineJson.origin === origin && lineJson.batch === batch) {
+                me.layoutAsTree(menu.granularity, tree, lineJson.ingredients);
             }
         });
 
@@ -50,10 +46,10 @@ module.exports = class Chef {
         const igdlen = ingredients.length;
 
         for (let i = 0; i < igdlen; i++) {
-            const cursor = tree;
+            let cursor = tree;
             for (let deep = 0; deep < deepmax && deep + i < igdlen; deep++) {
                 const item = ingredients[i + deep];
-                const igd = item[0];
+                const igd = item[1];
                 if (!cursor.children) {
                     cursor.children = {};
                 }
@@ -69,10 +65,56 @@ module.exports = class Chef {
 
     }
 
-    cutUpRaw(rawPiece) {
-        //{"site":"www2", "version": "xxx", actions":[[1489569331458,"mail_message_item"],[1489569331454,"mail_compose_tbbtn"],[1489569331453,"compose_editor_input"],[1489569331453,"compose_to_input"],[1489569331458,"compose_send_btn"]],"updatedAt":1489731766899}
-        const pieces = [];
+    cook(menu, raw) {
+        const rawReadyAsTree = this.prepareRaw(menu, raw);
+        const depth = menu.granularity;
+        const nodes = [];
+        this.getTreeNodes(rawReadyAsTree, depth, nodes);
+        nodes.sort(function(n0, n1){
+            if (n0.count > n1.count) return -1;
+            else if (n0 < n1.count) return 1;
 
-        return pieces;
+            return 0;
+        })
+
+        //console.log("nodes:", nodes.length);
+        const root = this.normalizeTree(rawReadyAsTree);
+        return root;
     }
+
+    normalizeTree(treeWithMap){
+        const root = {};
+        root.count = treeWithMap.count;
+        if (treeWithMap.children) {
+            const children = treeWithMap.children;
+            root.children = [];
+            for (let att in children) {
+                const child = this.normalizeTree(children[att]);
+                child.key = att;
+                root.children.push(child);
+                
+            }
+        }
+        return root;   
+    }
+
+    getTreeNodes(treeNode, depth, nodes) {
+        const children = treeNode.children;
+        if (!children) {
+            return;
+        }
+
+        if (depth === 1) {
+            for (let key in children) {
+                children[key].keyOfParent = key;
+                nodes.push(children[key]);
+            }
+        } else {
+            for (let key in children) {
+                this.getTreeNodes(children[key], --depth, nodes);
+            }
+        }
+        
+    }
+
 }
