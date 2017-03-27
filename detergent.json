@@ -1,5 +1,22 @@
 {
-    "deploymentsite": {
+    "origin_default": {
+        "batch_default": {
+            "automation-login-language-input": "login.language.input",
+            "automation-login-login-button": "login.button",
+            "automation-login-login-button-Log in": "login.button",
+            "automation-login-username-input": "login.username.input",
+            "rui-settings-list-desc,automation-settings-list-desc": "settings.list.desc.text",
+            "automation-mailtoolbar-forward-menu-Forward": "mail.toolbar.forward.menubutton",
+            "rui-toolbar-gray-btn,automation-mail-compose-discard-btn": "mail.compose.discard.button",
+            "rui-mail-layout-btn,automation-mail-layout-btn": "mail.layout.button",
+            "rui-core-main-navigation-tab,automation-app-mail-menu": "navigation.mail.tab",
+            "rui-contacts-form-savebtn,automation-contact-form-savebtn": "contacts.form.save.button",
+            "ow-icon-mail-folderConlumn-inner": "mail.folder.treenode",
+            "ow-addressbook-name, automation-contact-treenode-default": "contacts.addressbook.default.treenode"
+        }
+    },
+
+    "deploymentsite":{
         "versionxx.xx.xx": {
             "x-btn-send": "mail-compose-send-btn",
             "x-btn-compose": "mail-compose-btn"

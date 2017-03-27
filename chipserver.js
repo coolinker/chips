@@ -14,10 +14,7 @@ const WRITE_DELAY_SINCE_UPDATE = 1 * 60 * 1000;
 const MACHINE_IP = os.networkInterfaces().eth1 ? os.networkInterfaces().eth1[0].address : 'UNKNOWN';
 const SERVICE_PORT = 8080;
 const PATH_SEP = path.sep;
-const CELLAR_PATH = 'cellar/test.log'.replace(/\//g, PATH_SEP);
-
-const DETERGENT = JSON.parse(fs.readFileSync('detergent.json', "utf-8"));
-
+const CELLAR_PATH = 'cellar/data.log'.replace(/\//g, PATH_SEP);
 
 console.log("FLAVOR loaded.");
 console.log("PATH_SEP:", PATH_SEP);
@@ -30,9 +27,8 @@ const server = http.createServer(function (req, res) {
     if (req.method == 'POST') {
         if (uri === '/chips' && handleChipsRequest(req, res)
             || uri === '/kitchen' && handleKichenRequest(req, res))
-
             return;
-    } else if (uri === '/chipmonitor.js' || uri.indexOf(' / restaurant / ') === 0) {
+    } else if (uri === '/chipmonitor.js' || uri.indexOf('/chipcharts/') === 0) {
         const filepath = uri.substr(1);
         if (fs.existsSync(filepath)) {
             let content = fs.readFileSync(filepath);
@@ -161,18 +157,6 @@ function receive(chipJson) {
 
 function sort(chips) {
     const chipJson = JSON.parse(chips);
-    //chipJson.ingredients = chipJson.actions;
-    //delete chipJson.actions;
-
-    const origin = chipJson.origin;
-    const dtg = DETERGENT[origin];
-    if (dtg && chipJson.ingredients) {
-        chipJson.ingredients.forEach(function (item) {
-            const info = item[1];
-            item[1] = (dtg[info.key] ? dtg[info.key] : 'unknown');
-            item.push(info);
-        });
-    }
     return chipJson;
 }
 

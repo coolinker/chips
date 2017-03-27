@@ -1,6 +1,6 @@
 'use strict';
-
-const EOL = (process.platform === 'win32' ? '\r\n' : '\n');
+const fs = require('fs');
+const EOL = '\n';//(process.platform === 'win32' ? '\r\n' : '\n');
 
 // const rootTree = {
 //     count: 1,
@@ -23,23 +23,59 @@ const EOL = (process.platform === 'win32' ? '\r\n' : '\n');
 
 module.exports = class Chef {
     constructor() {
+
+    }
+
+    blendDetergent(menu) {
+        const DETERGENT = JSON.parse(fs.readFileSync('detergent.json', "utf-8"));
+        const def = DETERGENT.origin_default.batch_default;
+        const blended = {};
+
+        for (const att in def) {
+            blended[att] = def[att];
+        }
+
+        if (DETERGENT[menu.origin] && DETERGENT[menu.origin][menu.batch]) {
+            const target = DETERGENT[menu.origin][menu.batch];
+            for (const att in target) {
+                blended[att] = target[att];
+            }
+        }
+
+        return blended;
     }
 
     prepareRaw(menu, raw) {
         const tree = { count: 1 };
         const origin = menu.origin;
         const batch = menu.batch;
+        const detergent = this.blendDetergent(menu);
         const me = this;
         raw.split(EOL).forEach(function (line) {
             if (!line) return;
-            const lineJson = JSON.parse(line);
-            if (lineJson.origin === origin && lineJson.batch === batch) {
-                me.layoutAsTree(menu.granularity, tree, lineJson.ingredients);
+            const sorted = me.sort(line, detergent);
+            if (sorted.origin === origin && sorted.batch === batch) {
+                me.layoutAsTree(menu.granularity, tree, sorted.ingredients);
             }
         });
 
         return tree;
     }
+
+
+    sort(chips, detergent) {
+        const chipJson = JSON.parse(chips);
+        const origin = chipJson.origin;
+        if (detergent && chipJson.ingredients) {
+            chipJson.ingredients.forEach(function (item) {
+                const key = item[1];
+                item[1] = (detergent[key] ? detergent[key] : key);
+
+            });
+        }
+        return chipJson;
+    }
+
 
     layoutAsTree(deepmax, tree, ingredients) {
         const footprint = {};
@@ -70,7 +106,7 @@ module.exports = class Chef {
         const depth = menu.granularity;
         const nodes = [];
         this.getTreeNodes(rawReadyAsTree, depth, nodes);
-        nodes.sort(function(n0, n1){
+        nodes.sort(function (n0, n1) {
             if (n0.count > n1.count) return -1;
             else if (n0 < n1.count) return 1;
 
@@ -82,7 +118,7 @@ module.exports = class Chef {
         return root;
     }
 
-    normalizeTree(treeWithMap){
+    normalizeTree(treeWithMap) {
         const root = {};
         root.count = treeWithMap.count;
         if (treeWithMap.children) {
@@ -92,10 +128,10 @@ module.exports = class Chef {
                 const child = this.normalizeTree(children[att]);
                 child.key = att;
                 root.children.push(child);
-                
+
             }
         }
-        return root;   
+        return root;
     }
 
     getTreeNodes(treeNode, depth, nodes) {
@@ -114,7 +150,7 @@ module.exports = class Chef {
                 this.getTreeNodes(children[key], --depth, nodes);
             }
         }
-        
+
     }
 
 }
