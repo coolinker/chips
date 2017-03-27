@@ -17,12 +17,13 @@ function ChipMonitor(options) {
     if (ext) {
         ORIGIN += '-'+ext[0].split('=')[1];
     }
-
+    
     var BATCH = options.version;
     var SENDDELAY = options.sendDelay ? options.sendDelay : 1 * 60 * 1000;
     var CHIPSERVICE = options.chipService;
 
-    var debugMode = options.debug;
+    var debugParam = window.location.search.match(/(?:chipdebug=)([A-Za-z0-9_-]+)/g);
+    var debugMode = debugParam? debugParam==='true': options.debug;
     var identifierParser = options.findElementIdentifier ? options.findElementIdentifier : findElementIdentifier;
     console.log("Chip monitor is up:", ORIGIN, BATCH, SENDDELAY, CHIPSERVICE)
     var actions = [];
