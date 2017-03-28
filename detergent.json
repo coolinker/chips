@@ -5,14 +5,48 @@
             "automation-login-login-button": "login.button",
             "automation-login-login-button-Log in": "login.button",
             "automation-login-username-input": "login.username.input",
-            "rui-settings-list-desc,automation-settings-list-desc": "settings.list.desc.text",
-            "automation-mailtoolbar-forward-menu-Forward": "mail.toolbar.forward.menubutton",
-            "rui-toolbar-gray-btn,automation-mail-compose-discard-btn": "mail.compose.discard.button",
-            "rui-mail-layout-btn,automation-mail-layout-btn": "mail.layout.button",
+            
+            "ow-icon-navigationTabs-settings": "navigation.setting.tab",
             "rui-core-main-navigation-tab,automation-app-mail-menu": "navigation.mail.tab",
-            "rui-contacts-form-savebtn,automation-contact-form-savebtn": "contacts.form.save.button",
+            "rui-core-main-navigation-tab,automation-app-contacts-menu": "navigation.contacts.tab",
+            
+            "********** settings *********": "",
+            "rui-settings-list-desc,automation-settings-list-desc": "settings.list.text",
+            "automation-settings-languagetime-timezone-field": "setting.timezone.field",
+            "rui-settings-detail-savebtn,automation-settings-savebtn": "settings.save.button",
+            "automation-settings-languagetime-usedevicetimezone-field": "settings.devicetimezone.field",
+
+            "********** mail *********":"",
+            "automation-mailtoolbar-forward-menu-Forward": "mail.toolbar.forward.menubutton",
+            "automation-mailtoolbar-compose-menu": "mail.toolbar.compose.button",
+            "rui-blue-highlight-btn,automation-mail-compose-send-btn": "mail.compose.send.button",
+            "rui-toolbar-gray-btn,automation-mail-compose-discard-btn": "mail.compose.discard.button",
+            "rui-mail-layout-btn,automation-mail-layout-btn": "mail.toolbar.layout.button",
+            "x-grid-row": "mail.grid.row",
+            "x-grid-row-checker": "mail.grid.row.checkbox",
             "ow-icon-mail-folderConlumn-inner": "mail.folder.treenode",
-            "ow-addressbook-name, automation-contact-treenode-default": "contacts.addressbook.default.treenode"
+            "rui-mail-headerlist-subject,automation-mail-headerlist-subject": "mail.grid.row.subject.text",
+
+            "********** contacts *********":"",
+            "rui-contacts-form-savebtn,automation-contact-form-savebtn": "contacts.edit.save.button",
+            "ow-addressbook-name,automation-contact-treenode-default": "contacts.addressbook.default.treenode",
+            "ow-addressbook-name,automation-contact-treenode-autocomplete": "contacts.addressbook.autocomplete.treenode",
+            "automation-contact-detailtoolbar-edit,rui-contacts-detailtoolbar-buttons": "contacts.detail.edit.button",
+            "automation-contact-merge-cancelbtn": "contacts.merge.cancel.button",
+            "automation-contacts-toolbar-newcontact": "contacts.toolbar.new.button",
+
+            "********** calendar *********":"",
+            "ow-icon-calSubTbar-prev": "calendar.toolbar.prev.button",
+
+            "********** others *********":"",
+            "rui-tool,ow-icon-tool-close,automation-icon-tool-close": "toolbar.close.button",
+            "x-menu-item-link,x-menu-item-indent-no-separator-2": "menu.item.2",
+            "x-menu-item-text-5": "menu.item.5",
+            "x-menu-item-text-2": "menu.item.2",
+            "x-boundlist-item-3": "dropdown.item.3",
+            "x-message-box-OK": "messagebox.ok.button",
+            "x-datepicker-cell": "datepicker.cell",
+            "ow-icon-extMenu-down": "menu.down"
         }
     },
 
