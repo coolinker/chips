@@ -85,6 +85,11 @@ function ChipMonitor(options) {
 
     function getElementIdentifier(ele) {
         if (!ele) return;
+        
+        if (ele.tagName === 'TEXTAREA' || ele.tagName === 'INPUT') {
+            return ele.name;
+        }
+
         var regex = /(^(rui|ow(?!-autoDir)|cal|automation)| (rui|ow(?!-autoDir)|cal|automation))[^ ]*/g;
         var cls = ele.className;
         var selected;
@@ -133,28 +138,23 @@ function ChipMonitor(options) {
             } else if (acls.match(/x-btn/g)) {
                 var btnid = getElementIdentifier(ancestor);
                 if (btnid) return btnid + '-' + ancestor.textContent;
-
                 var xbox = ancestor.closest('.x-message-box');
                 if (xbox) {
                     return 'x-message-box-' + ancestor.textContent;
                 }
-
                 var xwin = ancestor.closest('.x-window');
                 if (xwin) {
                     return 'x-window-' + getElementIdentifier(xwin) + ancestor.textContent;
                 }
-
                 btnid = getElementIdentifier(ancestor.querySelector(selector));
                 if (btnid) return btnid + ancestor.textContent;
             } else if (acls.match(/x-form-checkbox/g)) {
                 return 'x-form-checkbox';
+            } else if (acls.match(/rui-cal-ev/g)) {
+                return 'rui-cal-ev';
             }
         }
 
-
-        if (ele.tagName === 'TEXTAREA' || ele.tagName === 'INPUT') {
-            return ele.name;
-        }
 
         var closest = ele.closest(selector);
         if (closest) {
