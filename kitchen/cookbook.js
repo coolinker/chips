@@ -10,8 +10,8 @@ module.exports = cookbook = {
             "granularity": 1,
             "ingredients": [0, 1],
             "exclude-ingredients":null,
-            "origin": "172.26.204.233",
-            "batch": "2.2.102",
+            "origin": "*",
+            "batch": "*",
         },
         "3-pieces": {
             "granularity": 3,

@@ -53,8 +53,8 @@ module.exports = class Chef {
         const me = this;
         raw.split(EOL).forEach(function (line) {
             if (!line) return;
-            const sorted = me.sort(line, detergent);
-            if (sorted.origin === origin && sorted.batch === batch) {
+            const sorted = me.sort(line, menu, detergent);
+            if (sorted) {
                 me.layoutAsTree(menu.granularity, tree, sorted.ingredients);
             }
         });
@@ -63,9 +63,11 @@ module.exports = class Chef {
     }
 
 
-    sort(chips, detergent) {
+    sort(chips, menu, detergent) {
         const chipJson = JSON.parse(chips);
         const origin = chipJson.origin;
+        const batch = chipJson.batch;
+        if (menu.origin !== '*' && origin !== menu.origin || menu.batch !== '*' && batch !== menu.batch) return null;
         if (detergent && chipJson.ingredients) {
             chipJson.ingredients.forEach(function (item) {
                 const key = item[1];
