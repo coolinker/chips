@@ -11,25 +11,36 @@ function ChipMonitor(options) {
         return;
     }
 
+    if (!Element.prototype.matches) Element.prototype.matches = Element.prototype.msMatchesSelector;
+    if (!Element.prototype.closest) Element.prototype.closest = function (selector) {
+        var el = this;
+        while (el) {
+            if (el.matches(selector)) {
+                return el;
+            }
+            el = el.parentElement;
+        }
+    }
+
     var SERIAL = parseInt(Math.random() * 100000000000000000, 10);
     var ORIGIN = options.origin ? options.origin : window.location.hostname;
     var ext = window.location.search.match(/(?:originext=)([A-Za-z0-9_-]+)/g);
     if (ext) {
-        ORIGIN += '-'+ext[0].split('=')[1];
+        ORIGIN += '-' + ext[0].split('=')[1];
     }
-    
+
     var BATCH = options.version;
     var SENDDELAY = options.sendDelay ? options.sendDelay : 1 * 60 * 1000;
     var CHIPSERVICE = options.chipService;
 
     var debugParam = window.location.search.match(/(?:chipdebug=)([A-Za-z0-9_-]+)/g);
-    var debugMode = debugParam? debugParam==='true': options.debug;
+    var debugMode = debugParam ? debugParam === 'true' : options.debug;
     var identifierParser = options.findElementIdentifier ? options.findElementIdentifier : findElementIdentifier;
     console.log("Chip monitor is up:", ORIGIN, BATCH, SENDDELAY, CHIPSERVICE)
     var actions = [];
     var timeoutObj;
 
-    document.addEventListener('click', clickHandler, true);
+    document.body.addEventListener('click', clickHandler, true);
     function clickHandler(e) {
         var key = identifierParser(e.target);
         if (!key) {
@@ -85,7 +96,7 @@ function ChipMonitor(options) {
 
     function getElementIdentifier(ele) {
         if (!ele) return;
-        
+
         if (ele.tagName === 'TEXTAREA' || ele.tagName === 'INPUT') {
             return ele.name;
         }
@@ -172,8 +183,9 @@ function ChipMonitor(options) {
     }
 
     function stopMonitor() {
-        document.removeEventListener('click', clickHandler)
+        document.body.removeEventListener('click', clickHandler, true)
         if (timeoutObj) clearTimeout(timeoutObj);
+        console.log("Stopped monitor!")
     }
 }
 
