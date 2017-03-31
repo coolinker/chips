@@ -80,13 +80,12 @@ module.exports = class Chef {
 
 
     layoutAsTree(deepmax, tree, ingredients) {
-        const footprint = {};
         const igdlen = ingredients.length;
 
         for (let i = 0; i < igdlen; i++) {
             let cursor = tree;
-            for (let deep = 0; deep < deepmax && deep + i < igdlen; deep++) {
-                const item = ingredients[i + deep];
+            for (let depth = 0; depth < deepmax && depth + i < igdlen; depth++) {
+                const item = ingredients[i + depth];
                 const igd = item[1];
                 if (!cursor.children) {
                     cursor.children = {};
@@ -115,7 +114,7 @@ module.exports = class Chef {
             return 0;
         })
 
-        //console.log("nodes:", nodes.length);
+        console.log("nodes:", nodes.length);
         const root = this.normalizeTree(rawReadyAsTree);
         return root;
     }

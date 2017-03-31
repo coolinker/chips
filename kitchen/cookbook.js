@@ -13,12 +13,12 @@ module.exports = cookbook = {
             "origin": "*",
             "batch": "*",
         },
-        "3-pieces": {
-            "granularity": 3,
+        "target-source": {
+            "granularity": 2,
             "ingredients": [0, 1],
             "exclude-ingredients":null,
-            "origin": "domain.com",
-            "batch": "###",
+            "origin": "*",
+            "batch": "*",
         }
     }
 }
