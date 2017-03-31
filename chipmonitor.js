@@ -37,10 +37,18 @@ function ChipMonitor(options) {
     var debugMode = debugParam ? debugParam === 'true' : options.debug;
     var identifierParser = options.findElementIdentifier ? options.findElementIdentifier : findElementIdentifier;
     console.log("Chip monitor is up:", ORIGIN, BATCH, SENDDELAY, CHIPSERVICE)
+
+    saveLocalStorageData();
+
     var actions = [];
     var timeoutObj;
+    window.__chipClick = clickHandler;
+    document.addEventListener('click', window.__chipClick, true);
 
-    document.body.addEventListener('click', clickHandler, true);
+    window.addEventListener("beforeunload", function (e) {
+        if (actions.length>0) writeToLocalStorage();
+    }, true);
+    
     function clickHandler(e) {
         var key = identifierParser(e.target);
         if (!key) {
@@ -55,11 +63,11 @@ function ChipMonitor(options) {
     function resetSendDelay() {
         if (timeoutObj) clearTimeout(timeoutObj);
         timeoutObj = setTimeout(function () {
-            sendToChipServer();
+            sendToChipServer(ORIGIN, BATCH, SERIAL, actions);
         }, SENDDELAY);
     };
 
-    function sendToChipServer() {
+    function sendToChipServer(org, bch, sri, acts) {
         var timestamp = new Date().getTime();
         xhr = new XMLHttpRequest();
         xhr.open("POST", CHIPSERVICE, true);
@@ -67,7 +75,7 @@ function ChipMonitor(options) {
         xhr.onreadystatechange = function () {
             if (xhr.readyState !== 4) return;
             if (xhr.status == 200) {
-                resetActions(timestamp);
+                resetActions(timestamp, acts);
             } else {
                 console.log("Chip server seems not availible. Disable ChipMonitor funciton.", xhr.status, new Date());
                 stopMonitor();
@@ -75,20 +83,41 @@ function ChipMonitor(options) {
         }
 
         var data = JSON.stringify({
+            origin: org,
+            batch: bch,
+            serial: sri,
+            ingredients: acts
+        });
+        xhr.send(data);
+        console.log("sendToChipServer", data)
+        return "test";
+    };
+
+    function saveLocalStorageData(){
+        if (localStorage.chipData) {
+            var d = JSON.parse(localStorage.chipData);
+            sendToChipServer(d.origin, d.batch, d.serial, d.ingredients);
+            localStorage.removeItem("chipData");
+        }
+    }
+
+    function writeToLocalStorage(){
+        var data = JSON.stringify({
             origin: ORIGIN,
             batch: BATCH,
             serial: SERIAL,
             ingredients: actions
         });
-        xhr.send(data);
-    };
 
-    function resetActions(timestamp) {
+        localStorage.chipData = data;
+    }
+
+    function resetActions(timestamp, acts) {
         var keep = [];
-        for (var i = actions.length - 1; i > 0 && i < actions.length; i--) {
-            var time = actions[i][0];
+        for (var i = acts.length - 1; i > 0 && i < acts.length; i--) {
+            var time = acts[i][0];
             if (timestamp > time) {
-                actions = actions.slice(i);
+                acts = acts.slice(i);
                 return;
             }
         }
@@ -183,7 +212,7 @@ function ChipMonitor(options) {
     }
 
     function stopMonitor() {
-        document.body.removeEventListener('click', clickHandler, true)
+        document.removeEventListener('click', window.__chipClick, true)
         if (timeoutObj) clearTimeout(timeoutObj);
         console.log("Stopped monitor!")
     }
