@@ -23,7 +23,7 @@
         stroke-width: 1.5px;
     }
 </style>
-<svg width="1500" height="1000"></svg>
+<svg width="1500" height="2000"></svg>
 <script src="//d3js.org/d3.v4.min.js"></script>
 <script>
     var origin = window.location.search.match(/(?:origin=)(\*|[A-Za-z0-9._-]+)/g);
@@ -38,7 +38,7 @@
 
     var tree = d3.cluster()
         .size([height, width - 300]);
-        
+
     var stratify = d3.stratify()
         .id(function (d) {
             return d.id;
@@ -49,33 +49,36 @@
 
     d3.json("/kitchen", function (err, data) {
         if (err) throw err;
-        
+
         data = data.children;
         data.sort(function (d0, d1) {
             return d1.count - d0.count;
         });
-        debugger
-        data = data.slice(1, 2);
+
+        data = data.slice(0, 20);
 
         var maxcount = data[0].count;
         var nodes = [];
-        var rootnode = { key: 'Root', count: 1, depth: 0, children: data};
-        var toNodeArr = function (d, p, arr){
-            d.parentId = p? p.id: null;
-            d.depth = p? p.depth+1: 0;
-            d.id = (p?p.id:'') + d.key+ "-level-" + d.depth;
+        var rootnode = { key: 'Root', count: 1, depth: 0, children: data };
+        var toNodeArr = function (d, p, arr) {
+            d.parentId = p ? p.id : null;
+            d.depth = p ? p.depth + 1 : 0;
+            d.id = (p ? p.id : '') + d.key + "-level-" + d.depth;
             arr.push(d);
             if (d.children) {
-                for (var i=0; i<d.children.length; i++) {
+                for (var i = 0; i < d.children.length; i++) {
                     var cn = d.children[i];
-                    if (cn.count>d.count/10) toNodeArr(cn, d, arr);
+                    if (cn.count > d.count / 10) toNodeArr(cn, d, arr);
                 }
             }
         }
 
         toNodeArr(rootnode, null, nodes);
+        //nodes.sort(function (a, b) { return (a.count - b.count) });
+
         var root = stratify(nodes)
-            .sort(function (a, b) { return (a.count - b.count) });
+            .sort(function (a, b) { 
+                return (b.data.count - a.data.count) });
 
         tree(root);
 
@@ -88,8 +91,9 @@
                     + "C" + (d.parent.y + 100) + "," + d.x
                     + " " + (d.parent.y + 100) + "," + d.parent.x
                     + " " + d.parent.y + "," + d.parent.x;
-            }).style("stroke-width", function (d) { 
-                return    Math.round(10*d.data.count/maxcount);});
+            }).style("stroke-width", function (d) {
+                return Math.round(20 * d.data.count / maxcount);
+            });
 
 
         var node = g.selectAll(".node")
@@ -99,11 +103,12 @@
             .attr("transform", function (d) { return "translate(" + d.y + "," + d.x + ")"; })
 
         node.append("circle")
-            .attr("r", function(d){
-                var r = d.data.count/maxcount;
-                return Math.max(2.5, Math.round(r*20))
-            }).style("fill", function (d) { 
-                return color(d.data.key);});
+            .attr("r", function (d) {
+                var r = d.data.count / maxcount;
+                return Math.max(2.5, Math.round(r * 30))
+            }).style("fill", function (d) {
+                return color(d.data.key);            
+});
 
         node.append("text")
             .attr("dy", 3)
