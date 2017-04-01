@@ -11,8 +11,13 @@
             "rui-core-main-navigation-tab,automation-app-mail-menu-Mail": "navigation.mail.tab",
             "rui-core-main-navigation-tab,automation-app-contacts-menu": "navigation.contacts.tab",
             "rui-core-main-navigation-tab,automation-app-contacts-menu-Contacts": "navigation.contacts.tab",
+            "rui-core-main-navigation-tab,automation-app-calendar-menu-Calendar": "navigation.calendar.tab",
+
             
             "********** settings *********": "",
+            "rui-settings-detail-addbtn,automation-settings-signature-addbtn-Add": "settings.signature.add.button",
+            "rui-settings-detail-savebtn,automation-settings-savebtn-Save": "settings.save.button",
+            "rui-settings-detail-savebtn,automation-settings-win-savebtn-Save": "settings.save.button",
             "rui-settings-basewindow-field-item": "settings.field.item",
             "rui-settings-list-desc,automation-settings-list-desc": "settings.list.listitem",
             "automation-settings-languagetime-timezone-field": "setting.timezone.field",
@@ -58,8 +63,9 @@
 
             "********** calendar *********":"",
             "ow-icon-calSubTbar-prev": "calendar.toolbar.prev.button",
-
+            
             "********** others *********":"",
+            "uncaught-identifier-ow-autoDirx-header-textx-window-header-textx-window-header-text-default": "window.header.bar",
             "rui-tool,ow-icon-tool-close,automation-icon-tool-close": "toolbar.close.button",
             "x-menu-item-link,x-menu-item-indent-no-separator-2": "menu.item.2",
             "x-menu-item-text-5": "menu.item.5",
