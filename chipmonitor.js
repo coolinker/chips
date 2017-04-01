@@ -34,6 +34,7 @@ function ChipMonitor(options) {
     var CHIPSERVICE = options.chipService;
 
     var debugParam = window.location.search.match(/(?:chipdebug=)([A-Za-z0-9_-]+)/g);
+    debugParam = debugParam ? debugParam[0].split('=')[1] : null;
     var debugMode = debugParam ? debugParam === 'true' : options.debug;
     var identifierParser = options.findElementIdentifier ? options.findElementIdentifier : findElementIdentifier;
     console.log("Chip monitor is up:", ORIGIN, BATCH, SENDDELAY, CHIPSERVICE)
