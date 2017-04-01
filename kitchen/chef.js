@@ -70,7 +70,7 @@ module.exports = class Chef {
         if (menu.origin !== '*' && origin !== menu.origin || menu.batch !== '*' && batch !== menu.batch) return null;
         if (detergent && chipJson.ingredients) {
             chipJson.ingredients.forEach(function (item) {
-                const key = item[1];
+                const key = item[1].replace(/ /g, '');
                 item[1] = (detergent[key] ? detergent[key] : key);
 
             });
@@ -92,7 +92,7 @@ module.exports = class Chef {
                 }
                 const children = cursor.children;
                 if (!children[igd]) {
-                    children[igd] = { count: 0 };
+                    children[igd] = { count: 0, key: igd };
                 }
 
                 children[igd].count++;

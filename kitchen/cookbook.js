@@ -14,7 +14,7 @@ module.exports = cookbook = {
             "batch": "*",
         },
         "target-source": {
-            "granularity": 2,
+            "granularity": 3,
             "ingredients": [0, 1],
             "exclude-ingredients":null,
             "origin": "*",
