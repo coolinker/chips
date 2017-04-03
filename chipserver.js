@@ -123,15 +123,18 @@ function handleKichenRequest(req, res) {
 }
 
 function cook(info) {
-    const menu = Cookbook.dishes[info.dish]
+    
+    const menu = Cookbook.dishes[info.dish];
+    const tempmenu = {};
     for (let att in menu) {
+        tempmenu[att] = menu[att];
         if (info[att]) {
-            menu[att] = info[att]
+            tempmenu[att] = info[att]
         }
     }
 
     const cellarRaw = fs.readFileSync(CELLAR_PATH, 'utf-8');
-    const toserve = (new Chef()).cook(menu, cellarRaw);
+    const toserve = (new Chef()).cook(tempmenu, cellarRaw);
 
     return toserve;
 }
