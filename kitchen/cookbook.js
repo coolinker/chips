@@ -10,15 +10,21 @@ module.exports = cookbook = {
             "granularity": 1,
             "ingredients": [0, 1],
             "exclude-ingredients":null,
-            "origin": "*",
+            "origins": "*",
             "batch": "*",
         },
-        "target-source": {
+        "treelike": {
             "granularity": 3,
-            "ingredients": [0, 1],
-            "exclude-ingredients":null,
-            "origin": "*",
+            "rootkey":null,
+            "origins": "*",
+            "batch": "*",
+        },
+        "treediff": {
+            "granularity": 3,
+            "rootkey":null,
+            "origins": ['172.26.204.232-uia','172.26.204.233'],
             "batch": "*",
         }
+
     }
 }

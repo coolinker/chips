@@ -46,7 +46,7 @@ module.exports = class Chef {
     }
 
     prepareRaw(menu, raw) {
-        const tree = { count: 1 };
+        const tree = { count: 0 };
         const origin = menu.origin;
         const batch = menu.batch;
         const detergent = this.blendDetergent(menu);
@@ -55,7 +55,7 @@ module.exports = class Chef {
             if (!line) return;
             const sorted = me.sort(line, menu, detergent);
             if (sorted) {
-                me.layoutAsTree(menu.granularity, tree, sorted.ingredients);
+                me.layToTree(tree, sorted, menu);
             }
         });
 
@@ -67,7 +67,7 @@ module.exports = class Chef {
         const chipJson = JSON.parse(chips);
         const origin = chipJson.origin;
         const batch = chipJson.batch;
-        if (menu.origin !== '*' && origin !== menu.origin || menu.batch !== '*' && batch !== menu.batch) return null;
+        if (menu.origins !== '*' && menu.origins.indexOf(origin) < 0 || menu.batch !== '*' && batch !== menu.batch) return null;
         if (detergent && chipJson.ingredients) {
             chipJson.ingredients.forEach(function (item) {
                 const key = item[1].replace(/ /g, '');
@@ -78,50 +78,73 @@ module.exports = class Chef {
         return chipJson;
     }
 
-
-    layoutAsTree(deepmax, tree, ingredients) {
+    layToTree(tree, sorted, menu) {
+        const origin = sorted.origin;
+        const batch = sorted.batch;
+        const ingredients = sorted.ingredients;
+        const rootkey = menu.rootkey;
+        const deepmax = menu.granularity;
         const igdlen = ingredients.length;
-
+        tree.key = rootkey;
         for (let i = 0; i < igdlen; i++) {
+            if (rootkey && ingredients[i][1] !== rootkey) continue;
             let cursor = tree;
-            for (let depth = 0; depth < deepmax && depth + i < igdlen; depth++) {
+            cursor.count++;
+            if (cursor['origincounts'] === undefined) {
+                cursor['origincounts'] = {};
+            }
+            if (cursor['origincounts'][origin] === undefined) {
+                cursor['origincounts'][origin] = 0;
+            }
+            cursor['origincounts'][origin]++;
+
+
+            for (let depth = 1; depth < deepmax && depth + i < igdlen; depth++) {
                 const item = ingredients[i + depth];
                 const igd = item[1];
                 if (!cursor.children) {
                     cursor.children = {};
                 }
                 const children = cursor.children;
-                if (!children[igd]) {
-                    children[igd] = { count: 0, key: igd };
+                if (children[igd] === undefined) {
+                    children[igd] = { count: 0, key: igd, origincounts: {} };
                 }
-
+                if (children[igd]['origincounts'][origin] === undefined) {
+                    children[igd]['origincounts'][origin] = 0;
+                }
                 children[igd].count++;
+                children[igd]['origincounts'][origin]++;
                 cursor = children[igd];
             }
         }
 
     }
 
+
     cook(menu, raw) {
         const rawReadyAsTree = this.prepareRaw(menu, raw);
         const depth = menu.granularity;
-        const nodes = [];
-        this.getTreeNodes(rawReadyAsTree, depth, nodes);
-        nodes.sort(function (n0, n1) {
-            if (n0.count > n1.count) return -1;
-            else if (n0 < n1.count) return 1;
+        // const nodes = [];
+        // this.getTreeNodes(rawReadyAsTree, depth, nodes);
+        // nodes.sort(function (n0, n1) {
+        //     if (n0.count > n1.count) return -1;
+        //     else if (n0 < n1.count) return 1;
 
-            return 0;
-        })
+        //     return 0;
+        // })
 
-        console.log("nodes:", nodes.length);
+        // console.log("nodes:", nodes.length);
         const root = this.normalizeTree(rawReadyAsTree);
         return root;
     }
 
     normalizeTree(treeWithMap) {
         const root = {};
-        root.count = treeWithMap.count;
+        for (let att in treeWithMap) {
+            if (att !== 'children')
+                root[att] = treeWithMap[att];
+        }
+
         if (treeWithMap.children) {
             const children = treeWithMap.children;
             root.children = [];
