@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+    .node {
+        cursor: pointer;
+    }
+    
+    .node:hover {
+        stroke: #666;
+        stroke-width: 1.5px;
+    }
+
+    
+    .label {
+        font: 12px "Helvetica Neue", Helvetica, Arial, sans-serif;
+        font-weight:bold;
+        text-anchor: middle;
+        fill: #222;
+    }
+    
+    .label,
+    .node--root,
+    .node--leaf {
+        pointer-events: none;
+    }
+</style>
+<svg width="960" height="960"></svg>
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+
+<script>
+    var origin = window.location.search.match(/(?:[^A-Za-z0-9._-]origin=)(\*|[A-Za-z0-9._-]+)/g);
+    origin = origin ? [origin[0].split('=')[1]] : null;
+    var difforigin = window.location.search.match(/(?:difforigin=)(\*|[A-Za-z0-9._-]+)/g);
+    difforigin = difforigin ? difforigin[0].split('=')[1] : null;
+    var batch = window.location.search.match(/(?:batch=)(\*|[A-Za-z0-9._-]+)/g);
+    batch = batch ? batch[0].split('=')[1] : null;
+    var color = d3.scaleOrdinal(d3.schemeCategory20c);
+    var svg = d3.select("svg"),
+        margin = 20,
+        diameter = +svg.attr("width"),
+        g = svg.append("g").attr("transform", "translate(" + diameter / 2 + "," + diameter / 2 + ")");
+
+    var color = d3.scaleLinear()
+        .domain([-1, 30])
+        .range(["hsl(0,100%,100%)", "hsl(0,20%,20%)"])
+        .interpolate(d3.interpolateHcl);
+
+    var morecolor = d3.scaleLinear()
+        .domain([-1, 30])
+        .range(["rgb(80%,100%,80%)", "rgb(10%,80%,10%)"])
+        .interpolate(d3.interpolateHcl);
+    var lesscolor = d3.scaleLinear()
+        .domain([-1, 30])
+        .range(["rgb(100%,80%,80%)", "rgb(80%,10%,10%)"])
+        .interpolate(d3.interpolateHcl);
+
+
+    var pack = d3.pack()
+        .size([diameter - margin, diameter - margin])
+        .padding(2);
+
+    d3.json("/kitchen", function (err, root) {
+        if (err) throw err;
+        root = d3.hierarchy(root)
+            .sum(function (d) { return d.count; })
+            .sort(function (a, b) { return b.value - a.value; });
+
+        var focus = root,
+            nodes = pack(root).descendants(),
+            view;
+        var circle = g.selectAll("circle")
+            .data(nodes)
+            .enter().append("circle")
+            .attr("class", function (d) { return d.parent ? d.children ? "node" : "node node--leaf" : "node node--root"; })
+            .style("fill", function (d) { 
+                if (!d.data.origincounts[difforigin]) {
+                    return lesscolor(d.depth);
+                } else {
+                    var more = true;
+                    for (var att in d.data.origincounts) {
+                        if (att !== difforigin) more = false;
+                    }
+                    if (more) return morecolor(d.depth)
+                }
+
+
+                return color(d.depth); })
+            .on("click", function (d) { if (focus !== d) zoom(d), d3.event.stopPropagation(); });
+        
+        svg.selectAll(".node")
+            .append("title")
+            .text(function (d) { 
+                var t = d.data.key + ' - ' + d.data.count;
+                var pn = d;
+                while(pn=pn.parent) {
+                    t = pn.data.key + ' - ' + pn.data.count +'\n' + t;
+                }
+                return t });
+
+
+        var text = g.selectAll("text")
+            .data(nodes)
+            .enter().append("text")
+            .attr("class", "label")
+            .style("fill-opacity", function (d) { return d.parent === root ? 1 : 0; })
+            .style("display", function (d) { return d.parent === root ? "inline" : "none"; })
+            .text(function (d) { return d.data.key; });
+
+        var node = g.selectAll("circle,text");
+
+        svg
+        // .style("background", color(-1))
+            .on("click", function () { zoom(root); });
+
+        zoomTo([root.x, root.y, root.r * 2 + margin]);
+
+        function zoom(d) {
+            var focus0 = focus; focus = d;
+
+            var transition = d3.transition()
+                .duration(d3.event.altKey ? 7500 : 750)
+                .tween("zoom", function (d) {
+                    var i = d3.interpolateZoom(view, [focus.x, focus.y, focus.r * 2 + margin]);
+                    return function (t) { zoomTo(i(t)); };
+                });
+
+            transition.selectAll("text")
+                .filter(function (d) { return d.parent === focus || this.style.display === "inline"; })
+                .style("fill-opacity", function (d) { return d.parent === focus ? 1 : 0; })
+                .on("start", function (d) { if (d.parent === focus) this.style.display = "inline"; })
+                .on("end", function (d) { if (d.parent !== focus) this.style.display = "none"; });
+        }
+
+        function zoomTo(v) {
+            var k = diameter / v[2]; view = v;
+            node.attr("transform", function (d) { return "translate(" + (d.x - v[0]) * k + "," + (d.y - v[1]) * k + ")"; });
+            circle.attr("r", function (d) { return d.r * k; });
+        }
+    }).header("Content-Type", "application/json")
+        .send("POST", JSON.stringify({ 'dish': 'treelike', 'rootkey': 'login.button', 'granularity': '20', 'batch': batch, 'origins': origin }));
+
+</script>
