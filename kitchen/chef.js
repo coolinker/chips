@@ -55,7 +55,7 @@ module.exports = class Chef {
             if (!line) return;
             const sorted = me.sort(line, menu, detergent);
             if (sorted) {
-                me.layToTree(tree, sorted, menu);
+                me[menu['layout']](tree, sorted, menu);
             }
         });
 
@@ -78,17 +78,70 @@ module.exports = class Chef {
         return chipJson;
     }
 
-    layToTree(tree, sorted, menu) {
+    tsTree(root, sorted, menu) {
+        const origin = sorted.origin;
+        const batch = sorted.batch;
+        const ingredients = sorted.ingredients;
+        const deepmax = menu.granularity;
+        const igdlen = ingredients.length;
+        const sourceKeys = menu.source;
+        const targetKeys = menu.target;
+
+        root.key = 'root';
+        for (let i = 0; i < igdlen; i++) {
+            const srckey = ingredients[i][1];
+            if (sourceKeys.indexOf(srckey) < 0) continue;
+            let j=i+1;
+            for (; j<igdlen; j++) {
+                if (sourceKeys.indexOf(ingredients[j][1]) >=0 ) {
+                    console.log("ERROR source key invalid", ingredients);
+                }
+                if (targetKeys.indexOf(ingredients[j][1]) >=0 ) break;
+            }
+            if (j === igdlen) {
+                return;
+            }
+
+            let cursor = root;
+            let depth = 0;
+            for (; depth < deepmax && depth + i < igdlen; depth++) {
+                const item = ingredients[i + depth];
+                const igd = item[1];
+                if (!cursor.children) {
+                    cursor.children = {};
+                }
+                const children = cursor.children;
+                if (children[igd] === undefined) {
+                    children[igd] = { count: 0, key: igd, origincounts: {} };
+                }
+                if (children[igd]['origincounts'][origin] === undefined) {
+                    children[igd]['origincounts'][origin] = 0;
+                }
+                children[igd].count++;
+                children[igd]['origincounts'][origin]++;
+                cursor = children[igd];
+
+                if (targetKeys.indexOf(igd) >= 0) {
+                    break;
+                }
+
+            }
+            i += depth;
+
+        }
+    }
+
+    tree(root, sorted, menu) {
         const origin = sorted.origin;
         const batch = sorted.batch;
         const ingredients = sorted.ingredients;
         const rootkey = menu.rootkey;
         const deepmax = menu.granularity;
         const igdlen = ingredients.length;
-        tree.key = rootkey;
+        root.key = rootkey;
         for (let i = 0; i < igdlen; i++) {
             if (rootkey && ingredients[i][1] !== rootkey) continue;
-            let cursor = tree;
+            let cursor = root;
             cursor.count++;
             if (cursor['origincounts'] === undefined) {
                 cursor['origincounts'] = {};
@@ -123,7 +176,7 @@ module.exports = class Chef {
 
     cook(menu, raw) {
         const rawReadyAsTree = this.prepareRaw(menu, raw);
-        const depth = menu.granularity;
+        //const depth = menu.granularity;
         // const nodes = [];
         // this.getTreeNodes(rawReadyAsTree, depth, nodes);
         // nodes.sort(function (n0, n1) {

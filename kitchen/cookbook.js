@@ -14,15 +14,18 @@ module.exports = cookbook = {
             "batch": "*",
         },
         "treelike": {
+            "layout": 'tree',
             "granularity": 3,
             "rootkey":null,
             "origins": "*",
             "batch": "*",
         },
-        "treediff": {
-            "granularity": 3,
-            "rootkey":null,
-            "origins": ['172.26.204.232-uia','172.26.204.233'],
+        "targetSource": {
+            "source": ['mail.toolbar.compose.button' ],
+            "target": ['mail.compose.send.button', 'mail.compose.discard.button', 'toolbar.close.button'],
+            "layout": 'tsTree',
+            "granularity": 20,
+            "origins": "*",
             "batch": "*",
         }
 
