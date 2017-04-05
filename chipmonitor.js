@@ -126,11 +126,6 @@ function ChipMonitor(options) {
 
     function getElementIdentifier(ele) {
         if (!ele) return;
-
-        if (ele.tagName === 'TEXTAREA' || ele.tagName === 'INPUT') {
-            return ele.name;
-        }
-
         var regex = /(^(rui|ow(?!-autoDir)|cal|automation)| (rui|ow(?!-autoDir)|cal|automation))[^ ]*/g;
         var cls = ele.className;
         var selected;
@@ -196,11 +191,15 @@ function ChipMonitor(options) {
             }
         }
 
-
+        
         var closest = ele.closest(selector);
         if (closest) {
             identifier = getElementIdentifier(closest);
             if (identifier) return identifier;
+        }
+        
+        if (ele.tagName === 'TEXTAREA' || ele.tagName === 'INPUT') {
+            return ele.name;
         }
 
         return 'uncaught-identifier-' + ele.className;
