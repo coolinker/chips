@@ -78,9 +78,50 @@
             root.x0 = height / 2;
             root.y0 = 0;
 
+            markDiffOrigin(root);
             // Collapse after the second level
             root.children.forEach(collapse);
 
+            function markDiffOrigin(node) {
+                
+                var diffsArr = [false, false];
+                if (!node.data.origincounts[difforigin]) {
+                    diffsArr[0] = true;
+                } else {
+                    var more = true;
+                    for (var att in node.data.origincounts) {
+                        if (att !== difforigin) more = false;
+                    }
+                    diffsArr[1] = more;
+                }
+                node.nodediffs = diffsArr.concat();
+                if (node.children) {
+                    node.children.forEach(function (item) {
+                        if (!diffsArr[0] && !item.data.origincounts[difforigin]) {
+                            diffsArr[0] = true;
+                        } else if (!diffsArr[1]) {
+                            var more = true;
+                            
+                            for (var att in item.data.origincounts) {
+                                if (att !== difforigin){
+                                    more = false;
+                                }
+                            }
+                            
+                            diffsArr[1] = more;
+                        }
+
+                        markDiffOrigin(item);
+                        if (item.diffs[0] && !diffsArr[0]) diffsArr[0] = true;
+                        if (item.diffs[1] && !diffsArr[1]) diffsArr[1] = true;
+
+                    });
+                }
+                
+                node.diffs = diffsArr;
+            }
+
+            debugger;
             update(root);
             // Collapse the node and all it's children
             function collapse(d) {
@@ -129,7 +170,12 @@
                         return color(d.data.key);
                     })
                     .style("stroke-width", function (d) {
-                        return d._children ? 2 : 0;
+                        return (d.nodediffs[0] || d.nodediffs[1]) ? 0 : ((d.diffs[0] || d.diffs[1]) ? 1.5: (!d.children && !d._children ? 1.5 : 0));
+                    })
+                    .style("stroke", function (d) {
+                        if (!d.children && !d._children) return '#555';
+                        if (d.nodediffs[0] || d.nodediffs[1]) return null;
+                        return (d.diffs[0] && d.diffs[1]) ? '#dd0' : (d.diffs[0] ? '#a00' : (d.diffs[1]? '#0a0': null));
                     })
 
                 // Add labels for the nodes
@@ -198,18 +244,19 @@
                         var o = { x: source.x0, y: source.y0 }
                         return diagonal(o, o)
                     }).style("stroke-width", function (d) {
-                        return Math.round(20 * d.data.count / maxcount);
+                        return Math.max(0.5,Math.round(20 * d.data.count / maxcount));
                     }).style("stroke", function (d) {
                         if (!difforigin) return "#ccc";
-                        if (!d.data.origincounts[difforigin]) {
-                            return "#a00";
-                        } else {
-                            var more = true;
-                            for (var att in d.data.origincounts) {
-                                if (att !== difforigin) more = false;
-                            }
-                            if (more) return "#0a0";
-                        }
+                        return d.nodediffs[0] ? '#a00' : (d.nodediffs[1]?'#0a0': '#ccc');
+                        // if (!d.data.origincounts[difforigin]) {
+                        //     return "#a00";
+                        // } else {
+                        //     var more = true;
+                        //     for (var att in d.data.origincounts) {
+                        //         if (att !== difforigin) more = false;
+                        //     }
+                        //     if (more) return "#0a0";
+                        // }
 
 
                         return "#ccc";
