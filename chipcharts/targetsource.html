@@ -16,14 +16,18 @@
     <svg width="1280" height="960"></svg>
     <script src="https://d3js.org/d3.v4.min.js"></script>
     <script>
-        var origin = window.location.search.match(/(?:origin=)(\*|[A-Za-z0-9._-]+)/g);
+        var origin = window.location.search.match(/(?:[^A-Za-z0-9._-]origin=)(\*|[A-Za-z0-9._-]+)/g);
         origin = origin ? origin[0].split('=')[1] : null;
+
+        var difforigin = window.location.search.match(/(?:difforigin=)(\*|[A-Za-z0-9._-]+)/g);
+        difforigin = difforigin ? difforigin[0].split('=')[1] : null;
         var batch = window.location.search.match(/(?:batch=)(\*|[A-Za-z0-9._-]+)/g);
         batch = batch ? batch[0].split('=')[1] : null;
+        var maxcount = 0;
 
         var color = d3.scaleLinear()
-            .domain([-1, 30])
-            .range(["rgb(80%,80%,80%)", "rgb(10%,10%,10%)"])
+            .domain([0, 30])
+            .range(["rgb(90%,90%,90%)", "rgb(40%,40%,40%)"])
             .interpolate(d3.interpolateHcl);
 
         var morecolor = d3.scaleLinear()
@@ -39,7 +43,9 @@
             width = +svg.attr("width"),
             height = +svg.attr("height"),
             node,
-            link;
+            link,
+            text,
+            circle;
 
         var simulation = d3.forceSimulation()
             .force("link", d3.forceLink().id(function (d, i) {
@@ -53,11 +59,16 @@
             .force("charge", function (d) {
                 return -100
             })
+            .force("collide", d3.forceCollide(function (d) {
+                var r = Math.sqrt(Math.sqrt(d.count / (maxcount)));
+                r = Math.max(2.5, Math.round(r * 30));
+                return 2 * r
+            }).iterations(16))
             .force("center", d3.forceCenter(width / 2, height / 2));
+        var links = [], nodes = [], nodesMap = {}, linksMap = {};
 
         d3.json("/kitchen", function (err, data) {
-            var links = [], nodes = [], nodesMap = {};
-            var maxcount = 0;
+
             var leafcount = 0;
             function treeToLinksNodes(treeNodes, isroot) {
                 treeNodes.forEach(function (item) {
@@ -66,7 +77,8 @@
                     // if (item.count<1) return;
                     if (!nodesMap[itemkey]) {
                         maxcount = Math.max(maxcount, item.count);
-                        nodes.push(nodesMap[itemkey] = { id: itemkey, name: itemkey, count: item.count, isLeaf: !item.children, isRoot: isroot });
+
+                        nodes.push(nodesMap[itemkey] = { id: itemkey, name: itemkey, count: item.count, isLeaf: !item.children, isRoot: isroot, origincounts: item.origincounts });
                         if (isroot) {
                             nodesMap[itemkey].fx = 100;
                             nodesMap[itemkey].fy = 400;
@@ -80,6 +92,12 @@
                         }
 
                     } else {
+                        for (var att in item.origincounts) {
+                            if (!nodesMap[itemkey].origincounts[att]) {
+                                nodesMap[itemkey].origincounts[att] = 0;
+                            }
+                            nodesMap[itemkey].origincounts[att] += item.origincounts[att];
+                        }
                         nodesMap[itemkey].count += item.count;
                     }
 
@@ -87,7 +105,21 @@
                         item.children.forEach(function (citem) {
                             // if (citem.key === "mail.compose.to.input") debugger;
                             // if (citem.count>0)
-                            links.push({ source: itemkey, target: citem.key, tgtcount: citem.count, count: item.count })
+                            var linkkey = itemkey + '__link__' + citem.key;
+                            if (linksMap[linkkey]) {
+                                for (var att in citem.origincounts) {
+                                    if (!linksMap[linkkey].origincounts[att]) {
+                                        linksMap[linkkey].origincounts[att] = 0;
+                                    }
+                                    linksMap[linkkey].origincounts[att] += item.origincounts[att];
+                                }
+                            } else {
+                                var l;
+                                links.push(l = { source: itemkey, target: citem.key, tgtcount: citem.count, count: item.count, origincounts: item.origincounts })
+                                linksMap[linkkey] = l;
+                            }
+
+
                         });
                         treeToLinksNodes(item.children, false);
                     }
@@ -98,31 +130,86 @@
             }
 
             treeToLinksNodes(data.children, true);
+
             links.forEach(function (link) {
+                var orgindiff = 0;
+                if (difforigin) {
+                    if (!link.origincounts[difforigin]) {
+                        orgindiff = -1;
+                    } else {
+                        var more = true;
+                        for (var att in link.origincounts) {
+                            if (att !== difforigin) more = false;
+                        }
+                        if (more) orgindiff = 1;
+                    }
+                }
+                link.origindiff = orgindiff;
                 link.targetNode = nodesMap[link.target];
                 link.sourceNode = nodesMap[link.source];
 
             });
+
+            nodes.forEach(function (nd) {
+                var orgindiff = 0;
+                if (difforigin) {
+                    if (!nd.origincounts[difforigin]) {
+                        orgindiff = -1;
+                    } else {
+                        var more = true;
+                        for (var att in nd.origincounts) {
+                            if (att !== difforigin) more = false;
+                        }
+                        if (more) {
+                            orgindiff = 1;
+                        }
+                    }
+                }
+                nd.origindiff = orgindiff;
+            });
+
+
             update(links, nodes, maxcount)
         }).header("Content-Type", "application/json")
             .send("POST", JSON.stringify({ 'dish': 'targetSource', 'rootkey': 'login.button', 'granularity': '20', 'batch': batch, 'origins': origin }));
 
         function update(links, nodes, maxcount) {
+
             link = svg.selectAll(".link")
                 .data(links, function (d) {
                     return d.target.id;
                 })
+
+
+            svg.append("svg:defs").selectAll("marker")
+                .data(["end"])      // Different link/path types can be defined here
+                .enter().append("svg:marker")    // This section adds in the arrows
+                .attr("id", String)
+                .attr("viewBox", "0 -5 10 10")
+                .attr("refX", 0)
+                .attr("refY", 0)
+                .attr("markerWidth", 6)
+                .attr("markerHeight", 6)
+                .attr("orient", "auto")
+                .append("svg:path")
+                .attr("d", "M0,-5L10,0L0,5")
+                .style("fill", function (d) {
+                    return '#ccc';
+                });;
 
             link = link.enter()
                 .append("line")
                 .attr("class", "link")
                 .attr("stroke-width", function (d) {
                     return 1
+                }).attr("marker-end", "url(#end)")
+                .style("stroke", function (d) {
+                    var c = Math.min(d.sourceNode.count, d.targetNode.count) * 30 / maxcount;
+                    return d.origindiff === 0 ? color(c) : (d.origindiff > 0 ? morecolor(c) : lesscolor(c));
                 });
 
             node = svg.selectAll(".node")
                 .data(nodes, function (d) {
-                    debugger;
                     return d.id;
                 })
 
@@ -135,30 +222,51 @@
                     .on("drag", dragged)
                     .on("end", dragended));
 
-            node.append("circle")
-                .attr("r", function (d) {
+            text = node.append("text")
+                .attr("dy", function (d) {
                     var r = Math.sqrt(Math.sqrt(d.count / (maxcount)));
-                    return Math.max(2.5, Math.round(r * 30));
-                }).style("fill", function (d) {
-                    if (d.isRoot) return '#0a0';
-                    if (d.isLeaf) return '#c00';
-                    return color(d.count*30 / maxcount)
-                });
-
-            node.append("title")
-                .text(function (d) { return d.name + '\n' + d.count; });
-
-            node.append("text")
-                .attr("dy", 0)
+                    return 10 + Math.max(1.5, Math.round(r * 30));
+                })
+                .attr("dx", function (d) {
+                    var r = Math.sqrt(Math.sqrt(d.count / (maxcount)));
+                    return -Math.max(1.5, Math.round(r * 30));
+                })
                 .style("fill", function (d) {
                     if (d.isRoot) return '#666';
                     if (d.isLeaf) return '#666';
                     return '#aaa'
                 })
-                .text(function (d) {
-                    // return d.name;
-                    return (d.isLeaf || d.isRoot) ? d.name : '';
+                .text(updateText);
+
+            circle = node.append("circle")
+                .attr("r", function (d) {
+                    var r = Math.sqrt(Math.sqrt(d.count / (maxcount)));
+                    return Math.max(1.5, Math.round(r * 30));
+                }).style("fill", function (d) {
+                    if (d.isRoot) return '#88f';
+                    if (d.isLeaf) return '#000';
+
+                    var c = d.count * 30 / maxcount;
+                    return d.origindiff === 0 ? color(c) : (d.origindiff > 0 ? morecolor(c) : lesscolor(c));
+                }).style("stroke-width", strokeWidth)
+                .style("stroke", stroke)
+                .on('mouseover', function (d) {
+                    handleMouseoverNode(d);
+                    text.text(updateText);
+                    circle.style("stroke-width", strokeWidth)
+                    circle.style("stroke", stroke)
+                })
+                .on('mouseout', function (d) {
+                    handleMouseoutNode(d);
+                    //text.text(updateText);
+                    //circle.style("stroke-width", strokeWidth)
+                    //circle.style("stroke", stroke)
                 });
+
+            // node.append("title")
+            //     .text(function (d) { return d.name + '\n' + d.count; });
+
+
 
             simulation
                 .nodes(nodes)
@@ -168,22 +276,73 @@
                 .links(links);
         }
 
-        function click(d) {
-            nodes.push({ id: index, name: "server " + index });
-            links.push({ source: d.id, target: index });
-            index++;
-            update();
+        function updateText(d) {
+            // return d.name;
+            return (d.selected || d.isLeaf || d.isRoot) ? d.name : '';
+        }
+        function stroke(d) {
+            //if (d.isRoot) return '#88f';
+            //if (d.isLeaf) return '#000';
+
+            var c = d.count * 30 / maxcount;
+            return '#f00'//d.origindiff === 0 ? color(c) : (d.origindiff > 0 ? morecolor(c) : lesscolor(c));
+        }
+        function strokeWidth(d) {
+            if (d.mouseoverNode) return 3;
+            if (d.selected) return 1.5;
+
+            // if (d.isRoot) return 0;
+            // if (d.isLeaf) return 0;
+            // if (!d.selected) return 0;
+
+            return 0;//d.origindiff === 0 ? color(c) : (d.origindiff > 0 ? morecolor(c) : lesscolor(c));
+        }
+
+        function linkpos(d) {
+
+            var r1 = Math.sqrt(Math.sqrt(d.source.count / maxcount));
+            r1 = Math.max(2.5, Math.round(r1 * 30));
+
+            var r2 = Math.sqrt(Math.sqrt(d.target.count / maxcount));
+            r2 = 5 + Math.max(2.5, Math.round(r2 * 30));
+
+            var dx = d.target.x - d.source.x;
+            var dy = d.target.y - d.source.y;
+            dr = Math.sqrt(dx * dx + dy * dy);
+
+            if (dr === 0) return { x1: 0, y1: 0, x2: 0, y2: 0 }
+
+            var x1 = d.source.x + dx * r1 / dr;
+            var y1 = d.source.y + dy * r1 / dr;
+            var x2 = d.target.x - dx * r2 / dr;
+            var y2 = d.target.y - dy * r2 / dr;
+
+            return { x1: x1, y1: y1, x2: x2, y2: y2 };
         }
 
         function ticked() {
+
             link
-                .attr("x1", function (d) { return d.source.x; })
-                .attr("y1", function (d) { return d.source.y; })
-                .attr("x2", function (d) { return d.target.x; })
-                .attr("y2", function (d) { return d.target.y; });
+                .attr("x1", function (d) {
+                    var x1 = linkpos(d).x1;
+                    return x1
+                })
+                .attr("y1", function (d) {
+                    var y1 = linkpos(d).y1;
+                    return y1
+                })
+                .attr("x2", function (d) {
+                    var x2 = linkpos(d).x2;
+                    return x2
+                })
+                .attr("y2", function (d) {
+                    var y2 = linkpos(d).y2;
+                    return y2
+                });
 
             node
                 .attr("transform", function (d) { return "translate(" + d.x + ", " + d.y + ")"; });
+
         }
 
         function dragstarted(d) {
@@ -202,5 +361,22 @@
                 d.fy = undefined;
             }
 
+        }
+
+        function handleMouseoverNode(d) {
+            d.mouseoverNode = true;
+            links.forEach(function (lnk) {
+                var issel = lnk.targetNode.name === d.name || lnk.sourceNode.name === d.name;
+                if (issel) {
+                    lnk.targetNode.selected = lnk.sourceNode.selected = issel;
+                }
+            })
+        }
+
+        function handleMouseoutNode(d) {
+            d.mouseoverNode = false;
+            links.forEach(function (lnk) {
+                lnk.targetNode.selected = lnk.sourceNode.selected = false;
+            })
         }
     </script>
