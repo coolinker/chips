@@ -57,7 +57,7 @@ function ChipMonitor(options) {
             return;
         }
         if (debugMode) console.log('push action:', key);
-        actions.push([new Date().getTime(), key.trim()]);
+        actions.push([new Date().getTime(), key.trim(), [Math.round(e.clientX), Math.round(e.clientY)],[Math.round(e.offsetX), Math.round(e.offsetY)]]);
         resetSendDelay();
     };
 
