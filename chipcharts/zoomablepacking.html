@@ -74,6 +74,8 @@
             .enter().append("circle")
             .attr("class", function (d) { return d.parent ? d.children ? "node" : "node node--leaf" : "node node--root"; })
             .style("fill", function (d) { 
+                if (!difforigin) return color(d.depth);
+                
                 if (!d.data.origincounts[difforigin]) {
                     return lesscolor(d.depth);
                 } else {
