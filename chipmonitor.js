@@ -68,7 +68,7 @@ function ChipMonitor(options) {
         }, SENDDELAY);
     };
 
-    function sendToChipServer(org, bch, sri, acts) {
+    function sendToChipServer(org, bch, sri, acts, localstorage) {
         var timestamp = new Date().getTime();
         xhr = new XMLHttpRequest();
         xhr.open("POST", CHIPSERVICE, true);
@@ -83,12 +83,17 @@ function ChipMonitor(options) {
             }
         }
 
-        var data = JSON.stringify({
+        var data = {
             origin: org,
             batch: bch,
             serial: sri,
             ingredients: acts
-        });
+        }
+        
+        if (localstorage) {
+            data.ls = 1;
+        }
+        data = JSON.stringify(data);
         xhr.send(data);
         console.log("sendToChipServer", data)
         return "test";
@@ -97,7 +102,7 @@ function ChipMonitor(options) {
     function saveLocalStorageData(){
         if (localStorage.chipData) {
             var d = JSON.parse(localStorage.chipData);
-            sendToChipServer(d.origin, d.batch, d.serial, d.ingredients);
+            sendToChipServer(d.origin, d.batch, d.serial, d.ingredients, true);
             localStorage.removeItem("chipData");
         }
     }
