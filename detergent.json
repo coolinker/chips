@@ -16,7 +16,7 @@
             "rui-core-main-navigation-tab,automation-app-calendar-menu": "navigation.calendar.tab",
             "rui-core-main-navigation-tab,automation-app-tasks-menu-Tasks": "navigation.tasks.tab",
             "rui-core-main-navigation-tab,automation-app-tasks-menu": "navigation.tasks.tab",
-            "x-boundlist-itemx-boundlist-selectedx-boundlist-item-over-2": "dropdown.list.item",
+            
             
             "********** settings *********": "",
             "ui-settings-detail-deletebtn,automation-settings-rule-deletebtn-Delete": "settings.rule.delete.button",
@@ -44,6 +44,7 @@
             "automation-mailtoolbar-compose-menu": "mail.toolbar.compose.button",
             "automation-mailtoolbar-more-menu": "mail.toolbar.more.menu",
             "ow-icon-mailToolbar-compose": "mail.toolbar.compose.button",
+            "rui-mail-compose,automation-mail-compose": "mail.compose.window",
             "automation-mailtoolbar-compose-menu-Compose": "mail.toolbar.compose.button",
             "rui-blue-highlight-btn,automation-mail-compose-send-btn": "mail.compose.send.button",
             "rui-blue-highlight-btn,automation-mail-compose-send-btn-Send": "mail.compose.send.button",
@@ -55,6 +56,7 @@
             "ow-forceLtr,rui-mail-compose-recipientInput-input,automation-mail-compose-to-input": "mail.compose.to.input",
             "rui-mail-compose-recipientInput,rui-mail-compose-recipientInput": "mail.compose.cc.input",
             "automation-rui-mail-compose-recipientInput-container,rui-mail-compose-recipientInput-container": "mail.compose.cc.input",
+            "rui-mail-compose-recipientInput-bubble-remove": "mail.compose.recipient.bubble.remove.button",
             "automation-mail-compose-showcc-btn-Cc": "mail.compose.cc.button",
             
             "rui-mail-compose-optionsBox": "mail.compose.priority.dropdown",
@@ -63,6 +65,7 @@
             "rui-mail-composeHeaderForm-optionsBar": "mail.compose.format.dropdown",
             "automation-mail-compose-subject-input": "mail.compose.subject.input",
             "automation-mail-composebody-plaineditor": "mail.compose.plain.input",
+            "ow-icon-composeMenu-visibilityToggle": "mail.compose.restore.button",
             "rui-mail-layout-btn,automation-mail-layout-btn": "mail.toolbar.layout.menubutton",
             "ow-icon-mailLayoutBtn-suffix": "mail.toolbar.layout.menubutton",
             "rui-mail-layout-btn,automation-mail-layout-btn-View": "mail.toolbar.layout.menubutton",
@@ -78,7 +81,7 @@
             "automation-mail-folder-newfolderwin-savebtn-Save": "mail.folder.save.button",
             "automation-mail-folder-newfolderwin-savebtn": "mail.folder.save.button",
             "automation-mail-qksearch-input": "mail.toolbar.search.input",
-
+            
             "ow-icon-": "mail.compose.editor.toolbar.button",
             "********** contacts *********":"",
             
@@ -101,11 +104,13 @@
             "********** others *********":"",
             "uncaught-identifier-ow-autoDirx-header-textx-window-header-textx-window-header-text-default": "window.header.bar",
             "rui-tool,ow-icon-tool-close,automation-icon-tool-close": "toolbar.close.button",
-            "x-menu-item-link,x-menu-item-indent-no-separator-2": "menu.item.2",
-            "x-boundlist-item,x-boundlist-selected,x-boundlist-item-over-2": "dropdown.item.2",
-            "x-menu-item-text-5": "menu.item.5",
-            "x-menu-item-text-2": "menu.item.2",
-            "x-boundlist-item-3": "dropdown.item.3",
+            "x-menu-item-link,x-menu-item-indent-no-separator-2": "menu.item",
+            "x-boundlist-item,x-boundlist-selected,x-boundlist-item-over-2": "dropdown.item",
+            "x-boundlist-itemx-boundlist-selectedx-boundlist-item-over-2": "dropdown.item",
+            "x-boundlist-item-2": "dropdown.item",
+            "x-menu-item-text-5": "menu.item",
+            "x-menu-item-text-2": "menu.item",
+            "x-boundlist-item-3": "dropdown.item",
             "x-message-box-OK": "messagebox.ok.button",
             "x-datepicker-cell": "datepicker.cell",
             "ow-icon-extMenu-down": "menu.down"
