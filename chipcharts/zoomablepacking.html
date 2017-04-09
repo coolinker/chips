@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
 <style>
+    svg {
+        background-color:beige;
+    }
     .node {
         cursor: pointer;
     }
@@ -35,7 +38,7 @@
     difforigin = difforigin ? difforigin[0].split('=')[1] : null;
     var batch = window.location.search.match(/(?:batch=)(\*|[A-Za-z0-9._-]+)/g);
     batch = batch ? batch[0].split('=')[1] : null;
-    var color = d3.scaleOrdinal(d3.schemeCategory20c);
+    var color = d3.scaleOrdinal(d3.schemePastel1);
     var svg = d3.select("svg"),
         margin = 20,
         diameter = +svg.attr("width"),
@@ -75,7 +78,7 @@
             .attr("class", function (d) { return d.parent ? d.children ? "node" : "node node--leaf" : "node node--root"; })
             .style("fill", function (d) { 
                 if (!difforigin) return color(d.depth);
-                
+
                 if (!d.data.origincounts[difforigin]) {
                     return lesscolor(d.depth);
                 } else {

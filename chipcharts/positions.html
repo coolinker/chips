@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+    svg {
+        background-color: beige;
+    }
+    
+    .link {
+        stroke: #aaa;
+    }
+    
+    .node {
+        pointer-events: all;
+        stroke: none;
+        stroke-width: 40px;
+    }
+</style>
+
+<body>
+    <svg width="1280" height="960"></svg>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script>
+        var origin = window.location.search.match(/(?:[^A-Za-z0-9._-]origin=)(\*|[A-Za-z0-9._-]+)/g);
+        origin = origin ? origin[0].split('=')[1] : null;
+
+        var difforigin = window.location.search.match(/(?:difforigin=)(\*|[A-Za-z0-9._-]+)/g);
+        difforigin = difforigin ? difforigin[0].split('=')[1] : null;
+        var batch = window.location.search.match(/(?:batch=)(\*|[A-Za-z0-9._-]+)/g);
+        batch = batch ? batch[0].split('=')[1] : null;
+        var maxnodecount = 0, maxlinkcount = 0;
+        var color = d3.scaleOrdinal(d3.schemeCategory20c);
+
+        // var color = d3.scaleLinear()
+        //     .domain([0, 30])
+        //     .range(["rgb(90%,90%,90%)", "rgb(40%,40%,40%)"])
+        //     .interpolate(d3.interpolateHcl);
+
+        var morecolor = d3.scaleLinear()
+            .domain([-1, 30])
+            .range(["rgb(80%,100%,80%)", "rgb(10%,80%,10%)"])
+            .interpolate(d3.interpolateHcl);
+        var lesscolor = d3.scaleLinear()
+            .domain([-1, 30])
+            .range(["rgb(100%,80%,80%)", "rgb(80%,10%,10%)"])
+            .interpolate(d3.interpolateHcl);
+
+        var svg = d3.select("svg"),
+            width = +svg.attr("width"),
+            height = +svg.attr("height"),
+            node,
+            link,
+            text,
+            circle;
+
+        var simulation = d3.forceSimulation()
+            .force("link", d3.forceLink().id(function (d, i) {
+                return d.name;
+            }).distance(function (d) {
+                return 100
+            }).strength(0.01))
+            .force("gravity", function (d) {
+                return 0
+            })
+            .force("charge", function (d) {
+                return -100
+            })
+            .force("collide", d3.forceCollide(function (d) {
+                var r = Math.sqrt(Math.sqrt(d.count / (maxnodecount)));
+                r = Math.max(2.5, Math.round(r * 30));
+                return 2 * r
+            }).iterations(16))
+            .force("center", d3.forceCenter(width / 2, height / 2));
+        var links = [], nodes = [], nodesMap = {}, linksMap = {};
+
+        d3.json("/kitchen", function (err, data) {
+
+            var leafcount = 0;
+            function treeToLinksNodes(treeNodes, isroot) {
+                treeNodes.forEach(function (item) {
+                    var itemkey = item.key;
+                    // if (itemkey === "mail.compose.to.input") debugger;
+                    // if (item.count<1) return;
+                    if (!nodesMap[itemkey]) {
+                        nodes.push(nodesMap[itemkey] = { id: itemkey, name: itemkey, count: item.count, isLeaf: !item.children, isRoot: isroot, origincounts: item.origincounts });
+                        nodesMap[itemkey].fx = item.pos.x;
+                        nodesMap[itemkey].fy = item.pos.y;
+                        nodesMap[itemkey].fixed = true;
+
+                    } else {
+                        for (var att in item.origincounts) {
+                            if (!nodesMap[itemkey].origincounts[att]) {
+                                nodesMap[itemkey].origincounts[att] = 0;
+                            }
+                            nodesMap[itemkey].origincounts[att] += item.origincounts[att];
+                        }
+
+                        const sumx = (item.pos.x * item.count + nodesMap[itemkey].fx * nodesMap[itemkey].count);
+                        const sumy = (item.pos.y * item.count + nodesMap[itemkey].fy * nodesMap[itemkey].count)
+                        nodesMap[itemkey].count += item.count;
+                        nodesMap[itemkey].fx = sumx / nodesMap[itemkey].count;
+                        nodesMap[itemkey].fy = sumy / nodesMap[itemkey].count;
+
+                    }
+                    maxnodecount = Math.max(maxnodecount, nodesMap[itemkey].count);
+
+                    if (item.children) {
+                        item.children.forEach(function (citem) {
+                            // if (citem.key === "mail.compose.to.input") debugger;
+                            // if (citem.count>0)
+                            maxlinkcount = Math.max(maxlinkcount, citem.count);
+
+                            var linkkey = itemkey + '__link__' + citem.key;
+                            if (linksMap[linkkey]) {
+                                for (var att in citem.origincounts) {
+                                    if (!linksMap[linkkey].origincounts[att]) {
+                                        linksMap[linkkey].origincounts[att] = 0;
+                                    }
+                                    linksMap[linkkey].origincounts[att] += item.origincounts[att];
+                                }
+                            } else {
+                                var l;
+                                links.push(l = { source: itemkey, target: citem.key, tgtcount: citem.count, origincounts: item.origincounts })
+                                linksMap[linkkey] = l;
+                            }
+
+
+                        });
+                        treeToLinksNodes(item.children, false);
+                    }
+
+
+                });
+
+            }
+
+            treeToLinksNodes(data.children, true);
+
+            links.forEach(function (link) {
+                var orgindiff = 0;
+                if (difforigin) {
+                    if (!link.origincounts[difforigin]) {
+                        orgindiff = -1;
+                    } else {
+                        var more = true;
+                        for (var att in link.origincounts) {
+                            if (att !== difforigin) more = false;
+                        }
+                        if (more) orgindiff = 1;
+                    }
+                }
+                link.origindiff = orgindiff;
+                link.targetNode = nodesMap[link.target];
+                link.sourceNode = nodesMap[link.source];
+
+            });
+
+            nodes.forEach(function (nd) {
+                var orgindiff = 0;
+                if (difforigin) {
+                    if (!nd.origincounts[difforigin]) {
+                        orgindiff = -1;
+                    } else {
+                        var more = true;
+                        for (var att in nd.origincounts) {
+                            if (att !== difforigin) more = false;
+                        }
+                        if (more) {
+                            orgindiff = 1;
+                        }
+                    }
+                }
+                nd.origindiff = orgindiff;
+            });
+
+
+            update(links, nodes)
+        }).header("Content-Type", "application/json")
+            .send("POST", JSON.stringify({ 'dish': 'targetSource', 'rootkey': 'login.button', 'granularity': '20', 'batch': batch, 'origins': origin }));
+
+        function update(links, nodes) {
+
+            var marker = svg.append("defs")
+                .attr("class", "defs")
+                .selectAll("marker")
+                .data(links);
+
+
+            marker = marker.enter()
+                .append("svg:marker")
+                .attr("id", function (d) { return ('marker-' + d.source + "-" + d.target) })
+                .attr("viewBox", "0 -5 10 10")
+                .attr("refX", function (d) {
+                    var c = Math.max(0.1, d.tgtcount * 10 / maxlinkcount);
+                    return c > 1 ? 5 : 0;
+                })
+                .attr("refY", 0)
+                .attr("markerWidth", function (d) {
+                    var c = Math.max(0.1, d.tgtcount * 10 / maxlinkcount);
+                    return c > 1 ? 3 : (5 / c);
+                })
+                .attr("markerHeight", function (d) {
+                    var c = Math.max(0.1, d.tgtcount * 10 / maxlinkcount);
+                    return c > 1 ? 3 : (5 / c);
+                })
+                .attr("orient", "auto")
+                .append("svg:path")
+                .attr("d", "M0,-5L10,0L0,5")
+                .style("fill", linkStroke);
+
+            link = svg.append("g")
+                .attr("class", "paths")
+                .selectAll("path")
+                .data(links, function (d) { return d.source + "-" + d.target; });
+            link = link
+                .enter()
+                .append("path")
+                .attr("class", "enter")
+                .style("fill", 'none')
+                .style("stroke-width", function (d) {
+                    var c = Math.max(0.1, d.tgtcount * 10 / maxlinkcount);
+                    return c;
+                })
+                .style("stroke", linkStroke)
+                .attr("marker-end", function (d) { return "url(#marker-" + (d.source + "-" + d.target) + ")"; })
+
+            node = svg.selectAll(".node")
+                .data(nodes, function (d) {
+                    return d.id;
+                })
+
+            node = node.enter()
+                .append("g")
+                .attr("class", "node")
+                //.on("click", click)
+                .call(d3.drag()
+                    .on("start", dragstarted)
+                    .on("drag", dragged)
+                    .on("end", dragended));
+
+            circle = node.append("circle")
+                .attr("r", function (d) {
+                    var r = Math.sqrt(Math.sqrt(d.count / (maxnodecount)));
+                    return Math.max(1.5, Math.round(r * 30));
+                }).style("fill", function (d) {
+                    return color(d.id);
+                }).style("stroke-width", strokeWidth)
+                .style("stroke", stroke)
+                .on('mouseover', function (d) {
+                    handleMouseoverNode(d);
+                    text.text(updateText);
+                    circle.style("stroke-width", strokeWidth);
+                    circle.style("stroke", stroke);
+                    link.style("stroke", linkStroke);
+                    marker.style("fill", linkStroke);
+                })
+                .on('mouseout', function (d) {
+                    handleMouseoutNode(d);
+                    //text.text(updateText);
+                    //circle.style("stroke-width", strokeWidth)
+                    //circle.style("stroke", stroke)
+                });
+
+
+            text = node.append("text")
+                .attr("dy", function (d) {
+                    var r = Math.sqrt(Math.sqrt(d.count / (maxnodecount)));
+                    return 10 + Math.max(1.5, Math.round(r * 30));
+                })
+                .attr("dx", function (d) {
+                    var r = Math.sqrt(Math.sqrt(d.count / (maxnodecount)));
+                    return -Math.max(1.5, Math.round(r * 30));
+                })
+                .style("fill", function (d) {
+                    if (d.isRoot) return '#666';
+                    if (d.isLeaf) return '#666';
+                    return '#aaa'
+                })
+                .text(updateText);
+
+
+
+            simulation
+                .nodes(nodes)
+                .on("tick", ticked);
+
+            simulation.force("link")
+                .links(links);
+        }
+
+        function updateText(d) {
+            // return d.name;
+            return (d.selected || d.isLeaf || d.isRoot) ? d.name : '';
+        }
+
+        function linkStroke(d) {
+            return d.targetNode.mouseoverNode || d.sourceNode.mouseoverNode ? '#f55' : '#aaa';
+        }
+
+        function stroke(d) {
+            var c = d.count * 30 / maxnodecount;
+            return '#f55'//d.origindiff === 0 ? color(c) : (d.origindiff > 0 ? morecolor(c) : lesscolor(c));
+        }
+        function strokeWidth(d) {
+            if (d.mouseoverNode) return 3;
+            if (d.selected) return 1.5;
+
+            // if (d.isRoot) return 0;
+            // if (d.isLeaf) return 0;
+            // if (!d.selected) return 0;
+
+            return 0;//d.origindiff === 0 ? color(c) : (d.origindiff > 0 ? morecolor(c) : lesscolor(c));
+        }
+
+        function linkpos(d) {
+
+            var r1 = Math.sqrt(Math.sqrt(d.source.count / maxnodecount));
+            r1 = Math.max(2.5, Math.round(r1 * 30));
+
+            var r2 = Math.sqrt(Math.sqrt(d.target.count / maxnodecount));
+            r2 = 5 + Math.max(2.5, Math.round(r2 * 30));
+
+            var dx = d.target.x - d.source.x;
+            var dy = d.target.y - d.source.y;
+            dr = Math.round(Math.sqrt(dx * dx + dy * dy));
+
+            if (dr === 0) return { x1: 0, y1: 0, x2: 0, y2: 0, dr: 0 }
+
+            var x1 = Math.round(d.source.x + dx * r1 / dr);
+            var y1 = Math.round(d.source.y + dy * r1 / dr);
+            var x2 = Math.round(d.target.x - dx * r2 / dr);
+            var y2 = Math.round(d.target.y - dy * r2 / dr);
+
+            return { x1: x1, y1: y1, x2: x2, y2: y2, dr: dr };
+        }
+
+        function ticked() {
+            link.attr("d", function (d) {
+                var pos = linkpos(d);
+                var linkkey = d.target.id + "__link__" + d.source.id;
+                if (linksMap[linkkey]) {
+                    return "M" + pos.x1 + "," + pos.y1 + "A" + 2 * pos.dr + "," + 2 * pos.dr + " 0 0,1 " + pos.x2 + "," + pos.y2;
+                } else {
+                    return "M" + pos.x1 + "," + pos.y1 + "A" + 0 + "," + 0 + " 0 0,1 " + pos.x2 + "," + pos.y2;
+                }
+            })
+
+
+            node
+                .attr("transform", function (d) { return "translate(" + d.x + ", " + d.y + ")"; });
+
+        }
+
+        function dragstarted(d) {
+            if (!d3.event.active) simulation.alphaTarget(0.3).restart()
+        }
+
+        function dragged(d) {
+            d.fx = d3.event.x;
+            d.fy = d3.event.y;
+        }
+
+        function dragended(d) {
+            if (!d3.event.active) simulation.alphaTarget(0);
+            if (!d.fixed) {
+                d.fx = undefined;
+                d.fy = undefined;
+            }
+
+        }
+
+        function handleMouseoverNode(d) {
+            d.mouseoverNode = true;
+            links.forEach(function (lnk) {
+                var issel = lnk.targetNode.name === d.name || lnk.sourceNode.name === d.name;
+                if (issel) {
+                    lnk.targetNode.selected = lnk.sourceNode.selected = issel;
+                }
+            })
+        }
+
+        function handleMouseoutNode(d) {
+            d.mouseoverNode = false;
+            links.forEach(function (lnk) {
+                lnk.targetNode.selected = lnk.sourceNode.selected = false;
+            })
+        }
+    </script>
