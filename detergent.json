@@ -56,9 +56,11 @@
             "ow-forceLtr,rui-mail-compose-recipientInput-input,automation-mail-compose-to-input": "mail.compose.to.input",
             "rui-mail-compose-recipientInput,rui-mail-compose-recipientInput": "mail.compose.cc.input",
             "automation-rui-mail-compose-recipientInput-container,rui-mail-compose-recipientInput-container": "mail.compose.cc.input",
+            "rui-mail-compose-recipientInput": "mail.compose.contactspicker.button",
             "rui-mail-compose-recipientInput-bubble-remove": "mail.compose.recipient.bubble.remove.button",
-            "automation-mail-compose-showcc-btn-Cc": "mail.compose.cc.button",
-            
+
+            "automation-mail-compose-showcc-btn-Cc": "mail.compose.showcc.button",
+            "automation-mail-compose-showbcc-btn-Bcc": "mail.compose.showbcc.button",
             "rui-mail-compose-optionsBox": "mail.compose.priority.dropdown",
             "rui-mail-compose-signatureCmb-field,automation-mail-signature-input": "mail.compose.signature.dropdown",
             "rui-mail-compose-signatureCmb-field": "mail.compose.signature.dropdown.item",
@@ -82,9 +84,11 @@
             "automation-mail-folder-newfolderwin-savebtn": "mail.folder.save.button",
             "automation-mail-qksearch-input": "mail.toolbar.search.input",
             
-            "ow-icon-": "mail.compose.editor.toolbar.button",
+            "ow-icon-": "mail.compose.richeditor.toolbar.button",
+
             "********** contacts *********":"",
-            
+            "x-grid-row-contact": "contacts.grid.row",
+            "automation-contacts-picker-add-Add": "contacts.picker.add.button",
             "rui-contacts-form-savebtn,automation-contact-form-savebtn": "contacts.edit.save.button",
             "ow-addressbook-name,automation-contact-treenode-default": "contacts.addressbook.default.treenode",
             "ow-addressbook-name, automation-contact-treenode-default": "contacts.addressbook.default.treenode",
