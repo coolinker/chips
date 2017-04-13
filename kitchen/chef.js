@@ -165,12 +165,17 @@ module.exports = class Chef {
                 }
                 const children = cursor.children;
                 if (children[igd] === undefined) {
-                    children[igd] = { count: 0, key: igd, origincounts: {} };
+                    children[igd] = { count: 0, key: igd, origincounts: {}, pos:{x:0, y:0} };
                 }
                 if (children[igd]['origincounts'][origin] === undefined) {
                     children[igd]['origincounts'][origin] = 0;
                 }
+
                 children[igd].count++;
+                
+                children[igd].pos.x += ((item[2][0] - children[igd].pos.x)/children[igd].count);
+                children[igd].pos.y += ((item[2][1] - children[igd].pos.y)/children[igd].count);
+
                 children[igd]['origincounts'][origin]++;
                 cursor = children[igd];
             }
