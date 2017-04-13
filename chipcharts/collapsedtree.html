@@ -250,18 +250,7 @@
                     }).style("stroke", function (d) {
                         if (!difforigin) return "#ccc";
                         return d.nodediffs[0] ? '#e55' : (d.nodediffs[1]?'#0a0': '#ccc');
-                        // if (!d.data.origincounts[difforigin]) {
-                        //     return "#a00";
-                        // } else {
-                        //     var more = true;
-                        //     for (var att in d.data.origincounts) {
-                        //         if (att !== difforigin) more = false;
-                        //     }
-                        //     if (more) return "#0a0";
-                        // }
-
-
-                        return "#ccc";
+                                                
                     })
 
                 // UPDATE
