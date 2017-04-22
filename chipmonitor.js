@@ -96,7 +96,6 @@ function ChipMonitor(options) {
         data = JSON.stringify(data);
         xhr.send(data);
         console.log("sendToChipServer", data)
-        return "test";
     };
 
     function saveLocalStorageData(){
@@ -141,6 +140,8 @@ function ChipMonitor(options) {
             identifier = 'x-form-date-trigger';
         } else if (cls.match(/x-boundlist/g)) {
             identifier = cls + '-' + getElementIndex(ele)
+        } else if (cls.match(/rui-settings-list-desc automation-settings-list-desc/g)) {
+            identifier = cls + '-' + e.textContent;
         }
 
         return identifier;

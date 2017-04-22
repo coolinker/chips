@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<!-- adapted from mbostock v4 area brush http://bl.ocks.org/mbostock/34f08d5e11952a80609169b7917d4172-->
+<meta charset="utf-8">
+<style>
+    
+    svg {
+        background-color: beige;
+    }
+    
+</style>
+
+<body>
+    <svg width="800" height="500"></svg>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script>
+        var origin = window.location.search.match(/(?:[^A-Za-z0-9._-]origin=)(\*|[A-Za-z0-9._-]+)/g);
+        origin = origin ? [origin[0].split('=')[1]] : null;
+        var difforigin = window.location.search.match(/(?:difforigin=)(\*|[A-Za-z0-9._-]+)/g);
+        difforigin = difforigin ? difforigin[0].split('=')[1] : null;
+        var batch = window.location.search.match(/(?:batch=)(\*|[A-Za-z0-9._-]+)/g);
+        batch = batch ? batch[0].split('=')[1] : null;
+
+        var svg = d3.select("svg");
+        
+        var margin = { top: 20, right: 20, bottom: 50, left: 50 },
+            width = svg.attr("width") - margin.left - margin.right,
+            height = svg.attr("height") - margin.top - margin.bottom;
+        //height2 = 500 - margin2.top - margin2.bottom;
+        //margin2 = { top: 430, right: 20, bottom: 30, left: 40 },
+
+        //var parseDate = d3.timeParse("%b %Y");
+
+        var x = d3.scaleLinear().range([0, width]),
+            y = d3.scaleLinear().range([height, 0]);
+        r = d3.scaleLinear().range([2, 40]);
+        //x2 = d3.scaleLinear().range([0, width]),
+        //y2 = d3.scaleLinear().range([height2, 0]);
+
+        var xAxis = d3.axisBottom(x),
+            //xAxis2 = d3.axisBottom(x2),
+            yAxis = d3.axisLeft(y);
+
+        // var brush = d3.brushX()
+        //     .extent([[0, 0], [width, height2]])
+        //     .on("brush", brushed);
+
+        // var svg = d3.select("body").append("svg")
+        //     .attr("width", width + margin.left + margin.right)
+        //     .attr("height", height + margin.top + margin.bottom);
+
+        svg.append("defs").append("clipPath")
+            .attr("id", "clip")
+            .append("rect")
+            .attr("width", width)
+            .attr("height", height);
+
+        var focus = svg.append("g")
+            .attr("class", "focus")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+        var color = d3.scaleOrdinal(d3.schemeCategory20c);
+        // var context = svg.append("g")
+        //     .attr("class", "context")
+        //     .attr("transform", "translate(" + margin2.left + "," + margin2.top + ")");
+
+
+        d3.json("/kitchen", function (error, data) {
+
+            if (error) throw error;
+
+            var root = d3.hierarchy(data);
+
+            var nodes = root.descendants();
+            var links = nodes.slice(1);
+            var validlinks = [];
+            links.forEach(function (link) {
+                    link.data.dis = linkDistance(link);
+                    //link.data.lag = Math.round(1000 * Math.pow(link.data.lag, 0.5));
+            });
+
+            var idLinks = validLinks(identicalLinks(links));
+
+            x.domain(d3.extent(idLinks, function (d) {
+                return d.lag+500;
+            }));
+            y.domain([0, d3.max(idLinks, function (d) { return d.dis+50 })]);
+            r.domain(d3.extent(idLinks, function (d) {
+                return d.count;
+            }));
+
+            // x2.domain(x.domain());
+            // y2.domain(y.domain());
+
+            // append scatter plot to main chart area 
+            var dots = focus.append("g");
+            dots.attr("clip-path", "url(#clip)");
+            dots.selectAll("dot")
+                .data(idLinks)
+                .enter().append("circle")
+                .style('fill', function (d) {
+                    var key = d.key;
+                    return color(key)
+                })
+                .attr('class', 'dot')
+                .attr("r", function (d) {
+                    return r.nice()(d.count);
+                })
+                .style("opacity", 0.5)
+                .attr("cx", function (d) { return x(d.lag); })
+                .attr("cy", function (d) { return y(d.dis); });
+
+            svg.selectAll(".dot")
+                .append("title")
+                .text(function (d) {
+                    var t = d.source.data.key + '\n' + d.target.data.key + '\n' + d.count;
+                    return t
+                });
+
+            focus.append("g")
+                .attr("class", "axis axis--x")
+                .attr("transform", "translate(0," + height + ")")
+                .call(xAxis);
+
+            focus.append("g")
+                .attr("class", "axis axis--y")
+                .call(yAxis);
+
+            focus.append("text")
+                .attr("transform", "rotate(-90)")
+                .attr("y", 0 - margin.left)
+                .attr("x", 0 - (height / 2))
+                .attr("dy", "1em")
+                .style("text-anchor", "middle")
+                .text("Mouse Distance");
+
+            svg.append("text")
+                .attr("transform",
+                "translate(" + ((width + margin.right + margin.left) / 2) + " ," +
+                (height + margin.top + 50) + ")")
+                .style("text-anchor", "middle")
+                .text("Time Lag");
+
+            // append scatter plot to brush chart area      
+            // var dots = context.append("g");
+            // dots.attr("clip-path", "url(#clip)");
+            // dots.selectAll("dot")
+            //     .data(links)
+            //     .enter().append("circle")
+            //     .attr('class', 'dotContext')
+            //     .attr("r", 3)
+            //     .style("opacity", .5)
+            //     .attr("cx", function (d) { return x2(d.data.lag); })
+            //     .attr("cy", function (d) { return y2(linkDistance(d)); })
+
+            // context.append("g")
+            //     .attr("class", "axis axis--x")
+            //     .attr("transform", "translate(0," + height2 + ")")
+            //     .call(xAxis2);
+
+            // context.append("g")
+            //     .attr("class", "brush")
+            //     .call(brush)
+            //     .call(brush.move, x.range());
+
+        }).header("Content-Type", "application/json")
+            .send("POST", JSON.stringify({ 'dish': 'treelike', 'rootkey': 'login.button', 'granularity': '10', 'batch': batch, 'origins': origin }));
+
+
+        //create brush function redraw scatterplot with selection
+        function brushed() {
+            var selection = d3.event.selection;
+            x.domain(selection.map(x2.invert, x2));
+            focus.selectAll(".dot")
+                .attr("cx", function (d) { return x(d.data.lag); })
+                .attr("cy", function (d) { return y(d.data.dis); });
+            focus.select(".axis--x").call(xAxis);
+        }
+
+        
+        function linkDistance(node) {
+            var px = node.parent.data.pos.x;
+            var py = node.parent.data.pos.y;
+
+            var x = node.data.pos.x;
+            var y = node.data.pos.y;
+            var dis = Math.round(Math.pow((px - x) * (px - x) + (py - y) * (py - y), 0.5));
+
+            return dis;
+        }
+
+        function identicalLinks(links){
+            var linkmap = {}, linkarr = [];
+            links.forEach(function(link){
+                var key = link.parent.data.key +'__'+link.data.key;
+                if (!linkmap[key]) {
+                    linkmap[key] = {key:key, count: link.data.count, lag: link.data.lag, dis: link.data.dis, source: link.parent, target: link};
+                    linkarr.push(linkmap[key]);
+                } else {
+                    var l = linkmap[key];
+                    l.count += link.data.count;
+                    l.lag += (link.data.lag - l.lag)/l.count;
+                    l.dis += (link.data.dis - l.dis)/l.count;
+                }
+            })
+
+            return linkarr;
+        }
+
+        function validLinks(links){
+            var vlnks = [];
+            links.forEach(function(l){
+                if (l.count>5) vlnks.push(l);
+            });
+            return vlnks;
+
+        }
+    </script>

@@ -46,7 +46,7 @@ module.exports = class Chef {
     }
 
     prepareRaw(menu, raw) {
-        const tree = { count: 0 };
+        const tree = this.defaultIngredientObj('root');
         const origin = menu.origin;
         const batch = menu.batch;
         const detergent = this.blendDetergent(menu);
@@ -87,7 +87,6 @@ module.exports = class Chef {
         const sourceKeys = menu.source;
         const targetKeys = menu.target;
 
-        root.key = 'root';
         for (let i = 0; i < igdlen; i++) {
             const srckey = ingredients[i][1];
             if (sourceKeys.indexOf(srckey) < 0) continue;
@@ -98,12 +97,13 @@ module.exports = class Chef {
                 }
                 if (targetKeys.indexOf(ingredients[j][1]) >=0 ) break;
             }
-            if (j === igdlen) {
+            if (j === igdlen || j-i>deepmax) {
                 return;
             }
 
             let cursor = root;
             let depth = 0;
+            let preTime = ingredients[i][0];
             for (; depth < deepmax && depth + i < igdlen; depth++) {
                 const item = ingredients[i + depth];
                 const igd = item[1];
@@ -112,7 +112,7 @@ module.exports = class Chef {
                 }
                 const children = cursor.children;
                 if (children[igd] === undefined) {
-                    children[igd] = { count: 0, key: igd, origincounts: {}, pos:{x:0, y:0} };
+                    children[igd] = this.defaultIngredientObj(igd);
                 }
                 if (children[igd]['origincounts'][origin] === undefined) {
                     children[igd]['origincounts'][origin] = 0;
@@ -120,8 +120,9 @@ module.exports = class Chef {
                 
                 
                 children[igd].count++;
-                children[igd].pos.x += ((item[2][0] - children[igd].pos.x)/children[igd].count);
-                children[igd].pos.y += ((item[2][1] - children[igd].pos.y)/children[igd].count);
+                this.addPos(children[igd], item);
+                this.addLag(children[igd], item[0]-preTime);
+                preTime = item[0];
 
                 children[igd]['origincounts'][origin]++;
                 cursor = children[igd];
@@ -148,15 +149,15 @@ module.exports = class Chef {
             if (rootkey && ingredients[i][1] !== rootkey) continue;
             let cursor = root;
             cursor.count++;
-            if (cursor['origincounts'] === undefined) {
-                cursor['origincounts'] = {};
-            }
+            
             if (cursor['origincounts'][origin] === undefined) {
                 cursor['origincounts'][origin] = 0;
             }
+            this.addPos(cursor, ingredients[i]);
+            
             cursor['origincounts'][origin]++;
 
-
+            let preTime = ingredients[i][0];
             for (let depth = 1; depth < deepmax && depth + i < igdlen; depth++) {
                 const item = ingredients[i + depth];
                 const igd = item[1];
@@ -165,17 +166,16 @@ module.exports = class Chef {
                 }
                 const children = cursor.children;
                 if (children[igd] === undefined) {
-                    children[igd] = { count: 0, key: igd, origincounts: {}, pos:{x:0, y:0} };
+                    children[igd] = this.defaultIngredientObj(igd);
                 }
                 if (children[igd]['origincounts'][origin] === undefined) {
                     children[igd]['origincounts'][origin] = 0;
                 }
 
                 children[igd].count++;
-                
-                children[igd].pos.x += ((item[2][0] - children[igd].pos.x)/children[igd].count);
-                children[igd].pos.y += ((item[2][1] - children[igd].pos.y)/children[igd].count);
-
+                this.addPos(children[igd], item);
+                this.addLag(children[igd], item[0]-preTime);
+                preTime = item[0];
                 children[igd]['origincounts'][origin]++;
                 cursor = children[igd];
             }
@@ -183,6 +183,18 @@ module.exports = class Chef {
 
     }
 
+    addPos(node, igdItem){
+        node.pos.x += ((igdItem[2][0] - node.pos.x)/node.count);
+        node.pos.y += ((igdItem[2][1] - node.pos.y)/node.count);
+    }
+
+    addLag(node, lag){
+        node.lag += (lag - node.lag)/node.count;
+    }
+
+    defaultIngredientObj(igd) {
+        return { count: 0, key: igd, origincounts: {}, lag:0, pos:{x:0, y:0} };
+    }
 
     cook(menu, raw) {
         const rawReadyAsTree = this.prepareRaw(menu, raw);
