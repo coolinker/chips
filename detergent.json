@@ -44,6 +44,8 @@
             "automation-mailtoolbar-compose-menu": "mail.toolbar.compose.button",
             "automation-mailtoolbar-more-menu": "mail.toolbar.more.menu",
             "ow-icon-mailToolbar-compose": "mail.toolbar.compose.button",
+            "automation-mail-qksearch-input": "mail.toolbar.search.input",
+            "ow-icon-mailToolbar-refresh": "mail.toolbar.refresh.button",
             "rui-mail-compose,automation-mail-compose": "mail.compose.window",
             "automation-mailtoolbar-compose-menu-Compose": "mail.toolbar.compose.button",
             "rui-blue-highlight-btn,automation-mail-compose-send-btn": "mail.compose.send.button",
@@ -82,8 +84,6 @@
             "ow-icon-mailFolderHoverPanel-empty": "mail.folder.empty.button",
             "automation-mail-folder-newfolderwin-savebtn-Save": "mail.folder.save.button",
             "automation-mail-folder-newfolderwin-savebtn": "mail.folder.save.button",
-            "automation-mail-qksearch-input": "mail.toolbar.search.input",
-            
             "ow-icon-": "mail.compose.richeditor.toolbar.button",
 
             "********** contacts *********":"",
