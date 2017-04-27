@@ -81,7 +81,6 @@
 
         d3.json("/kitchen", function (err, data) {
 
-            var leafcount = 0;
             function treeToLinksNodes(treeNodes, isroot) {
                 treeNodes.forEach(function (item) {
                     var itemkey = item.key;

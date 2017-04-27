@@ -2,8 +2,9 @@
 <meta charset="UTF-8">
 <style>
     svg {
-        background-color:beige;
+        background-color: beige;
     }
+    
     .node circle {
         stroke-width: 3px;
     }
@@ -86,7 +87,7 @@
             root.children.forEach(collapse);
 
             function markDiffOrigin(node) {
-                
+
                 var diffsArr = [false, false];
                 if (!node.data.origincounts[difforigin]) {
                     diffsArr[0] = true;
@@ -104,13 +105,13 @@
                             diffsArr[0] = true;
                         } else if (!diffsArr[1]) {
                             var more = true;
-                            
+
                             for (var att in item.data.origincounts) {
-                                if (att !== difforigin){
+                                if (att !== difforigin) {
                                     more = false;
                                 }
                             }
-                            
+
                             diffsArr[1] = more;
                         }
 
@@ -120,7 +121,7 @@
 
                     });
                 }
-                
+
                 node.diffs = diffsArr;
             }
 
@@ -172,12 +173,12 @@
                         return color(d.data.key);
                     })
                     .style("stroke-width", function (d) {
-                        return (d.nodediffs[0] || d.nodediffs[1]) ? 0 : ((d.diffs[0] || d.diffs[1]) ? 1.5: (!d.children && !d._children ? 1.5 : 0));
+                        return (d.nodediffs[0] || d.nodediffs[1]) ? 0 : ((d.diffs[0] || d.diffs[1]) ? 1.5 : (!d.children && !d._children ? 1.5 : 0));
                     })
                     .style("stroke", function (d) {
                         if (!d.children && !d._children) return '#555';
                         if (d.nodediffs[0] || d.nodediffs[1]) return null;
-                        return (d.diffs[0] && d.diffs[1]) ? '#dd0' : (d.diffs[0] ? '#a00' : (d.diffs[1]? '#0a0': null));
+                        return (d.diffs[0] && d.diffs[1]) ? '#dd0' : (d.diffs[0] ? '#a00' : (d.diffs[1] ? '#0a0' : null));
                     })
 
                 // Add labels for the nodes
@@ -246,11 +247,11 @@
                         var o = { x: source.x0, y: source.y0 }
                         return diagonal(o, o)
                     }).style("stroke-width", function (d) {
-                        return Math.max(0.5,Math.round(20 * d.data.count / maxcount));
+                        return Math.max(0.5, Math.round(20 * d.data.count / maxcount));
                     }).style("stroke", function (d) {
                         if (!difforigin) return "#ccc";
-                        return d.nodediffs[0] ? '#e55' : (d.nodediffs[1]?'#0a0': '#ccc');
-                                                
+                        return d.nodediffs[0] ? '#e55' : (d.nodediffs[1] ? '#0a0' : '#ccc');
+
                     })
 
                 // UPDATE
@@ -278,12 +279,7 @@
 
                 // Creates a curved (diagonal) path from parent to the child nodes
                 function diagonal(s, d) {
-
-                    path = `M ${s.y} ${s.x}
-            C ${(s.y + d.y) / 2} ${s.x},
-              ${(s.y + d.y) / 2} ${d.x},
-              ${d.y} ${d.x}`
-
+                    path = `M ${s.y} ${s.x} C ${(s.y + d.y) / 2} ${s.x}, ${(s.y + d.y) / 2} ${d.x}, ${d.y} ${d.x}`;
                     return path
                 }
 

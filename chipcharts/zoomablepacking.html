@@ -27,7 +27,7 @@
         pointer-events: none;
     }
 </style>
-<svg width="960" height="960"></svg>
+<svg width="500" height="466"></svg>
 <script src="https://d3js.org/d3.v4.min.js"></script>
 <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
 
@@ -112,7 +112,8 @@
             .style("display", function (d) { return d.parent === root ? "inline" : "none"; })
             .text(function (d) { return d.data.key; });
 
-        var node = g.selectAll("circle,text");
+        var node = g.selectAll("circle");
+        var textnode = g.selectAll("text");
 
         svg
         // .style("background", color(-1))
@@ -140,9 +141,13 @@
         function zoomTo(v) {
             var k = diameter / v[2]; view = v;
             node.attr("transform", function (d) { return "translate(" + (d.x - v[0]) * k + "," + (d.y - v[1]) * k + ")"; });
+            
+            textnode.attr("transform", function (d) { 
+                debugger;
+                return "translate(" + (d.x - v[0]) * k + "," + (d.y - v[1]) * k + ")"; });
             circle.attr("r", function (d) { return d.r * k; });
         }
     }).header("Content-Type", "application/json")
-        .send("POST", JSON.stringify({ 'dish': 'treelike', 'rootkey': 'login.button', 'granularity': '20', 'batch': batch, 'origins': origin }));
+        .send("POST", JSON.stringify({ 'dish': 'treelike', 'rootkey': 'login.button', 'granularity': '5', 'batch': batch, 'origins': origin }));
 
 </script>
