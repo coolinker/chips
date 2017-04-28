@@ -12,11 +12,11 @@
 </style>
 
 <body style="background-color:beige;margin:0px">
-    <div style="display: -webkit-flex;display: flex;-webkit-flex-direction: column;flex-direction: column;width: 100%;height: 100%;">
-        <div id="top" style="width:100%;height:30px">
+    <div style="display: -webkit-flex;display: flex;-webkit-flex-direction: column;flex-direction: column;width: 100%;height: 150%;">
+        <div id="top" style="width:100%;height:50px;font-size:2em;border-color:#ccc; border-bottom-style: solid;;border-width:1px;">UI Data Analytics 
         </div>
-        <div style="width:100%;flex: 1;-webkit-flex: 1;display: -webkit-flex;display: flex;-webkit-flex-direction: row;flex-direction: row; padding:0px">
-            <div id="pack" style="width:500px;height:100%;border-width:1px; border-color:#ccc; border-right-style: solid;">
+        <div style="width:100%;flex: 1;-webkit-flex: 1;display: -webkit-flex;display: flex;-webkit-flex-direction: row;flex-direction: row; padding:10px">
+            <div id="pack" style="width:500px;height:100%;flex:1;-webkit-flex:1;border-width:1px; border-color:#ccc; border-right-style: solid;">
                 <span style="position:absolute">User Path Diff</span>
             </div>
             <div id="net" style="height:100%;flex:2;-webkit-flex: 2;border-width:1px; border-color:#ccc; border-right-style: solid;">
@@ -24,15 +24,23 @@
             </div>
         </div>
 
-        <div id="tree" style="width:100%;flex: 1;-webkit-flex: 1;border-top-style: solid;border-width:1px; border-color:#ccc;">
+        <div id="tree" style="width:100%;flex: 1;-webkit-flex: 1;border-top-style: solid;border-width:1px; border-color:#ccc;padding:10px">
             <span style="position:absolute">User Path Diff</span>
             <ul id="labels" style="position:absolute;right:20px;text-align:right;"></ul>
+        </div>
+        <div style="width:100%;flex: 1;-webkit-flex: 1;display: -webkit-flex;display: flex;-webkit-flex-direction: row;flex-direction: row;padding:10px">
+            <div id="plot" style="height:100%;flex: 2;-webkit-flex: 2;border-top-style: solid;border-width:1px; border-color:#ccc;padding:10px">
+                <span style="position:absolute">Performance</span>
+            </div>
+            <div id="lagDetails" style="height:100%;flex: 2;-webkit-flex:2;border-top-style: solid;border-width:1px; border-color:#ccc;padding:10px">
+            </div>
         </div>
     </div>
     <script src="https://d3js.org/d3.v4.min.js"></script>
     <script src="pathtree.js"></script>
     <script src="pathpacking.js"></script>
     <script src="pathnet.js"></script>
+    <script src="lagbubble.js"></script>
     <script>
         var origin = window.location.search.match(/(?:[^A-Za-z0-9._-]origin=)(\*|[A-Za-z0-9._-]+)/g);
         origin = origin ? [origin[0].split('=')[1]] : null;
@@ -44,7 +52,7 @@
         var pathPacking = PathPacking.createInstance('pack').loadData("login.button", 5, batch, origin, difforigin);
         var pathTree = PathTree.createInstance('tree').loadData("login.button", 5, batch, origin, difforigin);
         var pathNet = PathNet.createInstance('net').loadData("login.button", 5, batch, origin, difforigin);
-
+        var lagBubble = LagBubble.createInstance('plot').loadData("login.button", 10, batch, origin);
         pathTree.setUpdateHandler(function (d) {
             var p = d;
             var arr = [p.data.key];
@@ -54,7 +62,7 @@
             arr.reverse();
             pathPacking.zoomToNode(arr.concat());
             pathNet.updateEntry(arr.concat());
-            document.getElementById('netlabel').innerHTML = 'Motion of Mouse<br/><span style="color:#ccc">from ' + d.data.key+'</span>';
+            document.getElementById('netlabel').innerHTML = 'Motion of Mouse <span style="color:#ccc"> @' + d.data.key+'</span>';
             updateLabels(d);
         })
         

@@ -4,7 +4,7 @@ var PathNet = {
         var width = dom.getBoundingClientRect().width;
         var height = dom.getBoundingClientRect().height;
 
-        var margin = { top: 20, right: 20, bottom: 40, left: 20 },
+        var margin = { top: 20, right: 20, bottom: 50, left: 20 },
             width = width - margin.left - margin.right,
             height = height - margin.top - margin.bottom;
         var maxX = 0, maxY = 0;
@@ -37,7 +37,7 @@ var PathNet = {
             .attr("id", "netsvg")
             .attr("width", width + margin.right + margin.left)
             .attr("height", height + margin.top + margin.bottom)
-        svg.style('top', 50);
+        svg.style('top', 70);
         svg.style('position', 'absolute');
         svg = svg.append("g")
             .attr("transform", "translate("
@@ -177,7 +177,6 @@ var PathNet = {
                     if (nodesMap[itemkey].fx < 0) console.log("x<0", nodesMap[itemkey].fx, itemkey)
                     maxX = Math.max(maxX, nodesMap[itemkey].fx);
                     maxY = Math.max(maxY, nodesMap[itemkey].fy);
-                    //console.log(maxY, maxX, itemkey, treenode.depth)
                     maxnodecount = Math.max(maxnodecount, nodesMap[itemkey].count);
                 }
 
@@ -338,7 +337,7 @@ var PathNet = {
                     var r = Math.sqrt(Math.sqrt(d.count / (maxnodecount)));
                     return Math.max(1.5, Math.round(r * 30));
                 }).style("fill", function (d) {
-                    return color(d.id);
+                    return d.depth=== 0 ? '#000' :color(d.id);
                 })
                 .style('fill-opacity', function(d){
                         return Math.max(5-d.depth)/4;
