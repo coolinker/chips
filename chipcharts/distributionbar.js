@@ -66,9 +66,10 @@ var DistributionBar = {
         gHour.append("text")
             .attr("class", "hourTitle")
             .attr("transform",
-            "translate(" + (width / 2) + " ," +
-            (-margin.top) + ")")
-            .attr("dy", "1em")
+            "translate(" + (2*width/3) + " ," +
+            (-5) + ")")
+            .style("font", '10px "Helvetica Neue", Helvetica, Arial, sans-serif')
+            // .attr("dy", "0em")
             .style("text-anchor", "middle");
         //.text('@' + rawdata.source.join(',') + " - @" + rawdata.target.join(','));
 
@@ -119,7 +120,7 @@ var DistributionBar = {
         var distributionbar = {};
 
         distributionbar.loadData = function (source, target, steps, batch, origin) {
-            gHour.select('.hourTitle').text(source + "-" + target);
+            gHour.select('.hourTitle').text("@"+source + " - @" + target);
 
             var me = this;
             d3.json("/kitchen", function (err, data) {
