@@ -174,7 +174,7 @@ var PathNet = {
                 }
 
                 if (treenode.depth <= maxdepth) {
-                    if (nodesMap[itemkey].fx < 0) console.log("x<0", nodesMap[itemkey].fx, itemkey)
+                    //if (nodesMap[itemkey].fx < 0) console.log("x<0", nodesMap[itemkey].fx, itemkey)
                     maxX = Math.max(maxX, nodesMap[itemkey].fx);
                     maxY = Math.max(maxY, nodesMap[itemkey].fy);
                     maxnodecount = Math.max(maxnodecount, nodesMap[itemkey].count);

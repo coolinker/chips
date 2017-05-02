@@ -61,7 +61,9 @@ var LagBubble = {
         dotsgroup.attr("clip-path", "url(#clip)");
 
         // var color = d3.scaleOrdinal(d3.schemeCategory20c);
-        var lagbubble = {};
+        var lagbubble = {
+            onLagDetail: null
+        };
 
         lagbubble.loadData = function (root, steps, batch, origin) {
             var me = this;
@@ -79,26 +81,28 @@ var LagBubble = {
 
 
         lagbubble.update = function (root) {
-
+            var me = this;
             var nodes = root.descendants();
             var links = nodes.slice(1);
-            var validlinks = [];
             links.forEach(function (link) {
                 link.data.dis = linkDistance(link);
             });
 
             var idLinks = validLinks(identicalLinks(links));
-
+            if (this.onLagDetail) {
+               this.onLagDetail(idLinks[2*Math.round(idLinks.length/3)]);
+            }
             x.domain(d3.extent(idLinks, function (d) {
                 return d.lag;
             }));
+
             y.domain([0, d3.max(idLinks, function (d) { return d.dis })]);
             r.domain(d3.extent(idLinks, function (d) {
                 return d.count;
             }));
             var color = d3.scaleLinear()
             .domain(x.domain())
-            .range(["rgba(200,10,10,0.3)","rgba(255,10,10,2)"])
+            .range(["rgba(200,10,10,0.3)","rgba(255,0,0,2)"])
             .interpolate(d3.interpolateHcl);
             // append scatter plot to main chart area 
 
@@ -121,6 +125,11 @@ var LagBubble = {
 
             dots = dotsEnter.merge(dots);
 
+            dots.attr('cursor', 'pointer')
+                .on("click", function(d){
+                    if (me.onLagDetail) me.onLagDetail(d)
+                });
+
             svg.selectAll(".dot")
                 .append("title")
                 .text(function (d) {
@@ -135,13 +144,13 @@ var LagBubble = {
         
 
         function linkDistance(node) {
-            var px = node.parent.data.pos.x;
+            var px = Math.max(0, node.parent.data.pos.x);
             var py = node.parent.data.pos.y;
 
-            var x = node.data.pos.x;
+            var x = Math.max(0, node.data.pos.x);
             var y = node.data.pos.y;
             var dis = Math.round(Math.pow((px - x) * (px - x) + (py - y) * (py - y), 0.5));
-
+            if (dis>2000) console.log(px, py, x, y)
             return dis;
         }
 
@@ -168,7 +177,9 @@ var LagBubble = {
             links.forEach(function (l) {
                 if (l.count > 5) vlnks.push(l);
             });
-            return vlnks;
+            return vlnks.sort(function(l1, l2){
+                return l1.lag - l2.lag;
+            });
 
         }
 

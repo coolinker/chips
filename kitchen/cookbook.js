@@ -6,10 +6,11 @@ module.exports = cookbook = {
     },
 
     "dishes": {
-        "single-piece": {
+        "pairs": {
+            "layout": "pairs",
             "granularity": 1,
-            "ingredients": [0, 1],
-            "exclude-ingredients":null,
+            "source":[],
+            "target": [],
             "origins": "*",
             "batch": "*",
         },
