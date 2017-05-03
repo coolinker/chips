@@ -209,7 +209,6 @@ var DistributionBar = {
 
             gHourNodes.selectAll(".circleNode")
                 .text(function (d) {
-                    debugger;
                     var t = Math.round(d.lag) + 'ms\n' + d.hour + ':00\n' + d.count;
                     return t
                 });

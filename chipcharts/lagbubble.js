@@ -150,7 +150,7 @@ var LagBubble = {
             var x = Math.max(0, node.data.pos.x);
             var y = node.data.pos.y;
             var dis = Math.round(Math.pow((px - x) * (px - x) + (py - y) * (py - y), 0.5));
-            if (dis>2000) console.log(px, py, x, y)
+            //if (dis>2000) console.log(px, py, x, y)
             return dis;
         }
 

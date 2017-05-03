@@ -174,7 +174,10 @@ module.exports = class Chef {
 
         for (let i = 0; i < igdlen;) {
             const srckey = ingredients[i][1];
-            if (sourceKeys.indexOf(srckey) < 0) continue;
+            if (sourceKeys.indexOf(srckey) < 0) {
+                i++;
+                continue;
+            }
             let j = i + 1;
             for (; j < igdlen; j++) {
                 if (sourceKeys.indexOf(ingredients[j][1]) >= 0) {
@@ -217,7 +220,7 @@ module.exports = class Chef {
                 }
 
             }
-            i += depth;
+            i = j + depth;
 
         }
     }

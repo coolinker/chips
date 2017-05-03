@@ -29,13 +29,23 @@
             <ul id="labels" style="position:absolute;right:20px;text-align:right;"></ul>
         </div>
         <div style="width:100%;flex: 1;-webkit-flex: 1;display: -webkit-flex;display: flex;-webkit-flex-direction: row;flex-direction: row;padding:10px">
-            <div id="plot" style="height:100%;flex: 2;-webkit-flex: 2;border-top-style: solid;border-width:1px; border-color:#ccc;padding:10px">
-                <span style="position:absolute">Performance(lag of actions)</span>
+            <div id="plot" style="height:100%;flex: 2;-webkit-flex: 2;border-top-style: solid;border-width:1px; border-color:#ccc; border-right-style: solid;padding:10px">
+                <span style="position:absolute">Performance(lag between actions)</span>
             </div>
             <div id="lagDistribution" style="height:100%;flex: 1;-webkit-flex:1;border-top-style: solid;border-width:1px; border-color:#ccc;padding:10px">
-                <span style="position:absolute">Distribution</span>
+                <span style="position:absolute">Lag Distribution</span>
             </div>
         </div>
+        
+        <div style="width:100%;flex: 1;-webkit-flex: 1;display: -webkit-flex;display: flex;-webkit-flex-direction: row;flex-direction: row;padding:10px">
+            <div id="sankey1" style="height:100%;flex: 1;-webkit-flex: 1;border-right-style: solid;;border-top-style: solid;border-width:1px; border-color:#ccc;padding:10px">
+                <span style="position:absolute">Effectiveness - <span style="font-size: 0.5em;">[Composing Message]</span></span>
+            </div>
+            <div id="sankey2" style="height:100%;flex: 2;-webkit-flex:2;padding:10px;border-top-style: solid;border-width:1px; border-color:#ccc;">
+                <span style="position:absolute">Effectiveness - <span style="font-size: 0.5em;">[Creating Contact]</span></span>
+            </div>
+        </div>
+
     </div>
     <script src="https://d3js.org/d3.v4.min.js"></script>
     <script src="pathtree.js"></script>
@@ -43,6 +53,9 @@
     <script src="pathnet.js"></script>
     <script src="lagbubble.js"></script>
     <script src="distributionbar.js"></script>
+    <script src="sankey.js"></script>
+    <script src="effectivenesssankey.js"></script>
+    
     <script>
         var origin = window.location.search.match(/(?:[^A-Za-z0-9._-]origin=)(\*|[A-Za-z0-9._-]+)/g);
         origin = origin ? [origin[0].split('=')[1]] : null;
@@ -55,6 +68,7 @@
         var pathTree = PathTree.createInstance('tree').loadData("login.button", 5, batch, origin, difforigin);
         var pathNet = PathNet.createInstance('net').loadData("login.button", 5, batch, origin, difforigin);
         var lagBubble = LagBubble.createInstance('plot').loadData("login.button", 10, batch, origin);
+        var effectivenessSankey = EffectivenessSankey.createInstance('sankey1').loadData(['mail.toolbar.compose.button'], ['mail.compose.send.button', 'mail.compose.discard.button', 'toolbar.close.button'], 20, batch, origin);
         var distributionBar = DistributionBar.createInstance('lagDistribution');
 
         lagBubble.onLagDetail = function (d) {
