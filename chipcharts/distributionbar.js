@@ -61,6 +61,7 @@ var DistributionBar = {
             .attr("x", 0 - (height / 2))
             .attr("dy", "1em")
             .style("text-anchor", "middle")
+            .style("font", '12px "Helvetica Neue", Helvetica, Arial, sans-serif')
             .text("AVG Lag Time(ms)");
 
         gHour.append("text")
@@ -78,6 +79,7 @@ var DistributionBar = {
             .attr("y", 0 - margin.left)
             .attr("x", 0 - (height / 2))
             .attr("dy", "1em")
+            .style("font", '12px "Helvetica Neue", Helvetica, Arial, sans-serif')
             .style("text-anchor", "middle")
             .text("Count");
 

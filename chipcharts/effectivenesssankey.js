@@ -4,7 +4,7 @@ var EffectivenessSankey = {
         var width = dom.getBoundingClientRect().width;
         var height = dom.getBoundingClientRect().height;
 
-        var margin = { top: 40, right: 20, bottom: 20, left: 10 },
+        var margin = { top: 30, right: 20, bottom: 30, left: 10 },
             width = width - margin.left - margin.right,
             height = height - margin.top - margin.bottom;
 
@@ -12,36 +12,61 @@ var EffectivenessSankey = {
             .attr("id", "netsvg")
             .attr("width", width + margin.right + margin.left)
             .attr("height", height + margin.top + margin.bottom)
-            .append("g")
+
+        var leftwidth = width / 2, rightwidth = width / 2;
+        var leftg = svg.append("g")
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
-            .attr("width", width)
+            .attr("width", leftwidth)
             .attr("height", height);
 
-        var ellipsis = svg.append("text")
+        var radius = Math.min(rightwidth, height) / 2.5;
+        var rightg = svg.append("g")
+            .attr("transform", "translate(" + (leftwidth + rightwidth / 2) + "," + height / 1.75 + ")");
+
+        var pie = d3.pie()
+            .sort(null)
+            .value(function (d) { return d.value; });
+
+        var piepath = d3.arc()
+            .outerRadius(radius - 10)
+            .innerRadius(0);
+
+        var label = d3.arc()
+            .outerRadius(radius + 10)
+            .innerRadius(radius + 0);
+
+        var exittext = rightg.append("text")
             .attr("x", function (d) {
-                return width / 4;
+                return -rightwidth/2 + 20;
+            })
+            .attr("y", function (d) {
+                return -height/2;
+            })
+            // .attr("dy", ".35em")
+            .style("fill", '#222');
+
+        var ellipsis = leftg.append("text")
+            .attr("x", function (d) {
+                return leftwidth / 4;
             })
             .attr("y", function (d) {
                 return 10;
             })
             .attr("dy", ".35em")
-            // .attr("transform", function (d) {
-            //     return "rotate(-90)";
-            // })
-            //.style("font", '12px "Helvetica Neue", Helvetica, Arial, sans-serif')
             .style("fill", '#222')
-            //.filter(function (d) { return d.x < width / 2; })
-            //.attr("x", 6 + sankey.nodeWidth())
             .attr("text-anchor", function (d) {
                 return "middle";
             });
+
+        
+            
 
         color = d3.scaleOrdinal(d3.schemeCategory20);
         // Set the sankey diagram properties
         var sankey = d3.sankey()
             .nodeWidth(36)
             .nodePadding(20)
-            .size([width, height]);
+            .size([leftwidth, height]);
 
         var path = sankey.link();
         var getNodesAndLinks = function (data) {
@@ -118,7 +143,7 @@ var EffectivenessSankey = {
                 .links(graph.links)
                 .layout(32);
             // add in the links
-            var link = svg.append("g").selectAll(".link")
+            var link = leftg.append("g").selectAll(".link")
                 .data(graph.links)
                 .enter().append("path")
                 .attr("class", "link")
@@ -147,7 +172,7 @@ var EffectivenessSankey = {
 
 
             // add in the nodes
-            var node = svg.append("g").selectAll(".node")
+            var node = leftg.append("g").selectAll(".node")
                 .data(graph.nodes)
                 .enter().append("g")
                 .attr("class", "node")
@@ -217,6 +242,38 @@ var EffectivenessSankey = {
             }
             link.attr("d", path);
             ellipsis.text('......');
+
+            var piedata = [];
+            graph.nodes.forEach(function (item) {
+                if (item.depth === 2) piedata.push(item);
+            });
+
+            var arc = rightg.selectAll(".arc")
+                .data(pie(piedata))
+                .enter().append("g")
+                .attr("class", "arc");
+
+            arc.append("path")
+                .attr("d", piepath)
+                .attr("fill", function (d) {
+                    return d.data.key === 'browser.beforeunload' ? '#d00' :color(d.data.key);
+                });
+
+            arc.append("text")
+                .attr("transform", function (d) {
+                    debugger;
+                    return "translate(" + label.centroid(d) + ")";
+                })
+                .attr("dy", ".15em")
+                .style("font", '12px "Helvetica Neue", Helvetica, Arial, sans-serif')
+                .style("fill", function(d){
+                    return d.data.key === 'browser.beforeunload' ? '#f00' : '#222';
+                })
+                .text(function (d) {
+                    return  d.data.key === 'browser.beforeunload'? 'Frustrated Reloading!' :d.data.key;
+                });
+
+            exittext.text('Exits Distribution →');
 
         }
 

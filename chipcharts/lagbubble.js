@@ -47,6 +47,7 @@ var LagBubble = {
             .attr("x", 0 - (height / 2))
             .attr("dy", "1em")
             .style("text-anchor", "middle")
+            .style("font", '12px "Helvetica Neue", Helvetica, Arial, sans-serif')
             .text("Mouse Distance(pixels)");
 
         svg.append("text")
@@ -54,6 +55,7 @@ var LagBubble = {
             "translate(" + ((width + margin.right + margin.left) / 2) + " ," +
             (height + margin.top + 30) + ")")
             .style("text-anchor", "middle")
+            .style("font", '12px "Helvetica Neue", Helvetica, Arial, sans-serif')
             .text("Lag Time(ms) between Actions");
 
 

@@ -1,6 +1,7 @@
 {
     "origin_default": {
         "batch_default": {
+            "rui-core-main-navigation-aux-item-SignOut": "logout.button",
             "beforeunload": "browser.beforeunload",
             "automation-login-language-input": "login.language.input",
             "automation-login-login-button": "login.button",
@@ -44,6 +45,7 @@
             "automation-mailtoolbar-forward-menu": "mail.toolbar.forward.menubutton",
             "automation-mailtoolbar-more-menu": "mail.toolbar.more.menu",
             "automation-mail-qksearch-input": "mail.toolbar.search.input",
+            "rui-mail-searchField": "mail.toolbar.search.dropdown.button",
             "ow-icon-mailToolbar-refresh": "mail.toolbar.refresh.button",
             "rui-mail-compose,automation-mail-compose": "mail.compose.window",
             "automation-mailtoolbar-reply-menu-Reply": "mail.toolbar.reply.button",
@@ -63,7 +65,6 @@
             "automation-rui-mail-compose-recipientInput-container,rui-mail-compose-recipientInput-container": "mail.compose.cc.input",
             "rui-mail-compose-recipientInput": "mail.compose.contactspicker.button",
             "rui-mail-compose-recipientInput-bubble-remove": "mail.compose.recipient.bubble.remove.button",
-
             "automation-mail-compose-showcc-btn-Cc": "mail.compose.showcc.button",
             "automation-mail-compose-showbcc-btn-Bcc": "mail.compose.showbcc.button",
             "rui-mail-compose-optionsBox": "mail.compose.priority.dropdown",
@@ -77,19 +78,23 @@
             "ow-icon-mailLayoutBtn-suffix": "mail.toolbar.layout.menubutton",
             "rui-mail-layout-btn,automation-mail-layout-btn-View": "mail.toolbar.layout.menubutton",
             "mail-x-grid-row": "mail.grid.row",
+            "rui-mail-headerlist-from": "mail.grid.row",
+            "rui-mail-msgHeader-from,automation-mail-msgheader-from,ow-forceLtr": "mail.grid.row",
+            "rui-mail-headerlist-row": "mail.grid.row",
             "x-grid-row-checker": "mail.grid.row.checkbox",
             "ow-icon-mail-folderConlumn-inner": "mail.folder.treenode",
             "x-grid-cell-innerow-icon-mail-folderConlumn-inner": "mail.folder.treenode",
             "ow-icon-mailFolderColumn-newFolder,automation-mail-folder-myfolder-addbtn": "mail.folder.new.button",
             "rui-mail-headerlist-subject,automation-mail-headerlist-subject": "mail.grid.row.subject.text",
+            "rui-mail-headerlist-row,rui-mail-headerlist-row-two": "mail.grid.row.subject.text",
             "rui-mail-header-abstract": "mail.preview.header",
+            "rui-mail-previewEmpty": "mail.preview.empty",
             "rui-mail-composeBody,automation-mail-composebody": "mail.compose.body.input",
             "ow-icon-mailFolderHoverPanel-empty": "mail.folder.empty.button",
             "automation-mail-folder-newfolderwin-savebtn-Save": "mail.folder.save.button",
             "automation-mail-folder-newfolderwin-savebtn": "mail.folder.save.button",
             "ow-icon-": "mail.compose.richeditor.toolbar.button",
 
-            
 
             "********** contacts *********":"",
             
@@ -113,6 +118,9 @@
             "automation-contacts-toolbar-newcontact-Add contact": "contacts.toolbar.new.button",
             "ow-icon-contactsToolbar-newContact": "contacts.toolbar.new.button",
             "ow-icon-contactListHoverPanel-compose": "contacts.compose.button",
+
+            "ow-icon-contactFolderHoverPanel-delete": "contacts.list.delete.button",
+            
 
             "********** calendar *********":"",
             "ow-icon-calSubTbar-prev": "calendar.toolbar.prev.button",
