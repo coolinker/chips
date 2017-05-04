@@ -41,7 +41,7 @@
             <div id="sankey1" style="height:100%;flex: 1;-webkit-flex: 1;border-right-style: solid;;border-top-style: solid;border-width:1px; border-color:#ccc;padding:10px">
                 <span style="position:absolute">Effectiveness - <span style="font-size: 0.5em;">[Composing Message]</span></span>
             </div>
-            <div id="sankey2" style="height:100%;flex: 2;-webkit-flex:2;padding:10px;border-top-style: solid;border-width:1px; border-color:#ccc;">
+            <div id="sankey2" style="height:100%;flex: 1;-webkit-flex:1;padding:10px;border-top-style: solid;border-width:1px; border-color:#ccc;">
                 <span style="position:absolute">Effectiveness - <span style="font-size: 0.5em;">[Creating Contact]</span></span>
             </div>
         </div>
@@ -68,7 +68,9 @@
         var pathTree = PathTree.createInstance('tree').loadData("login.button", 5, batch, origin, difforigin);
         var pathNet = PathNet.createInstance('net').loadData("login.button", 5, batch, origin, difforigin);
         var lagBubble = LagBubble.createInstance('plot').loadData("login.button", 10, batch, origin);
-        var effectivenessSankey = EffectivenessSankey.createInstance('sankey1').loadData(['mail.toolbar.compose.button','contacts.compose.button'], ['mail.compose.send.button', 'mail.compose.discard.button', 'toolbar.close.button'], 20, batch, origin);
+        var effectivenessSankey1 = EffectivenessSankey.createInstance('sankey1').loadData(['mail.toolbar.compose.button','contacts.compose.button','mail.toolbar.reply.button'], ['mail.compose.send.button', 'mail.compose.discard.button', 'toolbar.close.button', 'browser.beforeunload'], 20, batch, origin);
+        var effectivenessSankey2 = EffectivenessSankey.createInstance('sankey2').loadData(['contacts.toolbar.new.button','contacts.form.toolbar.edit.button'], ['contacts.form.toolbar.save.button', 'contacts.form.toolbar.cancel.button', 'browser.beforeunload'], 20, batch, origin);
+        
         var distributionBar = DistributionBar.createInstance('lagDistribution');
 
         lagBubble.onLagDetail = function (d) {

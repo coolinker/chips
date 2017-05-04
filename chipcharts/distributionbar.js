@@ -120,7 +120,7 @@ var DistributionBar = {
         var distributionbar = {};
 
         distributionbar.loadData = function (source, target, steps, batch, origin) {
-            gHour.select('.hourTitle').text("@"+source + " - @" + target);
+            gHour.select('.hourTitle').text("@"+source + " → @" + target);
 
             var me = this;
             d3.json("/kitchen", function (err, data) {
@@ -132,7 +132,7 @@ var DistributionBar = {
 
         distributionbar.setData = function (data) {
             gHour.selectAll('.hourTitle')
-                .text('@' + data.source.join(',') + " - @" + data.target.join(','));
+                .text('@' + data.source.join(',') + " → @" + data.target.join(','));
 
 
             var data1 = formatHourData(data);

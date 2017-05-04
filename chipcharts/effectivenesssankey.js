@@ -18,23 +18,23 @@ var EffectivenessSankey = {
             .attr("height", height);
 
         var ellipsis = svg.append("text")
-                .attr("x", function (d) {
-                    return -width/3;
-                })
-                .attr("y", function (d) {
-                    return height/2-20;
-                })
-                .attr("dy", ".35em")
-                .attr("transform", function (d) {
-                    return "rotate(-90)";
-                })
-                //.style("font", '12px "Helvetica Neue", Helvetica, Arial, sans-serif')
-                .style("fill", '#222')
-                //.filter(function (d) { return d.x < width / 2; })
-                //.attr("x", 6 + sankey.nodeWidth())
-                .attr("text-anchor", function (d) {
-                    return "middle";
-                });
+            .attr("x", function (d) {
+                return -width / 3;
+            })
+            .attr("y", function (d) {
+                return height / 2 - 20;
+            })
+            .attr("dy", ".35em")
+            .attr("transform", function (d) {
+                return "rotate(-90)";
+            })
+            //.style("font", '12px "Helvetica Neue", Helvetica, Arial, sans-serif')
+            .style("fill", '#222')
+            //.filter(function (d) { return d.x < width / 2; })
+            //.attr("x", 6 + sankey.nodeWidth())
+            .attr("text-anchor", function (d) {
+                return "middle";
+            });
 
         color = d3.scaleOrdinal(d3.schemeCategory20);
         // Set the sankey diagram properties
@@ -130,7 +130,13 @@ var EffectivenessSankey = {
                 })
                 .style("stroke-width", function (d) { return Math.max(1, d.dy); })
                 .style("stroke-opacity", 0.2)
-                .sort(function (a, b) { return b.dy - a.dy; });
+                .sort(function (a, b) { return b.dy - a.dy; })
+                .on("mouseover", function (d) {
+                    d3.select(this).style("stroke-opacity", 0.5)
+                })
+                .on("mouseout", function (d) {
+                    d3.select(this).style("stroke-opacity", 0.2)
+                });
 
             // add the link titles
             link.append("title")
@@ -179,14 +185,14 @@ var EffectivenessSankey = {
             // add in the title for the nodes
             node.append("text")
                 .attr("x", function (d) {
-                    return d.depth !== 1 ? -d.dy / 2 : 6 + sankey.nodeWidth();
+                    return d.depth === 2 ? -d.dy / 2 : 6 + sankey.nodeWidth();
                 })
                 .attr("y", function (d) {
-                    return d.depth !== 1 ? (d.depth === 0 ? 10 + sankey.nodeWidth() : -6) : d.dy / 2;
+                    return d.depth === 2 ? (d.depth === 0 ? 10 + sankey.nodeWidth() : -6) : d.dy / 2;
                 })
                 .attr("dy", ".15em")
                 .attr("transform", function (d) {
-                    return d.depth !== 1 ? "rotate(-90)" : null;
+                    return d.depth === 2 ? "rotate(-90)" : null;
                 })
                 .style("font", '12px "Helvetica Neue", Helvetica, Arial, sans-serif')
                 .style("fill", '#222')
@@ -194,7 +200,7 @@ var EffectivenessSankey = {
                 //.filter(function (d) { return d.x < width / 2; })
                 //.attr("x", 6 + sankey.nodeWidth())
                 .attr("text-anchor", function (d) {
-                    return d.depth !== 1 ? "middle" : "start"
+                    return d.depth === 2 ? "middle" : "start"
                 });
 
             // the function for moving the nodes
@@ -209,9 +215,9 @@ var EffectivenessSankey = {
                 sankey.relayout();
                 link.attr("d", path);
             }
-            link.attr("d", path);   
+            link.attr("d", path);
             ellipsis.text('......');
-                
+
         }
 
         return effectivenesssankey;
