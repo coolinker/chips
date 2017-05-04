@@ -4,7 +4,7 @@ var EffectivenessSankey = {
         var width = dom.getBoundingClientRect().width;
         var height = dom.getBoundingClientRect().height;
 
-        var margin = { top: 30, right: 20, bottom: 30, left: 10 },
+        var margin = { top: 50, right: 20, bottom: 50, left: 10 },
             width = width - margin.left - margin.right,
             height = height - margin.top - margin.bottom;
 
@@ -21,7 +21,7 @@ var EffectivenessSankey = {
 
         var radius = Math.min(rightwidth, height) / 2.5;
         var rightg = svg.append("g")
-            .attr("transform", "translate(" + (leftwidth + rightwidth / 2) + "," + height / 1.75 + ")");
+            .attr("transform", "translate(" + (leftwidth + rightwidth / 2) + "," + (margin.top + height / 2) + ")");
 
         var pie = d3.pie()
             .sort(null)
@@ -166,7 +166,7 @@ var EffectivenessSankey = {
             // add the link titles
             link.append("title")
                 .text(function (d) {
-                    return d.source.key + " → " +
+                    return d.source.key + (d.source.depth === 0 ? "→...→" :" → ") +
                         d.target.key + "\n" + d.target.count;
                 });
 
