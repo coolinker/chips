@@ -4,15 +4,15 @@ var PathNet = {
         var width = dom.getBoundingClientRect().width;
         var height = dom.getBoundingClientRect().height;
 
-        var margin = { top: 20, right: 20, bottom: 50, left: 20 },
+        var margin = { top: 40, right: 20, bottom: 20, left: 20 },
             width = width - margin.left - margin.right,
             height = height - margin.top - margin.bottom;
         var maxX = 0, maxY = 0;
-        var xScale = window.location.search.match(/(?:xscale=)(\*|[0-9.]+)/g);
-        xScale = xScale ? xScale[0].split('=')[1] : 1;
+        // var xScale = window.location.search.match(/(?:xscale=)(\*|[0-9.]+)/g);
+        // xScale = xScale ? xScale[0].split('=')[1] : 1;
 
-        var yScale = window.location.search.match(/(?:yscale=)(\*|[0-9.]+)/g);
-        yScale = yScale ? Number(yScale[0].split('=')[1]) : 1;
+        // var yScale = window.location.search.match(/(?:yscale=)(\*|[0-9.]+)/g);
+        // yScale = yScale ? Number(yScale[0].split('=')[1]) : 1;
 
         var maxnodecount = 0, maxlinkcount = 0;
         var color = d3.scaleOrdinal(d3.schemeCategory20c);
@@ -147,7 +147,10 @@ var PathNet = {
             maxX = maxY = 0;
             var treeNodes = tree.descendants();
             treeNodes.forEach(function (treenode) {
+                if (treenode.depth > maxdepth) return;
                 var item = treenode.data;
+                item.pos.x = Math.max(0, item.pos.x);
+                item.pos.y = Math.max(0, item.pos.y);
                 var itemkey = item.key;
                 // if (itemkey === "mail.compose.to.input") debugger;
                 // if (item.count<1) return;
@@ -173,14 +176,12 @@ var PathNet = {
 
                 }
 
-                if (treenode.depth <= maxdepth) {
-                    //if (nodesMap[itemkey].fx < 0) console.log("x<0", nodesMap[itemkey].fx, itemkey)
-                    maxX = Math.max(maxX, nodesMap[itemkey].fx);
-                    maxY = Math.max(maxY, nodesMap[itemkey].fy);
-                    maxnodecount = Math.max(maxnodecount, nodesMap[itemkey].count);
-                }
+                //if (nodesMap[itemkey].fx < 0) console.log("x<0", nodesMap[itemkey].fx, itemkey)
+                // maxX = Math.max(maxX, nodesMap[itemkey].fx);
+                // maxY = Math.max(maxY, nodesMap[itemkey].fy);
+                maxnodecount = Math.max(maxnodecount, nodesMap[itemkey].count);
 
-                if (item.children) {
+                if (treenode.depth < maxdepth && item.children) {
                     item.children.forEach(function (citem) {
                         // if (citem.key === "mail.compose.to.input") debugger;
                         // if (citem.count>0)
@@ -227,9 +228,52 @@ var PathNet = {
 
             });
 
+            nodes.sort(function (n1, n2) {
+                return n1.fx - n2.fx;
+            })
+            var minx = nodes[0].fx;
+            nodes.forEach(function (n) {
+                n.fx += margin.left - minx;
+
+            });
+
+            var len = nodes.length;
+            for (var i = 1; i <= 5; i++) {
+                if (nodes[len - i].fx < width || i === 5) {
+                    var r = nodes[len - i].fx;
+                    for (var j = 1; j - i < 0; j++) {
+                        nodes[len - i + j].fx = r + j * 10;
+                    }
+
+                    maxX = nodes[len - 1].fx;
+                    break;
+                }
+            }
+            nodes.sort(function (n1, n2) {
+                return n1.fy - n2.fy;
+            })
+
+            var miny = nodes[0].fy;
+            nodes.forEach(function (n) {
+                n.fy += margin.top - miny;
+            });
+
+            var len = nodes.length;
+            for (var i = 1; i <= 5; i++) {
+                if (nodes[len - i].fy < height || i === 5) {
+                    var r = nodes[len - i].fy;
+                    for (var j = 1; j - i < 0; j++) {
+                        nodes[len - i + j].fy = r + j * 10;
+                    }
+                    maxY = nodes[len - 1].fy;
+                    break;
+                }
+            }
+
+
             nodes.forEach(function (nd) {
-                nd.fx = Math.max(0, nd.fx*xScale);
-                nd.fy= Math.max(0, nd.fy*yScale);
+                nd.fx = Math.max(0, nd.fx);
+                nd.fy = Math.max(0, nd.fy);
 
                 var orgindiff = 0;
                 if (difforigin) {
@@ -293,7 +337,7 @@ var PathNet = {
                 .attr("class", "enter")
                 .style("fill", 'none')
                 .style("stroke-width", function (d) {
-                    var c = Math.max(0.1, d.tgtcount * 15 / maxlinkcount);
+                    var c = Math.max(.1, d.tgtcount * 15 / maxlinkcount);
                     return c;
                 })
                 .style("stroke", linkStroke)
@@ -337,10 +381,10 @@ var PathNet = {
                     var r = Math.sqrt(Math.sqrt(d.count / (maxnodecount)));
                     return Math.max(1.5, Math.round(r * 30));
                 }).style("fill", function (d) {
-                    return d.depth=== 0 ? '#000' :color(d.id);
+                    return d.depth === 0 ? '#000' : color(d.id);
                 })
-                .style('fill-opacity', function(d){
-                        return Math.max(5-d.depth)/4;
+                .style('fill-opacity', function (d) {
+                    return Math.max(0, 5 - d.depth) / 4;
                 })
                 .style("stroke-width", strokeWidth)
                 .style("stroke", stroke)
@@ -369,7 +413,7 @@ var PathNet = {
                 //     var r = Math.sqrt(Math.sqrt(d.count / (maxnodecount)));
                 //     return -Math.max(1.5, Math.round(r * 30));
                 // })
-                .style("font", '12px "Helvetica Neue", Helvetica, Arial, sans-serif')
+                .style("font", '20px "Helvetica Neue", Helvetica, Arial, sans-serif')
                 .style("text-anchor", 'middle')
                 .style("fill", function (d) { return graycolor(d.depth) })
                 .text(updateText);
@@ -486,7 +530,8 @@ var PathNet = {
         }
 
         function zoomDisplay() {
-            var scale = Math.min(width / maxX, height / maxY);
+            var scale = Math.min(1, Math.min(width / maxX, height / maxY));
+
             svg.attr("transform",
                 'translate(0,0)' + " " +
                 'scale(' + scale + ')');
