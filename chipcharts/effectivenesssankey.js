@@ -261,7 +261,6 @@ var EffectivenessSankey = {
 
             arc.append("text")
                 .attr("transform", function (d) {
-                    debugger;
                     return "translate(" + label.centroid(d) + ")";
                 })
                 .attr("dy", ".15em")
