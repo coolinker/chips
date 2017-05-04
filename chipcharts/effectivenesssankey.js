@@ -19,15 +19,15 @@ var EffectivenessSankey = {
 
         var ellipsis = svg.append("text")
             .attr("x", function (d) {
-                return -width / 3;
+                return width / 4;
             })
             .attr("y", function (d) {
-                return height / 2 - 20;
+                return 10;
             })
             .attr("dy", ".35em")
-            .attr("transform", function (d) {
-                return "rotate(-90)";
-            })
+            // .attr("transform", function (d) {
+            //     return "rotate(-90)";
+            // })
             //.style("font", '12px "Helvetica Neue", Helvetica, Arial, sans-serif')
             .style("fill", '#222')
             //.filter(function (d) { return d.x < width / 2; })

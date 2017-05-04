@@ -89,18 +89,22 @@
             "automation-mail-folder-newfolderwin-savebtn": "mail.folder.save.button",
             "ow-icon-": "mail.compose.richeditor.toolbar.button",
 
+            
+
             "********** contacts *********":"",
             
             "x-grid-row-contact": "contacts.grid.row",
             "automation-contacts-picker-add-Add": "contacts.picker.add.button",
-            "rui-contacts-form-savebtn,automation-contact-form-savebtn-Save": "contacts.form.toolbar.save.button",
-            "rui-contacts-form-savebtn,automation-contact-form-savebtn": "contacts.form.toolbar.save.button",
-            "rui-contacts-form-cancelbtn,automation-contact-form-cancelbtn-Cancel": "contacts.form.toolbar.cancel.button",
             "ow-addressbook-name,automation-contact-treenode-default": "contacts.addressbook.default.treenode",
             "ow-addressbook-name, automation-contact-treenode-default": "contacts.addressbook.default.treenode",
             "ow-addressbook-name, automation-contact-treenode-autocomplete": "contacts.addressbook.autocomplete.treenode",
             "ow-addressbook-name,automation-contact-treenode-autocomplete": "contacts.addressbook.autocomplete.treenode",
 
+            "rui-contacts-form-savebtn,automation-contact-form-savebtn-Save": "contacts.form.toolbar.save.button",
+            "rui-contacts-form-savebtn,automation-contact-form-savebtn": "contacts.form.toolbar.save.button",
+            "rui-contacts-form-cancelbtn,automation-contact-form-cancelbtn-Cancel": "contacts.form.toolbar.cancel.button",
+            "automation-contact-contactphoto-changebtn-Change": "contacts.form.changephoto.button",
+            "automation-contact-contactphoto-deletebtn-Delete": "contacts.form.deletephoto.button",
             "automation-contact-detailtoolbar-edit,rui-contacts-detailtoolbar-buttons-Edit" : "contacts.form.toolbar.edit.button",
             "automation-contact-detailtoolbar-edit,rui-contacts-detailtoolbar-buttons": "contacts.form.toolbar.edit.button",
             "automation-contact-merge-cancelbtn": "contacts.merge.cancel.button",
@@ -108,14 +112,13 @@
             "automation-contacts-toolbar-newcontact-Addcontact": "contacts.toolbar.new.button",
             "automation-contacts-toolbar-newcontact-Add contact": "contacts.toolbar.new.button",
             "ow-icon-contactsToolbar-newContact": "contacts.toolbar.new.button",
-            
-            
             "ow-icon-contactListHoverPanel-compose": "contacts.compose.button",
 
             "********** calendar *********":"",
             "ow-icon-calSubTbar-prev": "calendar.toolbar.prev.button",
             
             "********** others *********":"",
+            "x-boundlist-itemautoSuggestListItemx-boundlist-item-over-1": "autosuggest.list.item",
             "uncaught-identifier-ow-autoDirx-header-textx-window-header-textx-window-header-text-default": "window.header.bar",
             "rui-tool,ow-icon-tool-close,automation-icon-tool-close": "toolbar.close.button",
             "x-menu-item-link,x-menu-item-indent-no-separator-2": "menu.item",
