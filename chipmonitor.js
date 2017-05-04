@@ -38,26 +38,32 @@ function ChipMonitor(options) {
     var debugMode = debugParam ? debugParam === 'true' : options.debug;
     var identifierParser = options.findElementIdentifier ? options.findElementIdentifier : findElementIdentifier;
     console.log("Chip monitor is up:", ORIGIN, BATCH, SENDDELAY, CHIPSERVICE)
+    
+    var actions = [];
 
     saveLocalStorageData();
-
-    var actions = [];
     var timeoutObj;
-    window.__chipClick = clickHandler;
+    window.__chipClick = actionHandler;
     document.addEventListener('click', window.__chipClick, true);
 
     window.addEventListener("beforeunload", function (e) {
-        if (actions.length>0) writeToLocalStorage();
+        actionHandler(e);
+        if (actions.length > 0) writeToLocalStorage();
     }, true);
-    
-    function clickHandler(e) {
-        var key = identifierParser(e.target);
+
+    function actionHandler(e) {
+        var key = e.type === 'beforeunload' ? 'beforeunload' : identifierParser(e.target);
         if (!key) {
             if (debugMode) console.log('no key target', e.target);
             return;
         }
         if (debugMode) console.log('push action:', key);
-        actions.push([new Date().getTime(), key.trim(), [Math.round(e.clientX), Math.round(e.clientY)],[Math.round(e.offsetX), Math.round(e.offsetY)]]);
+        actions.push([new Date().getTime(), key.trim(), [Math.round(e.clientX), Math.round(e.clientY)]]);
+
+        if (localStorage.chipData) {
+            localStorage.removeItem("chipData");
+        }
+
         resetSendDelay();
     };
 
@@ -89,7 +95,7 @@ function ChipMonitor(options) {
             serial: sri,
             ingredients: acts
         }
-        
+
         if (localstorage) {
             data.ls = 1;
         }
@@ -98,15 +104,24 @@ function ChipMonitor(options) {
         console.log("sendToChipServer", data)
     };
 
-    function saveLocalStorageData(){
+    function saveLocalStorageData() {
         if (localStorage.chipData) {
             var d = JSON.parse(localStorage.chipData);
-            sendToChipServer(d.origin, d.batch, d.serial, d.ingredients, true);
-            localStorage.removeItem("chipData");
+            var acts = d.ingredients;
+            if (acts && acts.length > 0 && new Date() - acts[acts.length - 1][0]  > SENDDELAY) {
+                var fromLocalStorage = true;
+                sendToChipServer(d.origin, d.batch, d.serial, d.ingredients, fromLocalStorage);
+                localStorage.removeItem("chipData");
+            } else {
+                actions = actions.concat(acts);
+                resetSendDelay();
+                // console.log("continue after reloading...")
+            }
+            
         }
     }
 
-    function writeToLocalStorage(){
+    function writeToLocalStorage() {
         var data = JSON.stringify({
             origin: ORIGIN,
             batch: BATCH,
@@ -118,7 +133,6 @@ function ChipMonitor(options) {
     }
 
     function resetActions(timestamp, acts) {
-        var keep = [];
         for (var i = acts.length - 1; i > 0 && i < acts.length; i--) {
             var time = acts[i][0];
             if (timestamp > time) {
@@ -197,13 +211,13 @@ function ChipMonitor(options) {
             }
         }
 
-        
+
         var closest = ele.closest(selector);
         if (closest) {
             identifier = getElementIdentifier(closest);
             if (identifier) return identifier;
         }
-        
+
         if (ele.tagName === 'TEXTAREA' || ele.tagName === 'INPUT') {
             return ele.name;
         }
