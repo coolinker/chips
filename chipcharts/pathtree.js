@@ -4,7 +4,7 @@ var PathTree = {
         var width = dom.getBoundingClientRect().width;
         var height = dom.getBoundingClientRect().height;
 
-        var margin = { top: 20, right: 90, bottom: 30, left: 90 },
+        var margin = { top: 20, right: 90, bottom: 10, left: 90 },
             width = width - margin.left - margin.right,
             height = height - margin.top - margin.bottom;
 

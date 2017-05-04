@@ -2,6 +2,7 @@
     "origin_default": {
         "batch_default": {
             "rui-core-main-navigation-aux-item-SignOut": "logout.button",
+            "ow-icon-app-logout": "logout.button",
             "beforeunload": "browser.beforeunload",
             "automation-login-language-input": "login.language.input",
             "automation-login-login-button": "login.button",

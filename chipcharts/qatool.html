@@ -26,7 +26,7 @@
         
         <div id="tree" style="width:100%;flex: 1;-webkit-flex: 1;border-top-style: solid;border-width:1px; border-color:#ccc;padding:10px">
             <span style="position:absolute">User Path Diff</span>
-            <ul id="labels" style="position:absolute;right:20px;text-align:right;"></ul>
+            <span id="labels" style="position:absolute;right:20px;text-align:right;"></span>
         </div>
         <div style="width:100%;flex: 1;-webkit-flex: 1;display: -webkit-flex;display: flex;-webkit-flex-direction: row;flex-direction: row;padding:10px">
             <div id="plot" style="height:100%;flex: 2;-webkit-flex: 2;border-top-style: solid;border-width:1px; border-color:#ccc; border-right-style: solid;padding:10px">
@@ -110,12 +110,12 @@
             for (var i = 0; i < arr.length; i++) {
                 var n = arr[i];
                 var s = n.data.count;
-                s = Math.max(0.1, 2 * Math.pow(s, 0.3) / maxCount);
+                s = Math.max(0.1, 2 * Math.pow(s, 0.25) / maxCount);
                 var l = n.data.lag;
                 l = Math.round(Math.max(0, 200 * Math.pow(l, 0.3) / maxLag));
                 c = 'rgb(' + l + ',' + l + ',' + l + ')';
 
-                str += '<li style="color:' + c + ';font-size:' + s + 'em;margin:-0.3em;">' + n.data.key + '</li></br>'
+                str += '<span style="color:' + c + ';font-size:' + s + 'em;margin:-0.3em;">' + n.data.key + '</span></br>'
             }
 
             document.getElementById('labels').innerHTML = str;
