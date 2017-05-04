@@ -68,7 +68,7 @@
         var pathTree = PathTree.createInstance('tree').loadData("login.button", 5, batch, origin, difforigin);
         var pathNet = PathNet.createInstance('net').loadData("login.button", 5, batch, origin, difforigin);
         var lagBubble = LagBubble.createInstance('plot').loadData("login.button", 10, batch, origin);
-        var effectivenessSankey = EffectivenessSankey.createInstance('sankey1').loadData(['mail.toolbar.compose.button'], ['mail.compose.send.button', 'mail.compose.discard.button', 'toolbar.close.button'], 20, batch, origin);
+        var effectivenessSankey = EffectivenessSankey.createInstance('sankey1').loadData(['mail.toolbar.compose.button','contacts.compose.button'], ['mail.compose.send.button', 'mail.compose.discard.button', 'toolbar.close.button'], 20, batch, origin);
         var distributionBar = DistributionBar.createInstance('lagDistribution');
 
         lagBubble.onLagDetail = function (d) {

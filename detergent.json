@@ -48,6 +48,7 @@
             "ow-icon-mailToolbar-refresh": "mail.toolbar.refresh.button",
             "rui-mail-compose,automation-mail-compose": "mail.compose.window",
             "automation-mailtoolbar-compose-menu-Compose": "mail.toolbar.compose.button",
+            "automation-mailtoolbar-reply-menu-Reply": "mail.toolbar.compose.button",
             "rui-blue-highlight-btn,automation-mail-compose-send-btn": "mail.compose.send.button",
             "rui-blue-highlight-btn,automation-mail-compose-send-btn-Send": "mail.compose.send.button",
             "rui-toolbar-gray-btn,automation-mail-compose-discard-btn": "mail.compose.discard.button",
@@ -100,7 +101,7 @@
             "automation-contacts-toolbar-newcontact": "contacts.toolbar.new.button",
             "automation-contacts-toolbar-newcontact-Addcontact": "contacts.toolbar.new.button",
             "automation-contacts-toolbar-newcontact-Add contact": "contacts.toolbar.new.button",
-            
+            "ow-icon-contactListHoverPanel-compose": "contacts.compose.button",
 
             "********** calendar *********":"",
             "ow-icon-calSubTbar-prev": "calendar.toolbar.prev.button",
