@@ -4,14 +4,14 @@ var DistributionBar = {
         var width = dom.getBoundingClientRect().width;
         var height = dom.getBoundingClientRect().height;
 
-        var margin = { top: 20, right: 20, bottom: 50, left: 50 },
+        var margin = { top: 30, right: 20, middle: 30, bottom: 30, left: 50 },
             width = width - margin.left - margin.right,
-            height = (height - margin.top - margin.bottom) / 2;
+            height = (height - margin.top - margin.middle - margin.bottom);
 
         var svg = d3.select('#' + domId).append("svg")
             .attr("width", width + margin.right + margin.left)
-            .attr("height", 2 * height + margin.top + margin.bottom)
-
+            .attr("height", height + margin.top + margin.middle + margin.bottom)
+        height /= 2;
         var x1 = d3.scaleBand().rangeRound([0, width]),
             y1 = d3.scaleLinear().rangeRound([height, 0]),
             r = d3.scaleLinear().range([2, 30]),
@@ -32,12 +32,11 @@ var DistributionBar = {
         var xAxis1 = gHour.append("g")
             .attr("class", "axis axis--x");
 
-
         var yAxis1 = gHour.append("g")
             .attr("class", "axis axis--y");
 
         var gLag = svg.append("g")
-            .attr("transform", "translate(" + margin.left + "," + (2 * margin.top + height) + ")");
+            .attr("transform", "translate(" + margin.left + "," + (margin.top + margin.middle + height) + ")");
         var gLagNodes = gLag.append("g")
             .attr("class", "nodes");
 
@@ -67,7 +66,7 @@ var DistributionBar = {
         gHour.append("text")
             .attr("class", "hourTitle")
             .attr("transform",
-            "translate(" + (2*width/3) + " ," +
+            "translate(" + (2 * width / 3) + " ," +
             (-5) + ")")
             .style("font", '10px "Helvetica Neue", Helvetica, Arial, sans-serif')
             // .attr("dy", "0em")
@@ -122,7 +121,7 @@ var DistributionBar = {
         var distributionbar = {};
 
         distributionbar.loadData = function (source, target, steps, batch, origin) {
-            gHour.select('.hourTitle').text("@"+source + " → @" + target);
+            gHour.select('.hourTitle').text("@" + source + " → @" + target);
 
             var me = this;
             d3.json("/kitchen", function (err, data) {

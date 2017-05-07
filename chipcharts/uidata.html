@@ -12,8 +12,14 @@
 </style>
 
 <body style="background-color:beige;margin:0px">
-    <div style="display: -webkit-flex;display: flex;-webkit-flex-direction: column;flex-direction: column;width: 100%;height: 250%;">
-        <div id="top" style="width:100%;height:50px;font-size:2em;border-color:#ccc; border-bottom-style: solid;;border-width:1px;">UI Data Analytics
+    <div style="display: -webkit-flex;display: flex;-webkit-flex-direction: column;flex-direction: column;width: 100%;height: 380%;">
+        <div id="top" style="width:100%;border-color:#ccc; border-bottom-style: solid;border-width:1px;">
+            <span style="font-size:2em;">UI Data Analytics</span><br/>
+            <span style="font-size: 0.35em;color:#ccc;font-style:italic">Why would you need to Measure Usability?
+There are many reasons as to why someone would require to measure usability – the most common reason being the need to effectively communicate with the stakeholders of the system being evaluated. Other uses can be to satisfy the need for comparing the usability of two or more products and to quantify the severity of a usability problem.
+Ultimately, the primary objective of usability metrics is to assist in producing a system or product that is neither under- nor over-engineered. 
+<br/>-www.usabilitygeek.com
+            </span>
         </div>
         <div style="width:100%;flex: 1.3;-webkit-flex: 1.3;display: -webkit-flex;display: flex;-webkit-flex-direction: row;flex-direction: row; padding:10px">
             <div id="pack" style="width:500px;height:100%;flex:1.2;-webkit-flex:1.2;border-width:1px; border-color:#ccc; border-right-style: solid;">
@@ -23,36 +29,54 @@
                 <span id="netlabel" style="position:absolute">Motion of Mouse</span>
             </div>
         </div>
-        
+
         <div id="tree" style="width:100%;flex: 1.3;-webkit-flex: 1.3;border-top-style: solid;border-width:1px; border-color:#ccc;padding:10px">
             <span style="position:absolute">User Path Diff</span>
             <span id="labels" style="position:absolute;right:20px;text-align:right;"></span>
         </div>
         <div style="width:100%;flex: 1;-webkit-flex: 1;display: -webkit-flex;display: flex;-webkit-flex-direction: row;flex-direction: row;padding:10px">
             <div id="plot" style="height:100%;flex: 2;-webkit-flex: 2;border-top-style: solid;border-width:1px; border-color:#ccc; border-right-style: solid;padding:10px">
-                <span style="position:absolute">Performance(lag between actions)</span>
+                <span style="position:absolute">Performance<span style="font-size: 0.5em;"> - lag between actions</span></span>
             </div>
-            <div id="lagDistribution" style="height:100%;flex: 1;-webkit-flex:1;border-top-style: solid;border-width:1px; border-color:#ccc;padding:10px">
+            <div id="lagDistribution" style="height:100%;flex: 1.2;-webkit-flex:1.2;border-top-style: solid;border-width:1px; border-color:#ccc;padding:10px">
                 <span style="position:absolute">Lag Distribution</span>
             </div>
         </div>
-        
+        <div style="width:100%;border-top-style: solid;border-width:1px; border-color:#ccc;font-size: 0.35em;color:#ccc;font-style:italic;padding:10px;margin:10px" >
+            The ISO/IEC 9126-4 Metrics recommends that usability metrics should include: 
+            <li>Effectiveness: The accuracy and completeness with which users achieve specified goals 
+            </li>
+            <li>Efficiency: The resources expended in relation to the accuracy and completeness
+            with which users achieve goals. </li>
+            <li>Satisfaction: The comfort and acceptability of use.</li>
+        </div>
+
         <div style="width:100%;flex: 1.3;-webkit-flex: 1.3;display: -webkit-flex;display: flex;-webkit-flex-direction: row;flex-direction: row;padding:10px">
             <div id="sankey1" style="height:100%;flex: 1;-webkit-flex: 1;border-right-style: solid;;border-top-style: solid;border-width:1px; border-color:#ccc;padding:10px">
-                <span style="position:absolute">Effectiveness - <span style="font-size: 0.5em;">[Composing Message]</span></span>
+                <span style="position:absolute">Effectiveness - <span style="font-size: 0.5em;">[Compose Email]</span></span>
             </div>
-            
+
         </div>
+
+        <div style="width:100%;flex: 1;-webkit-flex: 1;display: -webkit-flex;display: flex;-webkit-flex-direction: row;flex-direction: row;padding:10px">
+            <div id="efficiency1" style="height:100%;flex: 1;-webkit-flex:1;padding:10px;border-top-style: solid;border-width:1px; border-color:#ccc;">
+                <span style="position:absolute">Efficiency - <span style="font-size: 0.5em;">[Compose Email Time Cost]</span></span>
+            </div>
+        </div>
+
         <div style="width:100%;flex: 1.3;-webkit-flex: 1.3;display: -webkit-flex;display: flex;-webkit-flex-direction: row;flex-direction: row;padding:10px">
             <div id="sankey2" style="height:100%;flex: 1;-webkit-flex:1;padding:10px;border-top-style: solid;border-width:1px; border-color:#ccc;">
                 <span style="position:absolute">Effectiveness - <span style="font-size: 0.5em;">[Creating Contact]</span></span>
             </div>
         </div>
+
         <div style="width:100%;flex: 1;-webkit-flex: 1;display: -webkit-flex;display: flex;-webkit-flex-direction: row;flex-direction: row;padding:10px">
-            <div id="efficiency" style="height:100%;flex: 1;-webkit-flex:1;padding:10px;border-top-style: solid;border-width:1px; border-color:#ccc;">
-                <span style="position:absolute">Efficiency...</span>
+            <div id="efficiency2" style="height:100%;flex: 1;-webkit-flex:1;padding:10px;border-top-style: solid;border-width:1px; border-color:#ccc;">
+                <span style="position:absolute">Efficiency - <span style="font-size: 0.5em;">[Creating Contact Time Cost]</span></span>
             </div>
         </div>
+
+
     </div>
     <script src="https://d3js.org/d3.v4.min.js"></script>
     <script src="pathtree.js"></script>
@@ -62,7 +86,8 @@
     <script src="distributionbar.js"></script>
     <script src="sankey.js"></script>
     <script src="effectivenesssankey.js"></script>
-    
+    <script src="efficiencybar.js"></script>
+
     <script>
         var origin = window.location.search.match(/(?:[^A-Za-z0-9._-]origin=)(\*|[A-Za-z0-9._-]+)/g);
         origin = origin ? [origin[0].split('=')[1]] : null;
@@ -75,13 +100,15 @@
         var pathTree = PathTree.createInstance('tree').loadData("login.button", 5, batch, origin, difforigin);
         var pathNet = PathNet.createInstance('net').loadData("login.button", 5, batch, origin, difforigin);
         var lagBubble = LagBubble.createInstance('plot').loadData("login.button", 10, batch, origin);
-        var effectivenessSankey1 = EffectivenessSankey.createInstance('sankey1').loadData(['mail.toolbar.compose.button','contacts.compose.button','mail.toolbar.reply.button'], ['mail.compose.send.button', 'mail.compose.discard.button', 'toolbar.close.button', 'browser.beforeunload'], 20, batch, origin);
-        var effectivenessSankey2 = EffectivenessSankey.createInstance('sankey2').loadData(['contacts.toolbar.new.button','contacts.form.toolbar.edit.button'], ['contacts.form.toolbar.save.button', 'contacts.form.toolbar.cancel.button', 'browser.beforeunload'], 20, batch, origin);
-        
+        var effectivenessSankey1 = EffectivenessSankey.createInstance('sankey1').loadData(['mail.toolbar.compose.button', 'contacts.compose.button', 'mail.toolbar.reply.button'], ['mail.compose.send.button', 'mail.compose.discard.button', 'toolbar.close.button', 'browser.beforeunload'], 20, batch, origin);
+        var effectivenessSankey2 = EffectivenessSankey.createInstance('sankey2').loadData(['contacts.toolbar.new.button', 'contacts.form.toolbar.edit.button'], ['contacts.form.toolbar.save.button', 'contacts.form.toolbar.cancel.button', 'browser.beforeunload'], 20, batch, origin);
+        var efficiencyBar = EfficiencyBar.createInstance('efficiency1').loadData(['mail.toolbar.compose.button', 'contacts.compose.button', 'mail.toolbar.reply.button'], ['mail.compose.send.button', 'mail.compose.discard.button', 'toolbar.close.button', 'browser.beforeunload'], 20, batch, origin);
+        var efficiencyBar = EfficiencyBar.createInstance('efficiency2').loadData(['contacts.toolbar.new.button', 'contacts.form.toolbar.edit.button'], ['contacts.form.toolbar.save.button', 'contacts.form.toolbar.cancel.button', 'browser.beforeunload'], 20, batch, origin);
+
         var distributionBar = DistributionBar.createInstance('lagDistribution');
 
         lagBubble.onLagDetail = function (d) {
-            distributionBar.loadData([d.source.data.key], [d.target.data.key], 10, batch, origin);
+            distributionBar.loadData([d.source.data.key], [d.target.data.key], 1, batch, origin);
         }
 
         pathTree.setUpdateHandler(function (d) {

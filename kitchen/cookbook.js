@@ -13,6 +13,11 @@ module.exports = cookbook = {
             "target": [],
             "origins": "*",
             "batch": "*",
+            "by":{
+                "lag": 1,
+                "hour": 1,
+                "step": 1,
+            }
         },
         "treelike": {
             "layout": 'tree',

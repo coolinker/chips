@@ -85,13 +85,28 @@ module.exports = class Chef {
         const igdlen = ingredients.length;
         const sourceKeys = menu.source;
         const targetKeys = menu.target;
-        if (!root.children['byhour']) root.children['byhour'] = {key:'byhour', children: {} };
-        if (!root.children['bylag']) root.children['bylag'] = { key:'bylag', children: {} };
+
+        let byh, byl, bys;
+
+        if (menu.by['hour']) {
+            if (!root.children['byhour']) root.children['byhour'] =  this.byDefaultObj('byhour');
+            byh = root.children['byhour'].children;
+        }
+        
+        if (menu.by['lag']) {
+            if (!root.children['bylag']) root.children['bylag'] =  this.byDefaultObj('bylag');
+            byl = root.children['bylag'].children;
+        }
+
+        if (menu.by['step']) {
+            if (!root.children['bystep']) root.children['bystep'] =  this.byDefaultObj('bystep');
+            bys = root.children['bystep'].children;
+        }
+
+        //{ key: 'bylag', children: {} };
         if (!root.source) root.source = sourceKeys;
         if (!root.target) root.target = targetKeys;
 
-        const byhour = root.children['byhour'].children;
-        const bylag = root.children['bylag'].children;
 
         for (let i = 0; i < igdlen;) {
             const srckey = ingredients[i][1];
@@ -99,37 +114,56 @@ module.exports = class Chef {
                 i++;
                 continue;
             }
-            
+
             let j = i + 1;
 
             for (; j <= i + deepmax && j < igdlen; j++) {
                 let tgtkey = ingredients[j][1];
                 if (sourceKeys.indexOf(tgtkey) >= 0) {
-                    console.log("ERROR source key invalid", ingredients);
                     break;
                 }
 
                 if (targetKeys.indexOf(tgtkey) >= 0) {
-                    let hourkey = new Date(ingredients[i][0]).getHours();
-                    
-                    if (!byhour[hourkey]) {
-                        byhour[hourkey] = this.defaultIngredientObj(srckey);
-                        byhour[hourkey].id = srckey;
-                    }
-                    this.addPairs(byhour[hourkey], sorted, i, j);
-                    let lag = ingredients[j][0] - ingredients[i][0];
-                    let lagkey = Math.round(lag / 1000) * 1000;
-                    if (!bylag[lagkey]) {
-                        bylag[lagkey] = this.defaultIngredientObj(srckey);
-                        bylag[lagkey].id = srckey;
-                        bylag[lagkey].lag = lag;
-                    }
-                    this.addPairs(bylag[lagkey], sorted, i, j);
+                    if (byh) {
+                        let hourkey = new Date(ingredients[i][0]).getHours();
 
+                        if (!byh[hourkey]) {
+                            byh[hourkey] = this.defaultIngredientObj(srckey);
+                            byh[hourkey].id = srckey;
+
+                        }
+                        this.addPairs(byh[hourkey], sorted, i, j);
+                    }
+
+                    if (byl) {
+                        let lag = ingredients[j][0] - ingredients[i][0];
+                        let lagkey = Math.round(lag / 1000) * 1000;
+                        if (!byl[lagkey]) {
+                            byl[lagkey] = this.defaultIngredientObj(srckey);
+                            byl[lagkey].id = srckey;
+                        }
+                        this.addPairs(byl[lagkey], sorted, i, j);
+
+                    }
+
+                    if (bys) {
+                        let steps = j - i;
+                        let stepskey = steps;
+                        if (!bys[stepskey]) {
+                            bys[stepskey] = this.defaultIngredientObj(srckey);
+                            bys[stepskey].id = srckey;
+                        }
+                        this.addPairs(bys[stepskey], sorted, i, j);
+
+                    }
+
+
+                    break;
                 }
+
             }
 
-            i = j+1;
+            i = j;
 
         }
     }
@@ -159,6 +193,7 @@ module.exports = class Chef {
         tgtnode['origincounts'][origin]++;
         tgtnode.count++;
         this.addLag(tgtnode, ingredients[target][0] - ingredients[source][0]);
+        this.addSumLag(tgtnode, ingredients[target], ingredients[source]);
 
     }
 
@@ -181,12 +216,19 @@ module.exports = class Chef {
             let j = i + 1;
             for (; j < igdlen; j++) {
                 if (sourceKeys.indexOf(ingredients[j][1]) >= 0) {
-                    console.log("ERROR source key invalid", ingredients);
+                    //console.log("ERROR source key invalid", ingredients);
+                    break;
                 }
                 if (targetKeys.indexOf(ingredients[j][1]) >= 0) break;
             }
+
             if (j === igdlen || j - i > deepmax) {
                 return;
+            }
+
+            if (sourceKeys.indexOf(ingredients[j][1]) >= 0) {
+                i++;
+                continue;
             }
 
             let cursor = root;
@@ -210,6 +252,7 @@ module.exports = class Chef {
                 children[igd].count++;
                 this.addPos(children[igd], item);
                 this.addLag(children[igd], item[0] - preTime);
+                this.addSumLag(children[igd], item, ingredients[i]);
                 preTime = item[0];
 
                 children[igd]['origincounts'][origin]++;
@@ -263,6 +306,8 @@ module.exports = class Chef {
                 children[igd].count++;
                 this.addPos(children[igd], item);
                 this.addLag(children[igd], item[0] - preTime);
+                this.addSumLag(children[igd], item, ingredients[i]);
+
                 preTime = item[0];
                 children[igd]['origincounts'][origin]++;
                 cursor = children[igd];
@@ -280,8 +325,16 @@ module.exports = class Chef {
         node.lag += (lag - node.lag) / node.count;
     }
 
+    addSumLag(node, item, root) {
+        node.sumlag += (item[0] - root[0]) / node.count;
+    }
+
     defaultIngredientObj(igd) {
-        return { count: 0, key: igd, origincounts: {}, lag: 0, pos: { x: 0, y: 0 }, children: {} };
+        return { count: 0, key: igd, origincounts: {}, lag: 0, pos: { x: 0, y: 0 }, sumlag: 0, steps:0, children: {} };
+    }
+
+    byDefaultObj(by) {
+        return { key: by, children: {} };
     }
 
     cook(menu, raw) {

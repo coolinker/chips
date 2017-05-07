@@ -4,7 +4,7 @@ var PathNet = {
         var width = dom.getBoundingClientRect().width;
         var height = dom.getBoundingClientRect().height;
 
-        var margin = { top: 40, right: 20, bottom: 20, left: 20 },
+        var margin = { top: 50, right: 20, bottom: 20, left: 20 },
             width = width - margin.left - margin.right,
             height = height - margin.top - margin.bottom;
         var maxX = 0, maxY = 0;
@@ -34,11 +34,8 @@ var PathNet = {
         //     .interpolate(d3.interpolateHcl);
 
         var svg = d3.select('#' + domId).append("svg")
-            .attr("id", "netsvg")
             .attr("width", width + margin.right + margin.left)
             .attr("height", height + margin.top + margin.bottom)
-        svg.style('top', 70);
-        svg.style('position', 'absolute');
         svg = svg.append("g")
             .attr("transform", "translate("
             + margin.left + "," + margin.top + ")");

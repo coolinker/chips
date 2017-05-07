@@ -4,12 +4,11 @@ var LagBubble = {
         var width = dom.getBoundingClientRect().width;
         var height = dom.getBoundingClientRect().height;
 
-        var margin = { top: 20, right: 20, bottom: 50, left: 50 },
+        var margin = { top: 30, right: 20, bottom: 50, left: 50 },
             width = width - margin.left - margin.right,
             height = height - margin.top - margin.bottom;
 
         var svg = d3.select('#' + domId).append("svg")
-            .attr("id", "netsvg")
             .attr("width", width + margin.right + margin.left)
             .attr("height", height + margin.top + margin.bottom)
 

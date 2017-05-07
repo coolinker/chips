@@ -9,7 +9,6 @@ var EffectivenessSankey = {
             height = height - margin.top - margin.bottom;
 
         var svg = d3.select('#' + domId).append("svg")
-            .attr("id", "netsvg")
             .attr("width", width + margin.right + margin.left)
             .attr("height", height + margin.top + margin.bottom)
 
@@ -40,9 +39,9 @@ var EffectivenessSankey = {
                 return -rightwidth/2 + 20;
             })
             .attr("y", function (d) {
-                return -height/2;
+                return -height/2+10;
             })
-            // .attr("dy", ".35em")
+            .style("font", '12px "Helvetica Neue", Helvetica, Arial, sans-serif')
             .style("fill", '#222');
 
         var ellipsis = leftg.append("text")
