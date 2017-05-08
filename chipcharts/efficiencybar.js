@@ -4,7 +4,7 @@ var EfficiencyBar = {
         var width = dom.getBoundingClientRect().width;
         var height = dom.getBoundingClientRect().height;
 
-        var margin = { top: 40, right: 30, bottom: 50, left: 30 , middle: 50},
+        var margin = { top: 40, right: 30, bottom: 50, left: 30, middle: 50 },
             width = width - margin.middle - margin.left - margin.right,
             height = height - margin.top - margin.bottom;
 
@@ -42,11 +42,11 @@ var EfficiencyBar = {
 
         var xAxis1 = lagg.append("g")
             .attr("class", "axis")
-            .attr("transform", "translate(2," + height + ")");
+            .attr("transform", "translate(0," + height + ")");
 
         xAxis1.append("text")
             .attr("y", -30)
-            .attr("x", width-30)
+            .attr("x", width - 30)
             .attr("fill", "#000")
             .attr("font-weight", "bold")
             .text("Time Cost");
@@ -57,7 +57,7 @@ var EfficiencyBar = {
 
         xAxis2.append("text")
             .attr("y", -30)
-            .attr("x", width-40)
+            .attr("x", width - 40)
             .attr("fill", "#000")
             .attr("font-weight", "bold")
             .text("Steps");
@@ -87,6 +87,7 @@ var EfficiencyBar = {
             .text("Case Count");
         // d3.scaleOrdinal()
         // .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);   
+
 
         function formatLagData(data) {
             var bylag = {};
@@ -150,6 +151,26 @@ var EfficiencyBar = {
             return bysteparr;
         }
 
+        function getAvgX(data, axis, valueAtt, countAtt) {
+            var v = 0, c = 0;
+            data.forEach(function (d) {
+                v += d[valueAtt] * d[countAtt];
+                c += d[countAtt];
+            });
+
+            var avg = v / c;
+            var varr = axis.domain();
+            var bw = axis.bandwidth();
+            for (var i = 0; i < varr.length; i++) {
+                if (varr[i] > avg) {
+                    var offset = Math.round((varr[i] - avg) * bw / (varr[i] - varr[i - 1]));
+                    return axis(varr[i]) - offset;
+                }
+            }
+
+            return null;
+        }
+
         var efficiencybar = {
         };
 
@@ -176,6 +197,8 @@ var EfficiencyBar = {
                 if (i % 10 === 0) xlabels[lagData[i].key] = true;
             }
 
+
+
             x1.domain(lagData.map(function (d) { return d.key; }));
             y1.domain([0, d3.max(lagData, function (d) {
                 return d.total;
@@ -187,10 +210,15 @@ var EfficiencyBar = {
                 return d.total;
             })]).nice();
 
+            var avgLagX = getAvgX(lagData, x1, 'key', 'total');
+            var avgStepsX = getAvgX(stepData, x2, 'key', 'total');
+
+
             lagg.append("g")
                 .selectAll("g")
                 .data(d3.stack().keys(keys)(lagData))
                 .enter().append("g")
+                .style("opacity", 1)
                 .attr("fill", function (d) {
                     return z(d.key);
                 })
@@ -224,6 +252,7 @@ var EfficiencyBar = {
                 .selectAll("g")
                 .data(d3.stack().keys(keys)(stepData))
                 .enter().append("g")
+                .style("opacity", 1)
                 .attr("fill", function (d) {
                     return z(d.key);
                 })
@@ -259,6 +288,45 @@ var EfficiencyBar = {
 
             xAxis2.call(d3.axisBottom(x2));
             yAxis2.call(d3.axisLeft(y2).ticks(null, "s"));
+
+            var line1 = lagg.append("line")
+                .style("stroke", "#ff7f0e")
+                .style("stroke-width", 2)
+                .style("opacity", 1);
+
+            var avg1 = lagg.append("text")
+                .attr("y", -2)
+                .attr("font-size", 10)
+                .attr("fill", "#ff7f0e")
+                .attr("font-weight", "bold")
+                .attr("text-anchor", "middle");
+
+            var line2 = stepg.append("line")
+                .style("stroke", "#ff7f0e")
+                .style("stroke-width", 2)
+                .style("opacity", 1);
+            var avg2 = stepg.append("text")
+                .attr("y", -2)
+                .attr("font-size", 10)
+                .attr("fill", "#ff7f0e")
+                .attr("font-weight", "bold")
+                .attr("text-anchor", "middle");
+
+            line1.attr("x1", avgLagX)
+                .attr("y1", 0)
+                .attr("x2", avgLagX)
+                .attr("y2", height);
+            avg1.attr("x", avgLagX)
+                .text("Avg");
+
+            line2.attr("x1", avgStepsX)
+                .attr("y1", 0)
+                .attr("x2", avgStepsX)
+                .attr("y2", height);
+
+            avg2.attr("x", avgStepsX)
+                .text("Avg");
+
 
             var legend1 = lagg.append("g")
                 .attr("font-family", "sans-serif")
