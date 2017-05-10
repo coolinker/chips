@@ -22,24 +22,55 @@ var EffectivenessSankey = {
         var rightg = svg.append("g")
             .attr("transform", "translate(" + (leftwidth + rightwidth / 2) + "," + (margin.top + height / 2) + ")");
 
+        // var pie = d3.pie()
+        //     .padAngle(.02)
+        //     .sort(null)
+        //     .value(function (d) { return d.value; });
+
+        // var piepath = d3.arc()
+        //     .outerRadius(radius - 10)
+        //     .innerRadius(0);
+
+        // var outerArc = d3.arc()
+        //     .outerRadius(radius * 0.9)
+        //     .innerRadius(radius * 0.9);
+
+        // rightg.append("g")
+        //     .attr("class", "labels");
+        // rightg.append("g")
+        //     .attr("class", "lines");
+
         var pie = d3.pie()
-            .sort(null)
-            .value(function (d) { return d.value; });
+            .value(function (d) { return d.value })
+            .sort(null);
 
-        var piepath = d3.arc()
-            .outerRadius(radius - 10)
-            .innerRadius(0);
+        // contructs and arc generator. This will be used for the donut. The difference between outer and inner
+        // radius will dictate the thickness of the donut
+        var arc = d3.arc()
+            .outerRadius(radius * 0.8)
+            .innerRadius(radius * 0.6)
+            .cornerRadius(3)
+            .padAngle(0.015);
 
-        var label = d3.arc()
-            .outerRadius(radius + 10)
-            .innerRadius(radius + 0);
+        // this arc is used for aligning the text labels
+        var outerArc = d3.arc()
+            .outerRadius(radius * 0.9)
+            .innerRadius(radius * 0.9);
+        // append the svg object to the selection
+        // g elements to keep elements within svg modular
+        rightg.append('g').attr('class', 'slices');
+        rightg.append('g').attr('class', 'labelName');
+        rightg.append('g').attr('class', 'lines');
+
+
+        //================================================
 
         var exittext = rightg.append("text")
             .attr("x", function (d) {
-                return -rightwidth/2 + 20;
+                return -rightwidth / 2 + 20;
             })
             .attr("y", function (d) {
-                return -height/2+10;
+                return -height / 2 + 10;
             })
             .style("font", '12px "Helvetica Neue", Helvetica, Arial, sans-serif')
             .style("fill", '#222');
@@ -57,8 +88,8 @@ var EffectivenessSankey = {
                 return "middle";
             });
 
-        
-            
+
+
 
         color = d3.scaleOrdinal(d3.schemeCategory20);
         // Set the sankey diagram properties
@@ -117,6 +148,7 @@ var EffectivenessSankey = {
             return graph;
         }
 
+
         var effectivenesssankey = {
         };
 
@@ -165,7 +197,7 @@ var EffectivenessSankey = {
             // add the link titles
             link.append("title")
                 .text(function (d) {
-                    return d.source.key + (d.source.depth === 0 ? "→...→" :" → ") +
+                    return d.source.key + (d.source.depth === 0 ? "→...→" : " → ") +
                         d.target.key + "\n" + d.target.count;
                 });
 
@@ -247,31 +279,72 @@ var EffectivenessSankey = {
                 if (item.depth === 2) piedata.push(item);
             });
 
-            var arc = rightg.selectAll(".arc")
+            // add and colour the donut slices
+            var piepath = rightg.select('.slices')
+                .selectAll('path')
                 .data(pie(piedata))
-                .enter().append("g")
-                .attr("class", "arc");
+                .enter().append('path')
+                .attr('fill', function (d) { 
+                    return color(d.data.key); })
+                .attr('d', arc);
+            // ===========================================================================================
 
-            arc.append("path")
-                .attr("d", piepath)
-                .attr("fill", function (d) {
-                    return d.data.key === 'browser.beforeunload' ? '#d00' :color(d.data.key);
-                });
-
-            arc.append("text")
-                .attr("transform", function (d) {
-                    return "translate(" + label.centroid(d) + ")";
-                })
-                .attr("dy", ".15em")
+            // ===========================================================================================
+            // add text labels
+            var pielabel = rightg.select('.labelName').selectAll('text')
+                .data(pie(piedata))
+                .enter().append('text')
+                .attr('dy', '.35em')
                 .style("font", '12px "Helvetica Neue", Helvetica, Arial, sans-serif')
-                .style("fill", function(d){
-                    return d.data.key === 'browser.beforeunload' ? '#f00' : '#222';
-                })
-                .text(function (d) {
-                    return  d.data.key === 'browser.beforeunload'? 'Frustrated Reloading!' :d.data.key;
+                .style("fill", '#222')
+                .html(updateLabelText)
+                .attr('transform', labelTransform)
+                .style('text-anchor', function (d) {
+                    // if slice centre is on the left, anchor text to start, otherwise anchor to end
+                    return (midAngle(d)) < Math.PI ? 'start' : 'end';
                 });
+            // ===========================================================================================
+
+            // ===========================================================================================
+            // add lines connecting labels to slice. A polyline creates straight lines connecting several points
+            var polyline = rightg.select('.lines')
+                .selectAll('polyline')
+                .data(pie(piedata))
+                .enter().append('polyline')
+                .attr('points', calculatePoints)
+                .style("stroke", '#ccc')
+                .style("stroke-width", 2)
+                 .style('fill','none');
 
             exittext.text('Exits Distribution →');
+
+            // calculates the angle for the middle of a slice
+            function midAngle(d) { return d.startAngle + (d.endAngle - d.startAngle) / 2; }
+
+            // calculate the points for the polyline to pass through
+            function calculatePoints(d) {
+                // see label transform function for explanations of these three lines.
+                var pos = outerArc.centroid(d);
+                pos[0] = radius * 0.9 * (midAngle(d) < Math.PI ? 1 : -1);
+                return [arc.centroid(d), outerArc.centroid(d), pos]
+            }
+
+            function labelTransform(d) {
+                // effectively computes the centre of the slice.
+                // see https://github.com/d3/d3-shape/blob/master/README.md#arc_centroid
+                var pos = outerArc.centroid(d);
+
+                // changes the point to be on left or right depending on where label is.
+                pos[0] = radius * 0.95 * (midAngle(d) < Math.PI ? 1 : -1);
+
+                return 'translate(' + pos + ')';
+            }
+
+            function updateLabelText(d) {
+                return d.data.key;// + ': <tspan>' + percentFormat(d.data[variable]) + '</tspan>';
+            }
+
+
 
         }
 
