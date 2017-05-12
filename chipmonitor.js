@@ -38,33 +38,77 @@ function ChipMonitor(options) {
     var debugMode = debugParam ? debugParam === 'true' : options.debug;
     var identifierParser = options.findElementIdentifier ? options.findElementIdentifier : findElementIdentifier;
     console.log("Chip monitor is up:", ORIGIN, BATCH, SENDDELAY, CHIPSERVICE)
-    
+
     var actions = [];
 
     saveLocalStorageData();
-    var timeoutObj;
-    window.__chipClick = actionHandler;
-    document.addEventListener('click', window.__chipClick, true);
 
-    window.addEventListener("beforeunload", function (e) {
-        actionHandler(e);
-        if (actions.length > 0) writeToLocalStorage();
-    }, true);
+    actions.push([new Date().getTime(), "browser.loaded", [0, 0], "loaded"]);
+
+    var timeoutObj;
+    window.__chipActionHandler = actionHandler;
+    window.addEventListener("beforeunload", window.__chipActionHandler, true);
+    window.addEventListener('click', window.__chipActionHandler, true);
+    window.addEventListener("touchstart", window.__chipActionHandler, true);
+    window.addEventListener("touchend", window.__chipActionHandler, true);
+
+    window.__chipKeydownHandler = function (e) {
+        var focusinhandler = function (e) {
+            window.removeEventListener("focusin", focusinhandler, true);
+            var pos = getPosition(e.target);
+            e.clientX = pos.x;
+            e.clientY = pos.y;
+            actionHandler(e);
+        }
+
+        if (e.keyCode === 9/*tab*/) {
+            window.addEventListener("focusin", focusinhandler, true);
+        }
+    }
+
+    window.addEventListener("keydown", window.__chipKeydownHandler, true);
+
+
 
     function actionHandler(e) {
-        var key = e.type === 'beforeunload' ? 'beforeunload' : identifierParser(e.target);
+        var key;
+
+        if (e.type === 'beforeunload') {
+            key = 'beforeunload';
+        } else if (e.type === 'touchstart' || e.type === 'touchend') {
+            var t = e.changedTouches[0];
+            t.type = e.type;
+            e = t;
+            key = identifierParser(e.target);
+        } else {
+            key = identifierParser(e.target);
+        }
+
         if (!key) {
             if (debugMode) console.log('no key target', e.target);
             return;
         }
-        if (debugMode) console.log('push action:', key);
-        actions.push([new Date().getTime(), key.trim(), [Math.round(e.clientX), Math.round(e.clientY)]]);
+
+        if (debugMode) console.log('push action:', e.type, key);
+        var len = actions.length;
+        if (e.type === 'click' && len >= 2 && actions[len - 1][3] === 'touchend' && actions[len - 2][3] === 'touchstart') {
+            actions.pop();
+            //replace touchstart/touchend by tclick
+            actions[len - 2][3] = 'tap';
+        } else {
+            actions.push([new Date().getTime(), key.trim(), [Math.round(e.clientX), Math.round(e.clientY)], e.type]);
+        }
 
         if (localStorage.chipData) {
             localStorage.removeItem("chipData");
         }
 
         resetSendDelay();
+
+        if (e.type === 'beforeunload') {
+            writeToLocalStorage();
+        }
+
     };
 
     function resetSendDelay() {
@@ -82,7 +126,7 @@ function ChipMonitor(options) {
         xhr.onreadystatechange = function () {
             if (xhr.readyState !== 4) return;
             if (xhr.status == 200) {
-                
+
             } else {
                 console.log("Chip server seems not availible. Disable ChipMonitor funciton.", xhr.status, new Date());
                 stopMonitor();
@@ -102,22 +146,25 @@ function ChipMonitor(options) {
         data = JSON.stringify(data);
         xhr.send(data);
         resetActions();
-        console.log("sendToChipServer", data)
+        
+        if (debugMode) {
+            console.log("sendToChipServer", data)
+        }
     };
 
     function saveLocalStorageData() {
         if (localStorage.chipData) {
             var d = JSON.parse(localStorage.chipData);
             actions = d.ingredients;
-            if (new Date() - actions[actions.length - 1][0]  > SENDDELAY) {
+            if (new Date() - actions[actions.length - 1][0] > SENDDELAY) {
                 var fromLocalStorage = true;
                 sendToChipServer(d.origin, d.batch, d.serial, fromLocalStorage);
-                localStorage.removeItem("chipData");
             } else {
                 resetSendDelay();
                 // console.log("continue after reloading...")
             }
-            
+
+            localStorage.removeItem("chipData");
         }
     }
 
@@ -225,8 +272,39 @@ function ChipMonitor(options) {
         return i;
     }
 
+    function getPosition(el) {
+        var xPos = 0;
+        var yPos = 0;
+
+        while (el) {
+            if (el.tagName == "BODY") {
+                // deal with browser quirks with body/window/document and page scroll
+                var xScroll = el.scrollLeft || document.documentElement.scrollLeft;
+                var yScroll = el.scrollTop || document.documentElement.scrollTop;
+
+                xPos += (el.offsetLeft - xScroll + el.clientLeft);
+                yPos += (el.offsetTop - yScroll + el.clientTop);
+            } else {
+                // for all other non-BODY elements
+                xPos += (el.offsetLeft - el.scrollLeft + el.clientLeft);
+                yPos += (el.offsetTop - el.scrollTop + el.clientTop);
+            }
+
+            el = el.offsetParent;
+        }
+        return {
+            x: xPos,
+            y: yPos
+        };
+    }
+
     function stopMonitor() {
-        document.removeEventListener('click', window.__chipClick, true)
+        window.removeEventListener('click', window.__chipActionHandler, true)
+        window.removeEventListener("beforeunload", window.__chipActionHandler, true);
+        window.removeEventListener("touchstart", window.__chipActionHandler, true);
+        window.removeEventListener("touchend", window.__chipActionHandler, true);
+        window.removeEventListener("keydown", window.__chipKeydownHandler, true);
+
         if (timeoutObj) clearTimeout(timeoutObj);
         console.log("Stopped monitor!")
     }
