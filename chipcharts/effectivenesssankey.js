@@ -22,24 +22,6 @@ var EffectivenessSankey = {
         var rightg = svg.append("g")
             .attr("transform", "translate(" + (leftwidth + rightwidth / 2) + "," + (margin.top + height / 2) + ")");
 
-        // var pie = d3.pie()
-        //     .padAngle(.02)
-        //     .sort(null)
-        //     .value(function (d) { return d.value; });
-
-        // var piepath = d3.arc()
-        //     .outerRadius(radius - 10)
-        //     .innerRadius(0);
-
-        // var outerArc = d3.arc()
-        //     .outerRadius(radius * 0.9)
-        //     .innerRadius(radius * 0.9);
-
-        // rightg.append("g")
-        //     .attr("class", "labels");
-        // rightg.append("g")
-        //     .attr("class", "lines");
-
         var pie = d3.pie()
             .value(function (d) { return d.value })
             .sort(null);
@@ -50,7 +32,7 @@ var EffectivenessSankey = {
             .outerRadius(radius * 0.8)
             .innerRadius(radius * 0.6)
             .cornerRadius(3)
-            .padAngle(0.015);
+            .padAngle(0.01);
 
         // this arc is used for aligning the text labels
         var outerArc = d3.arc()
@@ -285,7 +267,7 @@ var EffectivenessSankey = {
                 .data(pie(piedata))
                 .enter().append('path')
                 .attr('fill', function (d) { 
-                    return color(d.data.key); })
+                    return d.data.key === 'browser.beforeunload' ? '#f00' :color(d.data.key); })
                 .attr('d', arc);
             // ===========================================================================================
 
@@ -296,7 +278,9 @@ var EffectivenessSankey = {
                 .enter().append('text')
                 .attr('dy', '.35em')
                 .style("font", '12px "Helvetica Neue", Helvetica, Arial, sans-serif')
-                .style("fill", '#222')
+                .style("fill", function(d){
+                    return d.data.key === 'browser.beforeunload' ? '#f00' : '#222'; 
+                })
                 .html(updateLabelText)
                 .attr('transform', labelTransform)
                 .style('text-anchor', function (d) {

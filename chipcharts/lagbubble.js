@@ -176,7 +176,8 @@ var LagBubble = {
         function validLinks(links) {
             var vlnks = [];
             links.forEach(function (l) {
-                if (l.count > 5) vlnks.push(l);
+                if (l.count > 5 && l.lag<180000) vlnks.push(l);
+                if (l.lag> 180000) console.log("lag > 180000", l.source.data, l.target.data)
             });
             return vlnks.sort(function(l1, l2){
                 return l1.lag - l2.lag;
