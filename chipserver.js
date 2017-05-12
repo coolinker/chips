@@ -123,7 +123,7 @@ function handleKichenRequest(req, res) {
 }
 
 function cook(info) {
-    
+
     const menu = Cookbook.dishes[info.dish];
     const tempmenu = {};
     for (let att in menu) {
@@ -142,24 +142,17 @@ function cook(info) {
 function receive(chipJson) {
     const len = chipJson.ingredients.length;
     if (len === 0) return;
-
-    const timestamplink = chipJson.ingredients[0][0];
-    if (chipStore[timestamplink]) {
-        const chips = chipStore[timestamplink];
+    chipJson.updatedAt = new Date().getTime();
+    const serial = chipJson.serial;
+    if (chipStore[serial]) {
+        const chips = chipStore[serial];
         const ingredients = chips.ingredients;
-        chipJson.ingredients.shift();
         appendArray(ingredients, chipJson.ingredients);
-        delete chipStore[timestamplink];
-        const newtimestamplink = ingredients[ingredients.length - 1][0];
-        chipStore[newtimestamplink] = chips;
-        chips.updatedAt = new Date().getTime();
-        console.log("append chips", timestamplink, newtimestamplink)
+        console.log("append chips", serial)
     } else {
         const ingredients = chipJson.ingredients;
-        const timestamplink = ingredients[ingredients.length - 1][0];
-        chipStore[timestamplink] = chipJson;
-        chipJson.updatedAt = new Date().getTime();
-        console.log("new chips link", timestamplink)
+        chipStore[serial] = chipJson;
+        console.log("new chips link", serial)
     }
 
 }
