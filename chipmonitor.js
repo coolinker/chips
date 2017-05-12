@@ -70,11 +70,11 @@ function ChipMonitor(options) {
     function resetSendDelay() {
         if (timeoutObj) clearTimeout(timeoutObj);
         timeoutObj = setTimeout(function () {
-            sendToChipServer(ORIGIN, BATCH, SERIAL, actions);
+            sendToChipServer(ORIGIN, BATCH, SERIAL);
         }, SENDDELAY);
     };
 
-    function sendToChipServer(org, bch, sri, acts, localstorage) {
+    function sendToChipServer(org, bch, sri, localstorage) {
         var timestamp = new Date().getTime();
         xhr = new XMLHttpRequest();
         xhr.open("POST", CHIPSERVICE, true);
@@ -82,7 +82,7 @@ function ChipMonitor(options) {
         xhr.onreadystatechange = function () {
             if (xhr.readyState !== 4) return;
             if (xhr.status == 200) {
-                resetActions(timestamp, acts);
+                
             } else {
                 console.log("Chip server seems not availible. Disable ChipMonitor funciton.", xhr.status, new Date());
                 stopMonitor();
@@ -93,7 +93,7 @@ function ChipMonitor(options) {
             origin: org,
             batch: bch,
             serial: sri,
-            ingredients: acts
+            ingredients: actions
         }
 
         if (localstorage) {
@@ -101,19 +101,19 @@ function ChipMonitor(options) {
         }
         data = JSON.stringify(data);
         xhr.send(data);
+        resetActions();
         console.log("sendToChipServer", data)
     };
 
     function saveLocalStorageData() {
         if (localStorage.chipData) {
             var d = JSON.parse(localStorage.chipData);
-            var acts = d.ingredients;
-            if (acts && acts.length > 0 && new Date() - acts[acts.length - 1][0]  > SENDDELAY) {
+            actions = d.ingredients;
+            if (new Date() - actions[actions.length - 1][0]  > SENDDELAY) {
                 var fromLocalStorage = true;
-                sendToChipServer(d.origin, d.batch, d.serial, d.ingredients, fromLocalStorage);
+                sendToChipServer(d.origin, d.batch, d.serial, fromLocalStorage);
                 localStorage.removeItem("chipData");
             } else {
-                actions = actions.concat(acts);
                 resetSendDelay();
                 // console.log("continue after reloading...")
             }
@@ -132,14 +132,8 @@ function ChipMonitor(options) {
         localStorage.chipData = data;
     }
 
-    function resetActions(timestamp, acts) {
-        for (var i = acts.length - 1; i > 0 && i < acts.length; i--) {
-            var time = acts[i][0];
-            if (timestamp > time) {
-                acts = acts.slice(i);
-                return;
-            }
-        }
+    function resetActions() {
+        actions.length = 0;
     };
 
     function getElementIdentifier(ele) {
