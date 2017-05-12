@@ -103,7 +103,7 @@ var LagBubble = {
             }));
             var color = d3.scaleLinear()
             .domain(x.domain())
-            .range(["rgba(200,10,10,0.3)","rgba(255,0,0,2)"])
+            .range(["rgba(200,10,10,0.1)","rgba(255,0,0,1)"])
             .interpolate(d3.interpolateHcl);
             // append scatter plot to main chart area 
 
@@ -118,7 +118,6 @@ var LagBubble = {
                 .attr("r", function (d) {
                     return r(d.count);
                 })
-                .style("opacity", 0.5)
                 .attr("cx", function (d) { return x(d.lag); })
                 .attr("cy", function (d) { return y(d.dis); });
 
@@ -176,7 +175,7 @@ var LagBubble = {
         function validLinks(links) {
             var vlnks = [];
             links.forEach(function (l) {
-                if (l.count > 5 && l.lag<180000) vlnks.push(l);
+                if (l.count > 0 && l.lag<180000) vlnks.push(l);
                 if (l.lag> 180000) console.log("lag > 180000", l.source.data, l.target.data)
             });
             return vlnks.sort(function(l1, l2){
