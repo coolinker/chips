@@ -70,14 +70,18 @@
                 "mail": {
                     "toolbar": {
                         "layoutmenu": {
-                            "attachmentview.listitem": "rui-mail-layout-btn-preview,automation-mail-layout-attachmentview-btn-5",
+                            "button": "rui-mail-layout-btn,automation-mail-layout-btn-View",
                             "previewright.listitem": "rui-mail-layout-btn-preview,automation-mail-layout-previewright-btn-2",
+                            "previewbelow.listitem": "rui-mail-layout-btn-preview,automation-mail-layout-previewbelow-btn-3",
+                            "attachmentview.listitem": "rui-mail-layout-btn-preview,automation-mail-layout-attachmentview-btn-5",
                             "conversationview.listitem": "rui-mail-layout-btn-preview,automation-mail-layout-conversationview-btn-7"
                         },
                         "forward.menubutton": [
                             "automation-mailtoolbar-forward-menu-Forward",
                             "automation-mailtoolbar-forward-menu"
                         ],
+                        "delete.button": "automation-mailtoolbar-delete-menu-Delete",
+
                         "refresh.button": "ow-icon-mailToolbar-refresh",
                         "reply.button": "automation-mailtoolbar-reply-menu-Reply",
                         "compose.button": [
@@ -92,6 +96,7 @@
                         "dropdown.button": "rui-mail-searchField"
                     },
                     "compose": {
+                        "plain.input": "automation-mail-composebody-plaineditor",
                         "body.input": "rui-mail-composeBody,automation-mail-composebody",
                         "window": "rui-mail-compose,automation-mail-compose",
                         "send.button": [
@@ -138,6 +143,7 @@
                                 "ow-icon-contactsToolbar-newContact"
                             ]
                         },
+                        "field.input": "rui-contact-edit-textfield",
                         "changephoto.button": "automation-contact-contactphoto-changebtn-Change",
                         "deletephoto.button": "automation-contact-contactphoto-deletebtn-Delete"
                     },
@@ -145,7 +151,7 @@
                     "compose.button": "ow-icon-contactListHoverPanel-compose",
                     "list.delete.button": "ow-icon-contactFolderHoverPanel-delete"
                 },
-                "window.header.bar": "ow-autoDirx-header-textx-window-header-textx-window-header-text-default"
+                "window.header.bar": "uncaught-identifier-ow-autoDirx-header-textx-window-header-textx-window-header-text-default"
             },
             "tui": {}
         }
