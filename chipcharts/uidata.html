@@ -5,7 +5,7 @@
     html {
         height: 100%;
     }
-    
+
     .link {
         fill: none;
     }
@@ -42,12 +42,12 @@ Ultimately, the primary objective of usability metrics is to assist in producing
                 <span style="position:absolute">Lag Distribution</span>
             </div>
         </div>
-        <div style="width:100%;border-top-style: solid;border-width:1px; border-color:#ccc;font-size: 0.35em;color:#ccc;font-style:italic;padding:10px;margin:10px" >
-            The ISO/IEC 9126-4 Metrics recommends that usability metrics should include: 
-            <li>Effectiveness: The accuracy and completeness with which users achieve specified goals 
+        <div style="width:100%;border-top-style: solid;border-width:1px; border-color:#ccc;font-size: 0.35em;color:#ccc;font-style:italic;padding:10px;margin:10px">
+            The ISO/IEC 9126-4 Metrics recommends that usability metrics should include:
+            <li>Effectiveness: The accuracy and completeness with which users achieve specified goals
             </li>
-            <li>Efficiency: The resources expended in relation to the accuracy and completeness
-            with which users achieve goals. </li>
+            <li>Efficiency: The resources expended in relation to the accuracy and completeness with which users achieve goals.
+            </li>
             <li>Satisfaction: The comfort and acceptability of use.</li>
         </div>
 
@@ -95,15 +95,19 @@ Ultimately, the primary objective of usability metrics is to assist in producing
         difforigin = difforigin ? difforigin[0].split('=')[1] : null;
         var batch = window.location.search.match(/(?:batch=)(\*|[A-Za-z0-9._-]+)/g);
         batch = batch ? batch[0].split('=')[1] : null;
+
+        var category = window.location.search.match(/(?:category=)(\*|[A-Za-z0-9._-]+)/g);
+        category = category ? category[0].split('=')[1] : 'rui';
+
         //PathPacking.createInstance('pack1').loadData("login.button", 5, batch, origin, difforigin);
-        var pathPacking = PathPacking.createInstance('pack').loadData("login.button", 5, batch, origin, difforigin);
-        var pathTree = PathTree.createInstance('tree').loadData("login.button", 5, batch, origin, difforigin);
-        var pathNet = PathNet.createInstance('net').loadData("login.button", 5, batch, origin, difforigin);
-        var lagBubble = LagBubble.createInstance('plot').loadData("login.button", 10, batch, origin);
-        var effectivenessSankey1 = EffectivenessSankey.createInstance('sankey1').loadData(['mail.toolbar.compose.button', 'contacts.compose.button', 'mail.toolbar.reply.button'], ['mail.compose.send.button', 'mail.compose.discard.button', 'toolbar.close.button', 'browser.beforeunload'], 20, batch, origin);
-        var effectivenessSankey2 = EffectivenessSankey.createInstance('sankey2').loadData(['contacts.toolbar.new.button', 'contacts.form.toolbar.edit.button'], ['contacts.form.toolbar.save.button', 'contacts.form.toolbar.cancel.button', 'browser.beforeunload'], 20, batch, origin);
-        var efficiencyBar = EfficiencyBar.createInstance('efficiency1').loadData(['mail.toolbar.compose.button', 'contacts.compose.button', 'mail.toolbar.reply.button'], ['mail.compose.send.button', 'mail.compose.discard.button', 'toolbar.close.button', 'browser.beforeunload'], 20, batch, origin);
-        var efficiencyBar = EfficiencyBar.createInstance('efficiency2').loadData(['contacts.toolbar.new.button', 'contacts.form.toolbar.edit.button'], ['contacts.form.toolbar.save.button', 'contacts.form.toolbar.cancel.button', 'browser.beforeunload'], 20, batch, origin);
+        var pathPacking = PathPacking.createInstance('pack').loadData(category+'.login.button', 5, batch, origin, difforigin);
+        var pathTree = PathTree.createInstance('tree').loadData(category+'.login.button', 5, batch, origin, difforigin);
+        var pathNet = PathNet.createInstance('net').loadData(category+'.login.button', 5, batch, origin, difforigin);
+        var lagBubble = LagBubble.createInstance('plot').loadData(category+'.login.button', 10, batch, origin);
+        var effectivenessSankey1 = EffectivenessSankey.createInstance('sankey1').loadData([category+'.mail.toolbar.compose.button', category+'.contacts.compose.button', category+'.mail.toolbar.reply.button'], [category+'.mail.compose.send.button', category+'.mail.compose.discard.button', category+'.toolbar.close.button', category+'.browser.beforeunload'], 20, batch, origin);
+        var effectivenessSankey2 = EffectivenessSankey.createInstance('sankey2').loadData([category+'.contacts.toolbar.new.button', category+'.contacts.form.toolbar.edit.button'], [category+'.contacts.form.toolbar.save.button', category+'.contacts.form.toolbar.cancel.button', category+'.browser.beforeunload'], 20, batch, origin);
+        var efficiencyBar = EfficiencyBar.createInstance('efficiency1').loadData([category+'.mail.toolbar.compose.button', category+'.contacts.compose.button', category+'.mail.toolbar.reply.button'], [category+'.mail.compose.send.button', category+'.mail.compose.discard.button', category+'.toolbar.close.button', category+'.browser.beforeunload'], 20, batch, origin);
+        var efficiencyBar = EfficiencyBar.createInstance('efficiency2').loadData([category+'.contacts.toolbar.new.button', category+'.contacts.form.toolbar.edit.button'], [category+'.contacts.form.toolbar.save.button', category+'.contacts.form.toolbar.cancel.button', category+'.browser.beforeunload'], 20, batch, origin);
 
         var distributionBar = DistributionBar.createInstance('lagDistribution');
 

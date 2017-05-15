@@ -13,6 +13,7 @@ module.exports = cookbook = {
             "target": [],
             "origins": "*",
             "batch": "*",
+            "category": "rui",
             "by":{
                 "lag": 1,
                 "hour": 1,
@@ -25,6 +26,7 @@ module.exports = cookbook = {
             "rootkey":null,
             "origins": "*",
             "batch": "*",
+            "category": "rui",
         },
         "targetSource": {
             "source": ['mail.toolbar.compose.button' ],
@@ -33,6 +35,7 @@ module.exports = cookbook = {
             "granularity": 20,
             "origins": "*",
             "batch": "*",
+            "category": "rui",
         }
 
     }

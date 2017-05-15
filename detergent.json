@@ -1,152 +1,156 @@
 {
     "origin_default": {
         "batch_default": {
-            "rui-core-main-navigation-aux-item-SignOut": "logout.button",
-            "ow-icon-app-logout": "logout.button",
-            "beforeunload": "browser.beforeunload",
-            "automation-login-language-input": "login.language.input",
-            "automation-login-login-button": "login.button",
-            "automation-login-login-button-Login": "login.button",
-            "automation-login-username-input": "login.username.input",
-            "automation-login-password-input": "login.password.input",
-            "ow-icon-navigationTabs-settings": "navigation.setting.tab",
-            "rui-core-main-navigation-aux-item-Settings": "navigation.setting.tab",
-            "rui-core-main-navigation-tab,automation-app-mail-menu": "navigation.mail.tab",
-            "rui-core-main-navigation-tab,automation-app-mail-menu-Mail": "navigation.mail.tab",
-            "rui-core-main-navigation-tab,automation-app-contacts-menu": "navigation.contacts.tab",
-            "rui-core-main-navigation-tab,automation-app-contacts-menu-Contacts": "navigation.contacts.tab",
-            "rui-core-main-navigation-tab,automation-app-calendar-menu-Calendar": "navigation.calendar.tab",
-            "rui-core-main-navigation-tab,automation-app-calendar-menu": "navigation.calendar.tab",
-            "rui-core-main-navigation-tab,automation-app-tasks-menu-Tasks": "navigation.tasks.tab",
-            "rui-core-main-navigation-tab,automation-app-tasks-menu": "navigation.tasks.tab",
-            
-            
-            "********** settings *********": "",
-            "ui-settings-detail-deletebtn,automation-settings-rule-deletebtn-Delete": "settings.rule.delete.button",
-            "rui-settings-detail-addbtn,automation-settings-mailaccount-addbtn-Add": "settings.account.add.button",
-            "automation-settings-calendar-weekstart,rui-settings-detail-field-item": "settings.calendar.weekstart.field",
-            "automation-settings-languagetime-timezone": "settings.timezone.field",
-            "automation-settings-languagetime-timeformat,rui-settings-detail-field-item":"settings.timeformat.field",
-            "automation-settings-languagetime-dateformat,rui-settings-detail-field-item": "settings.dateformat.field",
-            "rui-settings-detail-addbtn,automation-settings-signature-addbtn-Add": "settings.signature.add.button",
-            "rui-settings-detail-savebtn,automation-settings-savebtn-Save": "settings.save.button",
-            "rui-settings-detail-savebtn,automation-settings-win-savebtn-Save": "settings.save.button",
-            "rui-settings-basewindow-field-item": "settings.field.item",
-            "rui-settings-list-desc,automation-settings-list-desc": "settings.list.listitem",
-            "automation-settings-languagetime-timezone-field": "setting.timezone.field",
-            "rui-settings-detail-savebtn,automation-settings-savebtn": "settings.save.button",
-            "automation-settings-languagetime-usedevicetimezone-field": "settings.devicetimezone.field",
-            "automation-settings-general-editor-field": "settings.general.field.input",
-
-            "********** mail *********":"",
-            "rui-mail-layout-btn-preview,automation-mail-layout-attachmentview-btn-5": "mail.toolbar.layout.attachmentview.listitem",
-            "rui-mail-layout-btn-preview,automation-mail-layout-previewright-btn-2": "mail.toolbar.layout.previewright.listitem",
-            "rui-mail-layout-btn-preview,automation-mail-layout-conversationview-btn-7": "mail.toolbar.layout.conversationview.listitem",
-            "automation-mailtoolbar-forward-menu-Forward": "mail.toolbar.forward.menubutton",
-            "automation-mailtoolbar-forward-menu": "mail.toolbar.forward.menubutton",
-            "automation-mailtoolbar-more-menu": "mail.toolbar.more.menu",
-            "automation-mail-qksearch-input": "mail.toolbar.search.input",
-            "rui-mail-searchField": "mail.toolbar.search.dropdown.button",
-            "ow-icon-mailToolbar-refresh": "mail.toolbar.refresh.button",
-            "rui-mail-compose,automation-mail-compose": "mail.compose.window",
-            "automation-mailtoolbar-reply-menu-Reply": "mail.toolbar.reply.button",
-            "automation-mailtoolbar-compose-menu": "mail.toolbar.compose.button",
-            "ow-icon-mailToolbar-compose": "mail.toolbar.compose.button",
-            "automation-mailtoolbar-compose-menu-Compose": "mail.toolbar.compose.button",
-            "rui-blue-highlight-btn,automation-mail-compose-send-btn": "mail.compose.send.button",
-            "rui-blue-highlight-btn,automation-mail-compose-send-btn-Send": "mail.compose.send.button",
-            "rui-toolbar-gray-btn,automation-mail-compose-discard-btn": "mail.compose.discard.button",
-            "rui-toolbar-gray-btn,automation-mail-compose-discard-btn-Discard": "mail.compose.discard.button",
-            "rui-toolbar-gray-btn,automation-mail-compose-save-btn-Save": "mail.compose.save.button",
-            "rui-toolbar-gray-btn,automation-mail-compose-save-btn": "mail.compose.save.button",
-            "rui-mail-attachBtn,automation-mail-compose-attach-btn": "mail.compose.attach.button",
-            "rui-mail-attachBtn,automation-mail-compose-attach-btn-Attachfiles": "mail.compose.attach.button",
-            "ow-forceLtr,rui-mail-compose-recipientInput-input,automation-mail-compose-to-input": "mail.compose.to.input",
-            "rui-mail-compose-recipientInput,rui-mail-compose-recipientInput": "mail.compose.cc.input",
-            "automation-rui-mail-compose-recipientInput-container,rui-mail-compose-recipientInput-container": "mail.compose.cc.input",
-            "rui-mail-compose-recipientInput": "mail.compose.contactspicker.button",
-            "rui-mail-compose-recipientInput-bubble-remove": "mail.compose.recipient.bubble.remove.button",
-            "automation-mail-compose-showcc-btn-Cc": "mail.compose.showcc.button",
-            "automation-mail-compose-showbcc-btn-Bcc": "mail.compose.showbcc.button",
-            "rui-mail-compose-optionsBox": "mail.compose.priority.dropdown",
-            "rui-mail-compose-signatureCmb-field,automation-mail-signature-input": "mail.compose.signature.dropdown",
-            "rui-mail-compose-signatureCmb-field": "mail.compose.signature.dropdown.item",
-            "rui-mail-composeHeaderForm-optionsBar": "mail.compose.format.dropdown",
-            "automation-mail-compose-subject-input": "mail.compose.subject.input",
-            "automation-mail-composebody-plaineditor": "mail.compose.plain.input",
-            "ow-icon-composeMenu-visibilityToggle": "mail.compose.restore.button",
-            "rui-mail-layout-btn,automation-mail-layout-btn": "mail.toolbar.layout.menubutton",
-            "ow-icon-mailLayoutBtn-suffix": "mail.toolbar.layout.menubutton",
-            "rui-mail-layout-btn,automation-mail-layout-btn-View": "mail.toolbar.layout.menubutton",
-            "mail-x-grid-row": "mail.grid.row",
-            "rui-mail-headerlist-from": "mail.grid.row",
-            "rui-mail-msgHeader-from,automation-mail-msgheader-from,ow-forceLtr": "mail.grid.row",
-            "rui-mail-headerlist-row": "mail.grid.row",
-            "x-grid-row-checker": "mail.grid.row.checkbox",
-            "ow-icon-mail-folderConlumn-inner": "mail.folder.treenode",
-            "x-grid-cell-innerow-icon-mail-folderConlumn-inner": "mail.folder.treenode",
-            "ow-icon-mailFolderColumn-newFolder,automation-mail-folder-myfolder-addbtn": "mail.folder.new.button",
-            "rui-mail-headerlist-subject,automation-mail-headerlist-subject": "mail.grid.row.subject.text",
-            "rui-mail-headerlist-row,rui-mail-headerlist-row-two": "mail.grid.row.subject.text",
-            "rui-mail-header-abstract": "mail.preview.header",
-            "rui-mail-previewEmpty": "mail.preview.empty",
-            "rui-mail-composeBody,automation-mail-composebody": "mail.compose.body.input",
-            "ow-icon-mailFolderHoverPanel-empty": "mail.folder.empty.button",
-            "automation-mail-folder-newfolderwin-savebtn-Save": "mail.folder.save.button",
-            "automation-mail-folder-newfolderwin-savebtn": "mail.folder.save.button",
-            "ow-icon-": "mail.compose.richeditor.toolbar.button",
-
-
-            "********** contacts *********":"",
-            
-            "x-grid-row-contact": "contacts.grid.row",
-            "automation-contacts-picker-add-Add": "contacts.picker.add.button",
-            "ow-addressbook-name,automation-contact-treenode-default": "contacts.addressbook.default.treenode",
-            "ow-addressbook-name, automation-contact-treenode-default": "contacts.addressbook.default.treenode",
-            "ow-addressbook-name, automation-contact-treenode-autocomplete": "contacts.addressbook.autocomplete.treenode",
-            "ow-addressbook-name,automation-contact-treenode-autocomplete": "contacts.addressbook.autocomplete.treenode",
-
-            "rui-contacts-form-savebtn,automation-contact-form-savebtn-Save": "contacts.form.toolbar.save.button",
-            "rui-contacts-form-savebtn,automation-contact-form-savebtn": "contacts.form.toolbar.save.button",
-            "rui-contacts-form-cancelbtn,automation-contact-form-cancelbtn-Cancel": "contacts.form.toolbar.cancel.button",
-            "automation-contact-contactphoto-changebtn-Change": "contacts.form.changephoto.button",
-            "automation-contact-contactphoto-deletebtn-Delete": "contacts.form.deletephoto.button",
-            "automation-contact-detailtoolbar-edit,rui-contacts-detailtoolbar-buttons-Edit" : "contacts.form.toolbar.edit.button",
-            "automation-contact-detailtoolbar-edit,rui-contacts-detailtoolbar-buttons": "contacts.form.toolbar.edit.button",
-            "automation-contact-merge-cancelbtn": "contacts.merge.cancel.button",
-            "automation-contacts-toolbar-newcontact": "contacts.toolbar.new.button",
-            "automation-contacts-toolbar-newcontact-Addcontact": "contacts.toolbar.new.button",
-            "automation-contacts-toolbar-newcontact-Add contact": "contacts.toolbar.new.button",
-            "ow-icon-contactsToolbar-newContact": "contacts.toolbar.new.button",
-            "ow-icon-contactListHoverPanel-compose": "contacts.compose.button",
-
-            "ow-icon-contactFolderHoverPanel-delete": "contacts.list.delete.button",
-            
-
-            "********** calendar *********":"",
-            "ow-icon-calSubTbar-prev": "calendar.toolbar.prev.button",
-            
-            "********** others *********":"",
-            "x-boundlist-itemautoSuggestListItemx-boundlist-item-over-1": "autosuggest.list.item",
-            "uncaught-identifier-ow-autoDirx-header-textx-window-header-textx-window-header-text-default": "window.header.bar",
-            "rui-tool,ow-icon-tool-close,automation-icon-tool-close": "toolbar.close.button",
-            "x-menu-item-link,x-menu-item-indent-no-separator-2": "menu.item",
-            "x-boundlist-item,x-boundlist-selected,x-boundlist-item-over-2": "dropdown.item",
-            "x-boundlist-itemx-boundlist-selectedx-boundlist-item-over-2": "dropdown.item",
-            "x-boundlist-item-2": "dropdown.item",
-            "x-menu-item-text-5": "menu.item",
-            "x-menu-item-text-2": "menu.item",
-            "x-boundlist-item-3": "dropdown.item",
-            "x-message-box-OK": "messagebox.ok.button",
-            "x-datepicker-cell": "datepicker.cell",
-            "ow-icon-extMenu-down": "menu.down"
+            "rui": {
+                "login": {
+                    "button": [
+                        "automation-login-login-button",
+                        "automation-login-login-button-Login"
+                    ],
+                    "username.input": [
+                        "automation-login-username-input"
+                    ],
+                    "password.input": [
+                        "automation-login-password-input"
+                    ],
+                    "language.input": [
+                        "automation-login-language-input"
+                    ]
+                },
+                "logout.button": [
+                    "rui-core-main-navigation-aux-item-SignOut",
+                    "ow-icon-app-logout"
+                ],
+                "browser.beforeunload": [
+                    "beforeunload"
+                ],
+                "navigation": {
+                    "setting.tab": [
+                        "ow-icon-navigationTabs-settings",
+                        "rui-core-main-navigation-aux-item-Settings"
+                    ],
+                    "mail.tab": [
+                        "rui-core-main-navigation-tab,automation-app-mail-menu",
+                        "rui-core-main-navigation-tab,automation-app-mail-menu-Mail"
+                    ],
+                    "contacts.tab": [
+                        "rui-core-main-navigation-tab,automation-app-contacts-menu",
+                        "rui-core-main-navigation-tab,automation-app-contacts-menu-Contacts"
+                    ],
+                    "calendar.tab": [
+                        "rui-core-main-navigation-tab,automation-app-calendar-menu-Calendar",
+                        "rui-core-main-navigation-tab,automation-app-calendar-menu"
+                    ],
+                    "tasks.tab": [
+                        "rui-core-main-navigation-tab,automation-app-tasks-menu-Tasks",
+                        "rui-core-main-navigation-tab,automation-app-tasks-menu"
+                    ]
+                },
+                "settings": {
+                    "rule.delete.button": "ui-settings-detail-deletebtn,automation-settings-rule-deletebtn-Delete",
+                    "account.add.button": "rui-settings-detail-addbtn,automation-settings-mailaccount-addbtn-Add",
+                    "calendar.weekstart.field": "automation-settings-calendar-weekstart,rui-settings-detail-field-item",
+                    "timezone.field": [
+                        "automation-settings-languagetime-timezone",
+                        "automation-settings-languagetime-timezone-field"
+                    ],
+                    "timeformat.field": "automation-settings-languagetime-timeformat,rui-settings-detail-field-item",
+                    "dateformat.field": "automation-settings-languagetime-dateformat,rui-settings-detail-field-item",
+                    "settings.devicetimezone.field": "automation-settings-languagetime-usedevicetimezone-field",
+                    "signature.add.button": "rui-settings-detail-addbtn,automation-settings-signature-addbtn-Add",
+                    "save.button": [
+                        "rui-settings-detail-savebtn,automation-settings-savebtn-Save",
+                        "rui-settings-detail-savebtn,automation-settings-win-savebtn-Save",
+                        "rui-settings-detail-savebtn,automation-settings-savebtn"
+                    ],
+                    "field.item": "rui-settings-basewindow-field-item",
+                    "list.listitem": "rui-settings-list-desc,automation-settings-list-desc",
+                    "general.field.input": "automation-settings-general-editor-field"
+                },
+                "mail": {
+                    "toolbar": {
+                        "layoutmenu": {
+                            "attachmentview.listitem": "rui-mail-layout-btn-preview,automation-mail-layout-attachmentview-btn-5",
+                            "previewright.listitem": "rui-mail-layout-btn-preview,automation-mail-layout-previewright-btn-2",
+                            "conversationview.listitem": "rui-mail-layout-btn-preview,automation-mail-layout-conversationview-btn-7"
+                        },
+                        "forward.menubutton": [
+                            "automation-mailtoolbar-forward-menu-Forward",
+                            "automation-mailtoolbar-forward-menu"
+                        ],
+                        "refresh.button": "ow-icon-mailToolbar-refresh",
+                        "reply.button": "automation-mailtoolbar-reply-menu-Reply",
+                        "compose.button": [
+                            "automation-mailtoolbar-compose-menu",
+                            "ow-icon-mailToolbar-compose",
+                            "automation-mailtoolbar-compose-menu-Compose"
+                        ],
+                        "more.menu": "automation-mailtoolbar-more-menu"
+                    },
+                    "search": {
+                        "input": "automation-mail-qksearch-input",
+                        "dropdown.button": "rui-mail-searchField"
+                    },
+                    "compose": {
+                        "body.input": "rui-mail-composeBody,automation-mail-composebody",
+                        "window": "rui-mail-compose,automation-mail-compose",
+                        "send.button": [
+                            "rui-blue-highlight-btn,automation-mail-compose-send-btn",
+                            "rui-blue-highlight-btn,automation-mail-compose-send-btn-Send"
+                        ],
+                        "discard.button": [
+                            "rui-toolbar-gray-btn,automation-mail-compose-discard-btn",
+                            "rui-toolbar-gray-btn,automation-mail-compose-discard-btn-Discard"
+                        ],
+                        "save.button": [
+                            "rui-toolbar-gray-btn,automation-mail-compose-save-btn-Save",
+                            "rui-toolbar-gray-btn,automation-mail-compose-save-btn"
+                        ],
+                        "attach.button": [
+                            "rui-mail-attachBtn,automation-mail-compose-attach-btn",
+                            "rui-mail-attachBtn,automation-mail-compose-attach-btn-Attachfiles"
+                        ],
+                        "to.input": "ow-forceLtr,rui-mail-compose-recipientInput-input,automation-mail-compose-to-input"
+                    }
+                },
+                "contacts": {
+                    "grid.row": "x-grid-row-contact",
+                    "picker.add.button": "automation-contacts-picker-add-Add",
+                    "addressbook": {
+                        "default.treenode": "ow-addressbook-name,automation-contact-treenode-default",
+                        "autocomplete.treenode": "ow-addressbook-name,automation-contact-treenode-autocomplete"
+                    },
+                    "form": {
+                        "toolbar": {
+                            "save.button": [
+                                "rui-contacts-form-savebtn,automation-contact-form-savebtn-Save",
+                                "rui-contacts-form-savebtn,automation-contact-form-savebtn"
+                            ],
+                            "cancel.button": "rui-contacts-form-cancelbtn,automation-contact-form-cancelbtn-Cancel",
+                            "edit.button": [
+                                "automation-contact-detailtoolbar-edit,rui-contacts-detailtoolbar-buttons-Edit",
+                                "automation-contact-detailtoolbar-edit,rui-contacts-detailtoolbar-buttons"
+                            ],
+                            "new.button": [
+                                "automation-contacts-toolbar-newcontact",
+                                "automation-contacts-toolbar-newcontact-Addcontact",
+                                "automation-contacts-toolbar-newcontact-Add contact",
+                                "ow-icon-contactsToolbar-newContact"
+                            ]
+                        },
+                        "changephoto.button": "automation-contact-contactphoto-changebtn-Change",
+                        "deletephoto.button": "automation-contact-contactphoto-deletebtn-Delete"
+                    },
+                    "merge.cancel.button": "automation-contact-merge-cancelbtn",
+                    "compose.button": "ow-icon-contactListHoverPanel-compose",
+                    "list.delete.button": "ow-icon-contactFolderHoverPanel-delete"
+                },
+                "window.header.bar": "ow-autoDirx-header-textx-window-header-textx-window-header-text-default"
+            },
+            "tui": {}
         }
     },
-
-    "deploymentsite":{
-        "versionxx.xx.xx": {
-            "x-btn-send": "mail-compose-send-btn",
-            "x-btn-compose": "mail-compose-btn"
-        }
+    "deploymentsite": {
+        "versionxx.xx.xx": {}
     }
 }

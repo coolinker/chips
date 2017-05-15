@@ -28,21 +28,42 @@ module.exports = class Chef {
 
     blendDetergent(menu) {
         const DETERGENT = JSON.parse(fs.readFileSync('detergent.json', "utf-8"));
-        const def = DETERGENT.origin_default.batch_default;
+        const def = DETERGENT.origin_default.batch_default[menu.category];
         const blended = {};
 
-        for (const att in def) {
-            blended[att] = def[att];
-        }
+        this.flatTree(def, menu.category, blended);
 
-        if (DETERGENT[menu.origin] && DETERGENT[menu.origin][menu.batch]) {
-            const target = DETERGENT[menu.origin][menu.batch];
-            for (const att in target) {
-                blended[att] = target[att];
+        if (DETERGENT[menu.origin] && DETERGENT[menu.origin][menu.batch] && DETERGENT[menu.origin][menu.batch][menu.category]) {
+            const target = DETERGENT[menu.origin][menu.batch][menu.category];
+            const cblended = {}
+            this.flatTree(def, menu.category, cblended);
+            for (const att in cblended) {
+                blended[att] = cblended[att];
             }
         }
 
         return blended;
+    }
+
+    flatTree(root, nodename, flated) {
+
+        for (let att in root) {
+            let node = root[att];
+            if (typeof node === "string") {
+                if (flated[node]) console.log("ERROR: duplicated key", node);
+                flated[node] = nodename + '.' + att;
+            } else if (typeof node === "object") {
+                if (node instanceof Array) {
+                    node.forEach(function (item) {
+                        if (flated[item]) console.log("ERROR: duplicated key", node);
+                        flated[item] = nodename + '.' + att;
+                    })
+                } else {
+                    this.flatTree(node, nodename + '.' + att, flated);
+                }
+
+            }
+        }
     }
 
     prepareRaw(menu, raw) {
@@ -89,17 +110,17 @@ module.exports = class Chef {
         let byh, byl, bys;
 
         if (menu.by['hour']) {
-            if (!root.children['byhour']) root.children['byhour'] =  this.byDefaultObj('byhour');
+            if (!root.children['byhour']) root.children['byhour'] = this.byDefaultObj('byhour');
             byh = root.children['byhour'].children;
         }
-        
+
         if (menu.by['lag']) {
-            if (!root.children['bylag']) root.children['bylag'] =  this.byDefaultObj('bylag');
+            if (!root.children['bylag']) root.children['bylag'] = this.byDefaultObj('bylag');
             byl = root.children['bylag'].children;
         }
 
         if (menu.by['step']) {
-            if (!root.children['bystep']) root.children['bystep'] =  this.byDefaultObj('bystep');
+            if (!root.children['bystep']) root.children['bystep'] = this.byDefaultObj('bystep');
             bys = root.children['bystep'].children;
         }
 
@@ -330,7 +351,7 @@ module.exports = class Chef {
     }
 
     defaultIngredientObj(igd) {
-        return { count: 0, key: igd, origincounts: {}, lag: 0, pos: { x: 0, y: 0 }, sumlag: 0, steps:0, children: {} };
+        return { count: 0, key: igd, origincounts: {}, lag: 0, pos: { x: 0, y: 0 }, sumlag: 0, steps: 0, children: {} };
     }
 
     byDefaultObj(by) {
