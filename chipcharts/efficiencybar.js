@@ -174,12 +174,12 @@ var EfficiencyBar = {
         var efficiencybar = {
         };
 
-        efficiencybar.loadData = function (source, target, steps, batch, origin) {
+        efficiencybar.loadData = function (source, target, steps, batch, origin, category) {
             var me = this;
             d3.json("/kitchen", function (err, data) {
                 if (!err) me.setData(data);
             }).header("Content-Type", "application/json")
-                .send("POST", JSON.stringify({ 'dish': 'pairs', 'source': source, 'target': target, 'granularity': steps, 'batch': batch, 'origins': origin }));
+                .send("POST", JSON.stringify({ 'dish': 'pairs', 'source': source, 'target': target, 'granularity': steps, 'batch': batch, 'origins': origin, 'category': category}));
 
             return this;
         }

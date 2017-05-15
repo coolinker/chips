@@ -153,7 +153,37 @@
                 },
                 "window.header.bar": "uncaught-identifier-ow-autoDirx-header-textx-window-header-textx-window-header-text-default"
             },
-            "tui": {}
+            "tui": {
+                "mask": "uncaught-identifier-x-maskx-sizedx-floatingx-paint-monitoredx-size-monitored",
+                "login":{
+                    "button": "ow-login-loginBtn"
+                },
+                "nav": {
+                    "mail": "ow-icon-menu-app-mail",
+                    "contacts": "ow-icon-menu-app-contacts",
+                    "calendar": "ow-icon-menu-app-calendar",
+                    "tasks": "ow-icon-menu-app-tasks",
+                    "settings": "ow-icon-menu-app-settings"
+                },
+                "mail": {
+                    "list": {
+                        "item": "ow-mail-item"
+                    },
+                    "detail": {
+                        "from": "automation-mail-detail-header-fromname",
+                        "subject": "ow-mail-detail-subj-label"
+                    },
+                    "back.button": "ow-icon-mail-go-back"
+                },
+                "contacts": {
+                    "add": " ow-icon-contact-plus",
+                    "form": {
+                        "save.button": "automation-contacts-edit-savebtn",
+                        "cancel.button": "automation-contacts-edit-cancelbtn"
+
+                    }
+                }
+            }
         }
     },
     "deploymentsite": {
