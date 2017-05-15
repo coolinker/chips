@@ -81,7 +81,6 @@
                             "automation-mailtoolbar-forward-menu"
                         ],
                         "delete.button": "automation-mailtoolbar-delete-menu-Delete",
-
                         "refresh.button": "ow-icon-mailToolbar-refresh",
                         "reply.button": "automation-mailtoolbar-reply-menu-Reply",
                         "compose.button": [
@@ -125,6 +124,14 @@
                         "default.treenode": "ow-addressbook-name,automation-contact-treenode-default",
                         "autocomplete.treenode": "ow-addressbook-name,automation-contact-treenode-autocomplete"
                     },
+                    "toolbar": {
+                        "new.button": [
+                            "automation-contacts-toolbar-newcontact",
+                            "automation-contacts-toolbar-newcontact-Addcontact",
+                            "automation-contacts-toolbar-newcontact-Add contact",
+                            "ow-icon-contactsToolbar-newContact"
+                        ]
+                    },
                     "form": {
                         "toolbar": {
                             "save.button": [
@@ -135,12 +142,6 @@
                             "edit.button": [
                                 "automation-contact-detailtoolbar-edit,rui-contacts-detailtoolbar-buttons-Edit",
                                 "automation-contact-detailtoolbar-edit,rui-contacts-detailtoolbar-buttons"
-                            ],
-                            "new.button": [
-                                "automation-contacts-toolbar-newcontact",
-                                "automation-contacts-toolbar-newcontact-Addcontact",
-                                "automation-contacts-toolbar-newcontact-Add contact",
-                                "ow-icon-contactsToolbar-newContact"
                             ]
                         },
                         "field.input": "rui-contact-edit-textfield",
@@ -155,7 +156,7 @@
             },
             "tui": {
                 "mask": "uncaught-identifier-x-maskx-sizedx-floatingx-paint-monitoredx-size-monitored",
-                "login":{
+                "login": {
                     "button": "ow-login-loginBtn"
                 },
                 "nav": {
@@ -180,7 +181,6 @@
                     "form": {
                         "save.button": "automation-contacts-edit-savebtn",
                         "cancel.button": "automation-contacts-edit-cancelbtn"
-
                     }
                 }
             }
