@@ -4,7 +4,7 @@ var EffectivenessSankey = {
         var width = dom.getBoundingClientRect().width;
         var height = dom.getBoundingClientRect().height;
 
-        var margin = { top: 50, right: 20, bottom: 50, left: 10 },
+        var margin = { top: 60, right: 20, bottom: 60, left: 10 },
             width = width - margin.left - margin.right,
             height = height - margin.top - margin.bottom;
 
@@ -223,22 +223,19 @@ var EffectivenessSankey = {
             // add in the title for the nodes
             node.append("text")
                 .attr("x", function (d) {
-                    return d.depth === 2 ? -d.dy / 2 : 6 + sankey.nodeWidth();
+                    return d.depth === 2 ? d.dx - sankey.nodeWidth() - 6 : 6 + sankey.nodeWidth();
                 })
                 .attr("y", function (d) {
-                    return d.depth === 2 ? (d.depth === 0 ? 10 + sankey.nodeWidth() : -6) : d.dy / 2;
+                    return d.dy / 2;
                 })
                 .attr("dy", ".15em")
-                .attr("transform", function (d) {
-                    return d.depth === 2 ? "rotate(-90)" : null;
-                })
                 .style("font", '12px "Helvetica Neue", Helvetica, Arial, sans-serif')
                 .style("fill", '#222')
                 .text(function (d) { return d.key; })
                 //.filter(function (d) { return d.x < width / 2; })
                 //.attr("x", 6 + sankey.nodeWidth())
                 .attr("text-anchor", function (d) {
-                    return d.depth === 2 ? "middle" : "start"
+                    return d.depth === 2 ? "end" : "start"
                 });
 
             // the function for moving the nodes
@@ -256,9 +253,12 @@ var EffectivenessSankey = {
             link.attr("d", path);
             ellipsis.text('......');
 
-            var piedata = [];
+            var piedata = [], totalcount = 0;;
             graph.nodes.forEach(function (item) {
-                if (item.depth === 2) piedata.push(item);
+                if (item.depth === 2) {
+                    totalcount += item.value;
+                    piedata.push(item);
+                }
             });
 
             // add and colour the donut slices
@@ -325,7 +325,8 @@ var EffectivenessSankey = {
             }
 
             function updateLabelText(d) {
-                return d.data.key;// + ': <tspan>' + percentFormat(d.data[variable]) + '</tspan>';
+                var per = Math.round(1000*d.data.value/totalcount)/10;
+                return d.data.key+ " " + per + "%";
             }
 
 

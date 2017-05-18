@@ -55,7 +55,7 @@ var LagBubble = {
             (height + margin.top + 30) + ")")
             .style("text-anchor", "middle")
             .style("font", '12px "Helvetica Neue", Helvetica, Arial, sans-serif')
-            .text("Lag Time(ms) between Actions");
+            .text("Lag(ms) between Actions");
 
 
         var dotsgroup = focus.append("g");

@@ -12,10 +12,10 @@ var DistributionBar = {
             .attr("width", width + margin.right + margin.left)
             .attr("height", height + margin.top + margin.middle + margin.bottom)
         height /= 2;
-        var x1 = d3.scaleBand().rangeRound([0, width]),
+        var x1 = d3.scaleBand().rangeRound([0, width]).paddingInner(0.1),
             y1 = d3.scaleLinear().rangeRound([height, 0]),
             r = d3.scaleLinear().range([2, 30]),
-            x2 = d3.scaleBand().rangeRound([0, width]),
+            x2 = d3.scaleBand().rangeRound([0, width]).paddingInner(0.1),
             y2 = d3.scaleLinear().rangeRound([height, 0]);
 
         var data2xmap = {};
@@ -61,7 +61,7 @@ var DistributionBar = {
             .attr("dy", "1em")
             .style("text-anchor", "middle")
             .style("font", '12px "Helvetica Neue", Helvetica, Arial, sans-serif')
-            .text("AVG Lag Time(ms)");
+            .text("AVG Lag(ms)");
 
         gHour.append("text")
             .attr("class", "hourTitle")
@@ -80,7 +80,7 @@ var DistributionBar = {
             .attr("dy", "1em")
             .style("font", '12px "Helvetica Neue", Helvetica, Arial, sans-serif')
             .style("text-anchor", "middle")
-            .text("Count");
+            .text("Counts");
 
 
         function formatLagData(data) {
@@ -188,16 +188,16 @@ var DistributionBar = {
             var nodesExit = nodes.exit().remove();
 
             nodesEnter.append("circle")
-                .classed('node', true);
+                .classed('node', true)
+                .append("title");
 
             nodes = nodesEnter.merge(nodes);
 
-            circle = nodes.select('circle')
+            nodes.select('circle')
                 .attr("class", "circleNode")
                 .style('fill', function (d) {
                     return color(d.lag)
                 })
-                // .attr('class', 'circle')
                 .attr("r", function (d) {
                     return r(d.count);
                 })
@@ -205,17 +205,13 @@ var DistributionBar = {
                 .attr("cx", function (d) { return x1(d.hour); })
                 .attr("cy", function (d) {
                     return y1(d.lag);
-                });
-
-
-            gHourNodes.selectAll(".circleNode")
+                })
+                .select("title")
                 .text(function (d) {
-                    var t = Math.round(d.lag) + 'ms\n' + d.hour + ':00\n' + d.count;
+                    debugger;
+                    var t = Math.round(d.lag) + 'ms\n' + d.count;
                     return t
                 });
-
-            // nodesExit.select("circle")
-            //     .attr("r", 1e-6);
 
             //*********Lag bars**************/
 
@@ -235,7 +231,8 @@ var DistributionBar = {
             var columnsExit = columns.exit().remove();
 
             columnsEnter.append("rect")
-                .classed('node', true);
+                .classed('node', true)
+                .append("title");
 
             columns = columnsEnter.merge(columns);
 
@@ -249,10 +246,8 @@ var DistributionBar = {
                 })
                 .attr("y", function (d) { return y2(d.count); })
                 .attr("width", x2.bandwidth())
-                .attr("height", function (d) { return height - y2(d.count); });
-
-            gLagNodes.selectAll(".bar")
-                .append("title")
+                .attr("height", function (d) { return height - y2(d.count); })
+                .select("title")
                 .text(function (d) {
                     var t = Math.round(d.key) + 'ms\n' + d.count;
                     return t
