@@ -208,7 +208,6 @@ var DistributionBar = {
                 })
                 .select("title")
                 .text(function (d) {
-                    debugger;
                     var t = Math.round(d.lag) + 'ms\n' + d.count;
                     return t
                 });

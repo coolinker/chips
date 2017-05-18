@@ -90,14 +90,26 @@ module.exports = class Chef {
         const origin = chipJson.origin;
         const batch = chipJson.batch;
         if (menu.origins !== '*' && menu.origins.indexOf(origin) < 0 || menu.batch !== '*' && batch !== menu.batch) return null;
+
         if (detergent && chipJson.ingredients) {
+            if (menu.dates['from']) {
+                const from = new Date(menu.dates.from);
+                if (chipJson.ingredients[0][0] < from) return null;
+            }
+
+            if (menu.dates['to']) {
+                const to = new Date(menu.dates.to);
+                if (chipJson.ingredients[0][0] > to) return null;
+            }
+            
             chipJson.ingredients.forEach(function (item) {
                 const key = item[1].replace(/ /g, '');
                 item[1] = (detergent[key] ? detergent[key] : key);
 
             });
+            return chipJson;
         }
-        return chipJson;
+        
     }
 
     pairs(root, sorted, menu) {

@@ -14,11 +14,15 @@ module.exports = cookbook = {
             "origins": "*",
             "batch": "*",
             "category": "rui",
+            "dates": {
+                "from": "2017/05/11"
+            },
             "by":{
                 "lag": 1,
                 "hour": 1,
                 "step": 1,
             }
+
         },
         "treelike": {
             "layout": 'tree',
@@ -27,6 +31,9 @@ module.exports = cookbook = {
             "origins": "*",
             "batch": "*",
             "category": "rui",
+            "dates": {
+                "from": "2017/05/11"
+            },
         },
         "targetSource": {
             "source": ['mail.toolbar.compose.button' ],
@@ -36,6 +43,9 @@ module.exports = cookbook = {
             "origins": "*",
             "batch": "*",
             "category": "rui",
+            "dates": {
+                "from": "2017/05/11"
+            },
         }
 
     }
