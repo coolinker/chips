@@ -179,7 +179,7 @@ var EfficiencyBar = {
             d3.json("/kitchen", function (err, data) {
                 if (!err) me.setData(data);
             }).header("Content-Type", "application/json")
-                .send("POST", JSON.stringify({ 'dish': 'pairs', 'source': source, 'target': target, 'granularity': steps, 'batch': batch, 'origins': origin, 'category': category}));
+                .send("POST", JSON.stringify({ 'dish': 'pairs', 'source': source, 'target': target, 'granularity': steps, 'batch': batch, 'origins': origin, 'category': category }));
 
             return this;
         }
@@ -192,10 +192,7 @@ var EfficiencyBar = {
 
 
         efficiencybar.update = function (keys, lagData, stepData) {
-            var xlabels = {};
-            for (var i = 0; i < lagData.length; i++) {
-                if (i % 10 === 0) xlabels[lagData[i].key] = true;
-            }
+
 
 
 
@@ -204,6 +201,13 @@ var EfficiencyBar = {
                 return d.total;
             })]).nice();
             z.domain(keys);
+
+            var x1barwidth = x1.bandwidth();
+            var labelInterval = Math.ceil(30 / x1barwidth);
+            var xlabels = {};
+            for (var i = 0; i < lagData.length; i++) {
+                if (i % labelInterval === 0) xlabels[lagData[i].key] = true;
+            }
 
             x2.domain(stepData.map(function (d) { return d.key; }));
             y2.domain([0, d3.max(stepData, function (d) {

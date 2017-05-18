@@ -146,15 +146,18 @@ var DistributionBar = {
         distributionbar.update = function (data1, data2) {
             x1.domain(data1.map(function (d) { return d.hour; }));
             y1.domain([0, d3.max(data1, function (d) { return d.lag; })]);
+
             var x2map = data2.map(function (d) { return +d.lagkey; });
-
-            var x2tickslen = x2map.length;
-            for (var i = 0; i < x2tickslen; i++) {
-                if (i % 10 === 0) data2xmap[x2map[i]] = true;
-            }
-
             x2.domain(x2map);
             y2.domain([0, d3.max(data2, function (d) { return d.count; })]);
+
+            var x2tickslen = x2map.length;
+            var x2barwidth = x2.bandwidth();
+            var labelInterval = Math.ceil(30 / x2barwidth);
+            var data2xmap = {};
+            for (var i = 0; i < x2tickslen; i++) {
+                if (i % labelInterval === 0) data2xmap[x2map[i]] = true;
+            }
 
             color.domain(y1.domain());
 
@@ -168,12 +171,15 @@ var DistributionBar = {
                     return d + ":00"
                 }))
             xAxis1.selectAll("text")
-                .attr("dy", ".2em")
-                .attr("transform", "rotate(45)");
+                .attr("dy", "0.5em")
+                .attr("transform", "rotate(45)")
+                .style("font", '10px "Helvetica Neue", Helvetica, Arial, sans-serif')
+                .attr("text-anchor", "start");
+
             xAxis1.selectAll("line")
                 .style("stroke-width", 0.5)
                 .style("stroke", "#ccc");
-
+                
             yAxis1.call(d3.axisLeft(y1).ticks(10, "s"))
                 .append("text");
 
@@ -258,8 +264,8 @@ var DistributionBar = {
                 }));
 
             xAxis2.selectAll("text")
-                .attr("dy", ".2em")
-                .attr("transform", "rotate(45)");
+                .attr("dy", ".5em")
+                .style("font", '10px "Helvetica Neue", Helvetica, Arial, sans-serif')
 
             xAxis2.selectAll("line")
                 .style("stroke", function (d) {
