@@ -3,6 +3,8 @@
 <style>
     body,
     html {
+        font-family: '"Helvetica Neue", Helvetica, Arial, sans-serif';
+        color: #222;
         height: 100%;
     }
 
@@ -11,34 +13,48 @@
     }
 </style>
 
-<body style="background-color:beige;margin:0px">
-    <div style="display: -webkit-flex;display: flex;-webkit-flex-direction: column;flex-direction: column;width: 100%;height: 380%;">
-        <div id="top" style="width:100%;border-color:#ccc; border-bottom-style: solid;border-width:1px;">
+<body style="background-color:beige;margin:10px">
+    <div style="width: 100%;padding:10px">
+        <div id="top" style="width:100%;border-color:#ccc; border-bottom-style: solid;border-width:1px;padding-bottom:20px">
             <span style="font-size:2em;">UI Data Analytics</span><br/>
-            <span style="font-size: 0.35em;color:#ccc;font-style:italic">Why would you need to Measure Usability?
+            <span style="font-size: .8em;font-style:italic">Why would you need to Measure Usability?
 There are many reasons as to why someone would require to measure usability – the most common reason being the need to effectively communicate with the stakeholders of the system being evaluated. Other uses can be to satisfy the need for comparing the usability of two or more products and to quantify the severity of a usability problem.
-Ultimately, the primary objective of usability metrics is to assist in producing a system or product that is neither under- nor over-engineered. 
-<br/>-www.usabilitygeek.com
+Ultimately, the primary objective of usability metrics is to assist in producing a system or product that is neither under- nor over-engineered.  -www.usabilitygeek.com
             </span>
         </div>
-        <div style="width:100%;flex: 1.3;-webkit-flex: 1.3;display: -webkit-flex;display: flex;-webkit-flex-direction: row;flex-direction: row; padding:10px">
-            <div id="pack" style="width:500px;height:100%;flex:1.2;-webkit-flex:1.2;border-width:1px; border-color:#ccc; border-right-style: solid;">
-                <span style="position:absolute">User Path Diff</span>
+
+        <div>
+            <div style="font-size:1.5em;width:100%">&#8226;User Path Diff</div>
+            <span style="font-size:.8em;">
+
+            </span>
+        </div>
+
+        <div style="width:100%; display: -webkit-flex;display: flex;-webkit-flex-direction: row;flex-direction: row;">
+            <div id="pack" style="width:500px;height:500px;border-width:1px; border-color:#ccc; border-right-style: solid;">
+
             </div>
-            <div id="net" style="height:100%;flex:2;-webkit-flex: 2;border-width:1px; border-color:#ccc; border-right-style: solid;">
-                <span id="netlabel" style="position:absolute">Motion of Mouse</span>
+
+            <div id="tree" style="height:500px;-webkit-flex: 1;flex: 1;border-width:1px; border-color:#ccc; border-right-style: solid;">
+                <span id="labels" style="position:absolute;right:20px;text-align:right;"></span>
+            </div>
+
+
+        </div>
+
+
+        <div style="width:100%;padding:10px">
+            <div id="net" style="height:500px;width:100%; border-color:#ccc; border-right-style: solid;">
+                <span id="netlabel" style="position:absolute">Track of the mouse</span>
             </div>
         </div>
 
-        <div id="tree" style="width:100%;flex: 1.3;-webkit-flex: 1.3;border-top-style: solid;border-width:1px; border-color:#ccc;padding:10px">
-            <span style="position:absolute">User Path Diff</span>
-            <span id="labels" style="position:absolute;right:20px;text-align:right;"></span>
-        </div>
-        <div style="width:100%;flex: 1;-webkit-flex: 1;display: -webkit-flex;display: flex;-webkit-flex-direction: row;flex-direction: row;padding:10px">
-            <div id="plot" style="height:100%;flex: 2;-webkit-flex: 2;border-top-style: solid;border-width:1px; border-color:#ccc; border-right-style: solid;padding:10px">
+        <div style="width:100%;display: flex;-webkit-flex-direction: row;flex-direction: row;padding:10px">
+
+            <div id="plot" style="height:500px;flex: 2;-webkit-flex: 2;border-top-style: solid;border-width:1px; border-color:#ccc; border-right-style: solid;padding:10px">
                 <span style="position:absolute">Performance<span style="font-size: 0.5em;"> - lag between actions</span></span>
             </div>
-            <div id="lagDistribution" style="height:100%;flex: 1.2;-webkit-flex:1.2;border-top-style: solid;border-width:1px; border-color:#ccc;padding:10px">
+            <div id="lagDistribution" style="height:500px;flex: 1.2;-webkit-flex:1.2;border-top-style: solid;border-width:1px; border-color:#ccc;padding:10px">
                 <span style="position:absolute">Lag Distribution</span>
             </div>
         </div>
@@ -51,27 +67,27 @@ Ultimately, the primary objective of usability metrics is to assist in producing
             <li>Satisfaction: The comfort and acceptability of use.</li>
         </div>
 
-        <div style="width:100%;flex: 1.3;-webkit-flex: 1.3;display: -webkit-flex;display: flex;-webkit-flex-direction: row;flex-direction: row;padding:10px">
-            <div id="sankey1" style="height:100%;flex: 1;-webkit-flex: 1;border-right-style: solid;;border-top-style: solid;border-width:1px; border-color:#ccc;padding:10px">
+        <div style="width:100%;display: -webkit-flex;display: flex;-webkit-flex-direction: row;flex-direction: row;padding:10px">
+            <div id="sankey1" style="height:500px;flex: 1;-webkit-flex: 1;border-right-style: solid;;border-top-style: solid;border-width:1px; border-color:#ccc;padding:10px">
                 <span style="position:absolute">Effectiveness - <span style="font-size: 0.5em;">[Compose Email]</span></span>
             </div>
 
         </div>
 
-        <div style="width:100%;flex: 1;-webkit-flex: 1;display: -webkit-flex;display: flex;-webkit-flex-direction: row;flex-direction: row;padding:10px">
-            <div id="efficiency1" style="height:100%;flex: 1;-webkit-flex:1;padding:10px;border-top-style: solid;border-width:1px; border-color:#ccc;">
+        <div style="width:100%;display: -webkit-flex;display: flex;-webkit-flex-direction: row;flex-direction: row;padding:10px">
+            <div id="efficiency1" style="height:500px;flex: 1;-webkit-flex:1;padding:10px;border-top-style: solid;border-width:1px; border-color:#ccc;">
                 <span style="position:absolute">Efficiency - <span style="font-size: 0.5em;">[Compose Email Time Cost]</span></span>
             </div>
         </div>
 
-        <div style="width:100%;flex: 1.3;-webkit-flex: 1.3;display: -webkit-flex;display: flex;-webkit-flex-direction: row;flex-direction: row;padding:10px">
-            <div id="sankey2" style="height:100%;flex: 1;-webkit-flex:1;padding:10px;border-top-style: solid;border-width:1px; border-color:#ccc;">
+        <div style="width:100%;display: -webkit-flex;display: flex;-webkit-flex-direction: row;flex-direction: row;padding:10px">
+            <div id="sankey2" style="height:500px;flex: 1;-webkit-flex:1;padding:10px;border-top-style: solid;border-width:1px; border-color:#ccc;">
                 <span style="position:absolute">Effectiveness - <span style="font-size: 0.5em;">[Creating Contact]</span></span>
             </div>
         </div>
 
-        <div style="width:100%;flex: 1;-webkit-flex: 1;display: -webkit-flex;display: flex;-webkit-flex-direction: row;flex-direction: row;padding:10px">
-            <div id="efficiency2" style="height:100%;flex: 1;-webkit-flex:1;padding:10px;border-top-style: solid;border-width:1px; border-color:#ccc;">
+        <div style="width:100%;display: -webkit-flex;display: flex;-webkit-flex-direction: row;flex-direction: row;padding:10px">
+            <div id="efficiency2" style="height:500px;flex: 1;-webkit-flex:1;padding:10px;border-top-style: solid;border-width:1px; border-color:#ccc;">
                 <span style="position:absolute">Efficiency - <span style="font-size: 0.5em;">[Creating Contact Time Cost]</span></span>
             </div>
         </div>
@@ -100,14 +116,14 @@ Ultimately, the primary objective of usability metrics is to assist in producing
         category = category ? category[0].split('=')[1] : 'rui';
 
         //PathPacking.createInstance('pack1').loadData("login.button", 5, batch, origin, difforigin);
-        var pathPacking = PathPacking.createInstance('pack').loadData(category+'.login.button', 5, batch, origin, category, difforigin);
-        var pathTree = PathTree.createInstance('tree').loadData(category+'.login.button', 5, batch, origin, category, difforigin);
-        var pathNet = PathNet.createInstance('net').loadData(category+'.login.button', 5, batch, origin, category, difforigin);
-        var lagBubble = LagBubble.createInstance('plot').loadData(category+'.login.button', 10, batch, origin, category);
-        var effectivenessSankey1 = EffectivenessSankey.createInstance('sankey1').loadData([category+'.mail.toolbar.compose.button', category+'.contacts.compose.button', category+'.mail.toolbar.reply.button'], [category+'.mail.compose.send.button', category+'.mail.compose.discard.button', category+'.toolbar.close.button', category+'.browser.beforeunload'], 20, batch, origin, category);
-        var effectivenessSankey2 = EffectivenessSankey.createInstance('sankey2').loadData([category+'.contacts.toolbar.new.button', category+'.contacts.form.toolbar.edit.button'], [category+'.contacts.form.toolbar.save.button', category+'.contacts.form.toolbar.cancel.button', category+'.browser.beforeunload'], 20, batch, origin);
-        var efficiencyBar = EfficiencyBar.createInstance('efficiency1').loadData([category+'.mail.toolbar.compose.button', category+'.contacts.compose.button', category+'.mail.toolbar.reply.button'], [category+'.mail.compose.send.button', category+'.mail.compose.discard.button', category+'.toolbar.close.button', category+'.browser.beforeunload'], 20, batch, origin, category);
-        var efficiencyBar = EfficiencyBar.createInstance('efficiency2').loadData([category+'.contacts.toolbar.new.button', category+'.contacts.form.toolbar.edit.button'], [category+'.contacts.form.toolbar.save.button', category+'.contacts.form.toolbar.cancel.button', category+'.browser.beforeunload'], 20, batch, origin, category);
+        var pathPacking = PathPacking.createInstance('pack').loadData(category + '.login.button', 5, batch, origin, category, difforigin);
+        var pathTree = PathTree.createInstance('tree').loadData(category + '.login.button', 5, batch, origin, category, difforigin);
+        var pathNet = PathNet.createInstance('net').loadData(category + '.login.button', 5, batch, origin, category, difforigin);
+        var lagBubble = LagBubble.createInstance('plot').loadData(category + '.login.button', 10, batch, origin, category);
+        var effectivenessSankey1 = EffectivenessSankey.createInstance('sankey1').loadData([category + '.mail.toolbar.compose.button', category + '.contacts.compose.button', category + '.mail.toolbar.reply.button'], [category + '.mail.compose.send.button', category + '.mail.compose.discard.button', category + '.mail.compose.close.button', category + '.browser.beforeunload'], 20, batch, origin, category);
+        var effectivenessSankey2 = EffectivenessSankey.createInstance('sankey2').loadData([category + '.contacts.toolbar.new.button', category + '.contacts.form.toolbar.edit.button'], [category + '.contacts.form.toolbar.save.button', category + '.contacts.form.toolbar.cancel.button', category + '.browser.beforeunload'], 20, batch, origin);
+        var efficiencyBar = EfficiencyBar.createInstance('efficiency1').loadData([category + '.mail.toolbar.compose.button', category + '.contacts.compose.button', category + '.mail.toolbar.reply.button'], [category + '.mail.compose.send.button', category + '.mail.compose.discard.button', category + '.toolbar.close.button', category + '.browser.beforeunload'], 20, batch, origin, category);
+        var efficiencyBar = EfficiencyBar.createInstance('efficiency2').loadData([category + '.contacts.toolbar.new.button', category + '.contacts.form.toolbar.edit.button'], [category + '.contacts.form.toolbar.save.button', category + '.contacts.form.toolbar.cancel.button', category + '.browser.beforeunload'], 20, batch, origin, category);
 
         var distributionBar = DistributionBar.createInstance('lagDistribution');
 
@@ -124,7 +140,7 @@ Ultimately, the primary objective of usability metrics is to assist in producing
             arr.reverse();
             pathPacking.zoomToNode(arr.concat());
             pathNet.updateEntry(arr.concat());
-            document.getElementById('netlabel').innerHTML = 'Motion of Mouse <span style="color:#ccc"> @' + d.data.key + '</span>';
+            document.getElementById('netlabel').innerHTML = 'Trace of the mouse <span style="color:#ccc"> @' + d.data.key + '</span>';
             updateLabels(d);
         })
 
