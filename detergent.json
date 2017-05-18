@@ -106,6 +106,7 @@
                             "rui-toolbar-gray-btn,automation-mail-compose-discard-btn",
                             "rui-toolbar-gray-btn,automation-mail-compose-discard-btn-Discard"
                         ],
+                        "close.button": "rui-tool,ow-icon-tool-close,automation-icon-tool-close",
                         "save.button": [
                             "rui-toolbar-gray-btn,automation-mail-compose-save-btn-Save",
                             "rui-toolbar-gray-btn,automation-mail-compose-save-btn"
