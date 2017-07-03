@@ -146,7 +146,7 @@ function ChipMonitor(options) {
         data = JSON.stringify(data);
         xhr.send(data);
         resetActions();
-        
+
         if (debugMode) {
             console.log("sendToChipServer", data)
         }
@@ -196,6 +196,8 @@ function ChipMonitor(options) {
         } else if (cls.match(/x-boundlist/g)) {
             identifier = cls + '-' + getElementIndex(ele)
         } else if (cls.match(/rui-settings-list-desc automation-settings-list-desc/g)) {
+            identifier = cls + '-' + e.textContent;
+        } else if (cls.math(/x-button-label/g)) {
             identifier = cls + '-' + e.textContent;
         }
 
@@ -261,6 +263,10 @@ function ChipMonitor(options) {
 
         if (ele.tagName === 'TEXTAREA' || ele.tagName === 'INPUT') {
             return ele.name;
+        }
+        
+        if (ele.id === 'inner-editor') {
+            return ele.id;
         }
 
         return 'uncaught-identifier-' + ele.className;
