@@ -197,7 +197,7 @@ function ChipMonitor(options) {
             identifier = cls + '-' + getElementIndex(ele)
         } else if (cls.match(/rui-settings-list-desc automation-settings-list-desc/g)) {
             identifier = cls + '-' + e.textContent;
-        } else if (cls.math(/x-button-label/g)) {
+        } else if (cls.match(/x-button-label/g)) {
             identifier = cls + '-' + e.textContent;
         }
 
