@@ -1,7 +1,7 @@
 /**
 <script type="text/javascript" src="https://raw.githack.com/coolinker/chips/master/chipmonitor.js"></script>
 <script type="text/javascript">
-    ChipMonitor({version:'2.2.101', sendDelay:30000,chipService:'http://10.37.10.211:8080/chips', debug:true});
+    ChipMonitor({version:'2.3.001', originext:'TUIA', sendDelay:30000,chipService:'http://10.37.10.211:8080/chips', debug:true});
 </script> 
  */
 
@@ -25,6 +25,8 @@ function ChipMonitor(options) {
     var SERIAL = parseInt(Math.random() * 100000000000000000, 10);
     var ORIGIN = options.origin ? options.origin : window.location.hostname;
     var ext = window.location.search.match(/(?:originext=)([A-Za-z0-9_-]+)/g);
+    ext = ext || options.originext;
+
     if (ext) {
         ORIGIN += '-' + ext[0].split('=')[1];
     }
